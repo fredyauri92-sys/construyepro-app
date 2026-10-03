@@ -1,6 +1,7 @@
 {
   "name": "CONSTRUYE - PRO",
-  "short_name": "CONSTRUYE-PRO",
+  "short_name": "CONSTRUYE - PRO",
+  "description": "Aplicación de Ingeniería, Cómputo Métrico y Gestión de Obra",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#0b0e14",
