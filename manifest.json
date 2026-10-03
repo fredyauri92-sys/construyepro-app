@@ -1,0 +1,17 @@
+{
+  "name": "CONSTRUYE - PRO",
+  "short_name": "CONSTRUYE-PRO",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0b0e14",
+  "theme_color": "#0b0e14",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "https://via.placeholder.com/512/00e5ff/0b0e14?text=CONSTRUYE-PRO",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
