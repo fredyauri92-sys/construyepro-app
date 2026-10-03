@@ -1,7 +1,7 @@
 {
-  "name": "CONSTRUYE - PRO",
-  "short_name": "CONSTRUYE - PRO",
-  "description": "Aplicación de Ingeniería, Cómputo Métrico y Gestión de Obra",
+  "name": "CONSTRUYE.PRO",
+  "short_name": "CONSTRUYE.PRO",
+  "description": "Calculadora de Cómputo Métrico, Dosificación de Concreto y Gestión de Obra",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#0b0e14",
@@ -9,7 +9,13 @@
   "orientation": "portrait",
   "icons": [
     {
-      "src": "https://via.placeholder.com/512/00e5ff/0b0e14?text=CONSTRUYE-PRO",
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
