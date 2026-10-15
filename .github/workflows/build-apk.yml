@@ -16,19 +16,24 @@ jobs:
       - name: Set up Java JDK
         uses: actions/setup-java@v4
         with:
-          distribution: 'zulu'
+          distribution: 'temurin'
           java-version: '17'
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      - name: Install Capacitor & Dependencies
+      - name: Prepare Web Directory & Capacitor
         run: |
+          mkdir -p dist
+          cp -r index.html manifest.json sw.js icon* dist/ 2>/dev/null || cp -r * dist/ 2>/dev/null || true
           npm init -y
           npm install @capacitor/core @capacitor/cli @capacitor/android
-          npx cap init "CONSTRUYE.PRO" "com.construyepro.app" --web-dir .
+          npx cap init "CONSTRUYE.PRO" "com.construyepro.app" --web-dir dist
           npx cap add android
           npx cap sync android
 
