@@ -447,6 +447,41 @@
             align-items: center;
         }
 
+        
+        .res-table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            margin-top: 6px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .res-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+            line-height: 1.4;
+        }
+
+        .res-table th {
+            padding: 6px 4px;
+            border-bottom: 2px solid rgba(0, 229, 255, 0.35);
+            color: var(--primary-cyan);
+            font-weight: 800;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .res-table td {
+            padding: 6px 4px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+            vertical-align: middle;
+        }
+
+        .res-table tr:last-child td {
+            border-bottom: none;
+        }
+
         .result-row {
             display: flex;
             justify-content: space-between;
@@ -711,15 +746,17 @@
             <!-- TAB 1: CÁLCULOS & ESQUEMAS 3D DINÁMICOS -->
             <div id="tab1" class="tab-pane active">
                 <div class="schematic-container" style="position:relative; touch-action:none; background:#0b0f19; border:1px solid #1e293b; border-radius:14px; overflow:hidden;">
-                    <!-- Top-Right Badges & Centrar Button -->
-                    <div style="position:absolute; top:12px; right:12px; z-index:20; display:flex; align-items:center; gap:6px;">
-                        <div class="pill-badge" id="pill_tr" style="position:static; margin:0;">📦 2.52 m³</div>
+                    <!-- Top-Right: Centrar Button Only -->
+                    <div style="position:absolute; top:12px; right:12px; z-index:20;">
                         <button id="btn_reset_3d_cam" class="pill-badge" style="position:static; margin:0; cursor:pointer; background:rgba(0,229,255,0.22); color:#00e5ff; border:1px solid #00e5ff; font-weight:800; pointer-events:auto; padding:4px 10px;" onclick="reset3DCamera()">
                             🎯 Centrar
                         </button>
                     </div>
-                    <!-- Bottom-Right Badge: Materials / Bags -->
-                    <div class="pill-badge pill-bottom-right" id="pill_br">📦 25 Bolsas Cemento</div>
+
+                    <!-- Bottom-Right Corner: Volume / Calculation Pill Badge -->
+                    <div style="position:absolute; bottom:12px; right:12px; z-index:20;">
+                        <div class="pill-badge" id="pill_tr" style="position:static; margin:0; background:rgba(15,23,42,0.85); color:#00e5ff; border:1px solid rgba(0,229,255,0.4); font-weight:800; padding:4px 10px; pointer-events:none;">📦 2.520 m³</div>
+                    </div>
 
                     <!-- 3D Canvas Viewport (Orbital Touch 360 with Grid Floor) -->
                     <canvas id="canvas_3d_viewport" width="360" height="200" style="width:100%; height:200px; display:block; cursor:grab; border-radius:12px;"></canvas>
@@ -2629,7 +2666,7 @@
             var wDescanso = wDescansoEl ? (parseFloat(wDescansoEl.value) || (B * 2 + 0.10)) : (B * 2 + 0.10);
 
             // Clean Badges
-            document.getElementById('pill_tr').innerText = '📐 ' + numCP + ' CP';
+            var _p_tr = document.getElementById('pill_tr'); if (_p_tr) _p_tr.innerText = '📐 ' + numCP + ' CP';
             var sacosEscPill = Math.ceil((numCP * (h/100) * B * 0.25) * 1.05 * 9.73);
             var p_pill_br = document.getElementById('pill_br'); if (p_pill_br) p_pill_br.innerText = '📦 ' + sacosEscPill + ' Bolsas Cemento';
 
@@ -3072,7 +3109,7 @@
 
             var pill_tl = document.getElementById('pill_tl'); if (pill_tl) pill_tl.innerText = '🧱 PAÑO DE MURO 3D REALISTA (' + specs.name + ')';
             var pill_br = document.getElementById('pill_br'); if (pill_br) pill_br.innerText = '📦 ' + sacosWallPill + ' Bolsas • ' + totalU + ' Ladrillos';
-            document.getElementById('pill_tr').innerText = '📐 ' + area.toFixed(2) + ' m²';
+            var _p_tr = document.getElementById('pill_tr'); if (_p_tr) _p_tr.innerText = '📐 ' + area.toFixed(2) + ' m²';
             var pill_bl = document.getElementById('pill_bl'); if (pill_bl) pill_bl.innerText = '📏 ' + l + 'm Largo × ' + h + 'm Alto (Esp: ' + (specs.Esp * 100).toFixed(1) + 'cm • Junta: ' + specs.juntaCm + 'cm)';
 
             var wx = Math.min(105, Math.max(40, l * 15));
@@ -3258,7 +3295,7 @@
             var p_pill_tl = document.getElementById('pill_tl'); if (p_pill_tl) p_pill_tl.innerText = '🪜 PLANO 2D ' + (tipo === 'descanso' ? '(2 TRAMOS EN U)' : '(TRAMO RECTO)');
             var sacosEsc2DPill = Math.ceil((alturaTotalVert * B * 0.20) * 1.05 * 9.73);
             var p_pill_br = document.getElementById('pill_br'); if (p_pill_br) p_pill_br.innerText = '📦 ' + sacosEsc2DPill + ' Bolsas Cemento';
-            document.getElementById('pill_tr').innerText = '📐 ' + numCP + ' CP (' + h + '×' + pVal + 'cm)';
+            var _p_tr = document.getElementById('pill_tr'); if (_p_tr) _p_tr.innerText = '📐 ' + numCP + ' CP (' + h + '×' + pVal + 'cm)';
             var p_pill_bl = document.getElementById('pill_bl'); if (p_pill_bl) p_pill_bl.innerText = '📏 Largo ' + escLargoVal.toFixed(2) + 'm × Ancho ' + B.toFixed(2) + 'm';
             
 
@@ -3456,13 +3493,43 @@
 
             var res = document.getElementById('res_tarrajeo');
             if (res) {
-                res.innerHTML = '<div style="font-weight:900; font-size:14px; color:var(--primary-cyan); margin-bottom:8px;">🖌️ CÓMPUTO DE TARRAJEO Y ACABADOS</div>' +
-                    '<div class="result-row"><span>Tipo de Acabado:</span><span class="val-bold" style="color:var(--primary-cyan);">' + tipoStr + '</span></div>' +
-                    '<div class="result-row"><span>Área Útil Tarrajeo:</span><span class="val-bold">' + area.toFixed(2) + ' m²</span></div>' +
-                    '<div class="result-row"><span>Volumen Mortero Tarrajeo (+m):</span><span class="val-bold">' + volMortero.toFixed(2) + ' m³ <span style="color:var(--primary-cyan); font-weight:700;">(~' + carretillasTarrajeo + ' Carretillas • ' + baldes18LTarrajeo + ' Baldes 18L)</span></span></div>' +
-                    '<div class="result-row"><span>Cemento Portland I:</span><span class="val-bold">' + sacosCemento + ' Bolsas (42.5 kg)</span></div>' +
-                    '<div class="result-row"><span>Arena Fina Tarrajeo:</span><span class="val-bold">' + m3ArenaFina + ' m³ <span style="color:var(--primary-cyan); font-weight:700;">(~' + carretillasArenaFina + ' Carretillas • ' + baldesArenaFina + ' Baldes 18L)</span></span></div>' +
-                    '<div class="result-row"><span>Agua Potable:</span><span class="val-bold">' + litrosAgua + ' Litros (~' + Math.round(litrosAgua/18) + ' Baldes 18L)</span></div>';
+                res.innerHTML = '<div style="font-weight:900; font-size:13px; color:var(--primary-cyan); margin-bottom:4px;">🖌️ CÓMPUTO Y DOSIFICACIÓN DE TARRAJEO</div>' +
+                    '<div style="font-size:11px; font-weight:700; color:#e2e8f0; margin-bottom:10px; padding:6px 8px; background:rgba(255,255,255,0.04); border-radius:6px; border-left:3px solid var(--primary-cyan);">' +
+                        '<b>Acabado:</b> ' + tipoStr + '<br><span style="color:var(--primary-cyan);"><b>Área Útil:</b> ' + area.toFixed(2) + ' m²</span>' +
+                    '</div>' +
+                    '<div class="res-table-wrapper">' +
+                    '<table class="res-table">' +
+                        '<thead>' +
+                            '<tr>' +
+                                '<th style="text-align:left;">MATERIAL / CONCEPTO</th>' +
+                                '<th style="text-align:right;">CANTIDAD</th>' +
+                                '<th style="text-align:right;">EQUIV. CAMPO</th>' +
+                            '</tr>' +
+                        '</thead>' +
+                        '<tbody>' +
+                            '<tr>' +
+                                '<td style="font-weight:700; color:#ffffff;">📦 Cemento Portland I</td>' +
+                                '<td style="text-align:right; font-weight:900; color:#00e5ff; font-size:13px;">' + sacosCemento + ' Bolsas</td>' +
+                                '<td style="text-align:right; font-weight:700; color:var(--text-muted); font-size:10px;">42.5 kg c/u</td>' +
+                            '</tr>' +
+                            '<tr>' +
+                                '<td style="font-weight:700; color:#ffffff;">🏖️ Arena Fina Cernida</td>' +
+                                '<td style="text-align:right; font-weight:800; color:#ffffff;">' + m3ArenaFina + ' m³</td>' +
+                                '<td style="text-align:right; font-weight:700; color:var(--primary-cyan); font-size:10px;">~' + carretillasArenaFina + ' Carr. • ' + baldesArenaFina + ' Baldes</td>' +
+                            '</tr>' +
+                            '<tr>' +
+                                '<td style="font-weight:700; color:#ffffff;">💧 Agua Potable</td>' +
+                                '<td style="text-align:right; font-weight:800; color:#ffffff;">' + litrosAgua + ' L</td>' +
+                                '<td style="text-align:right; font-weight:700; color:var(--text-muted); font-size:10px;">~' + Math.round(litrosAgua/18) + ' Baldes 18L</td>' +
+                            '</tr>' +
+                            '<tr style="background:rgba(0,229,255,0.03);">' +
+                                '<td style="font-weight:700; color:#ffffff;">📐 Vol. Mortero Tarrajeo (+m)</td>' +
+                                '<td style="text-align:right; font-weight:800; color:#00e5ff;">' + volMortero.toFixed(2) + ' m³</td>' +
+                                '<td style="text-align:right; font-weight:700; color:var(--primary-cyan); font-size:10px;">~' + carretillasTarrajeo + ' Carr. • ' + baldes18LTarrajeo + ' Baldes</td>' +
+                            '</tr>' +
+                        '</tbody>' +
+                    '</table>' +
+                    '</div>';
             }
         }
 
@@ -3547,14 +3614,53 @@
 
             var res = document.getElementById('res_concreto');
             if (res) {
-                res.innerHTML = '<div style="font-weight:900; font-size:14px; color:var(--primary-cyan); margin-bottom:4px;">📊 DOSIFICACIÓN DE CONCRETO</div>' +
-                    '<div style="font-size:12px; font-weight:800; color:#ffffff; margin-bottom:8px;">Estructura: ' + descEstructura + ' • ' + propStr + '</div>' +
-                    '<div class="result-row"><span>Volumen Estructural (+5% desp.):</span><span class="val-bold">' + vol.toFixed(3) + ' m³ <span style="color:var(--primary-cyan); font-weight:700;">(~' + carretillasVolTotal + ' Carretillas • ' + baldes18LVolTotal + ' Baldes 18L)</span></span></div>' +
-                    '<div class="result-row"><span>Cemento Portland I (Exacto):</span><span class="val-bold" style="color:#00e5ff; font-size:16px;">' + sacosCementoStr + ' Bolsas <span style="font-size:12px; color:var(--text-muted);">(42.5 kg c/u)</span></span></div>' +
-                    '<div class="result-row"><span>Arena Gruesa:</span><span class="val-bold">' + m3Arena + ' m³ <span style="color:var(--primary-cyan); font-weight:700;">(~' + carretillasArena + ' Carretillas • ' + baldesArena + ' Baldes 18L)</span></span></div>' +
-                    '<div class="result-row"><span>Piedra Chancada 1/2":</span><span class="val-bold">' + m3Piedra + ' m³ <span style="color:var(--primary-cyan); font-weight:700;">(~' + carretillasPiedra + ' Carretillas • ' + baldesPiedra + ' Baldes 18L)</span></span></div>' +
-                    '<div class="result-row"><span>Agua Potable:</span><span class="val-bold">' + litrosAgua + ' Litros (~' + Math.round(litrosAgua/18) + ' Baldes 18L)</span></div>' +
-                    '<div class="result-row"><span>Área Estimada Encofrado:</span><span class="val-bold">' + areaEncofrado.toFixed(2) + ' m²</span></div>';
+                res.innerHTML = '<div style="font-weight:900; font-size:13px; color:var(--primary-cyan); margin-bottom:4px;">📊 DOSIFICACIÓN Y CÓMPUTO DE CONCRETO</div>' +
+                    '<div style="font-size:11px; font-weight:700; color:#e2e8f0; margin-bottom:10px; padding:6px 8px; background:rgba(255,255,255,0.04); border-radius:6px; border-left:3px solid var(--primary-cyan);">' +
+                        '<b>Estructura:</b> ' + descEstructura + '<br><span style="color:var(--primary-cyan);"><b>Dosificación:</b> ' + propStr + '</span>' +
+                    '</div>' +
+                    '<div class="res-table-wrapper">' +
+                    '<table class="res-table">' +
+                        '<thead>' +
+                            '<tr>' +
+                                '<th style="text-align:left;">MATERIAL / CONCEPTO</th>' +
+                                '<th style="text-align:right;">CANTIDAD</th>' +
+                                '<th style="text-align:right;">EQUIV. CAMPO</th>' +
+                            '</tr>' +
+                        '</thead>' +
+                        '<tbody>' +
+                            '<tr>' +
+                                '<td style="font-weight:700; color:#ffffff;">📦 Cemento Portland I (Exacto)</td>' +
+                                '<td style="text-align:right; font-weight:900; color:#00e5ff; font-size:13px;">' + sacosCementoStr + ' Bolsas</td>' +
+                                '<td style="text-align:right; font-weight:700; color:var(--text-muted); font-size:10px;">42.5 kg c/u</td>' +
+                            '</tr>' +
+                            '<tr>' +
+                                '<td style="font-weight:700; color:#ffffff;">🏖️ Arena Gruesa</td>' +
+                                '<td style="text-align:right; font-weight:800; color:#ffffff;">' + m3Arena + ' m³</td>' +
+                                '<td style="text-align:right; font-weight:700; color:var(--primary-cyan); font-size:10px;">~' + carretillasArena + ' Carr. • ' + baldesArena + ' Baldes</td>' +
+                            '</tr>' +
+                            '<tr>' +
+                                '<td style="font-weight:700; color:#ffffff;">🪨 Piedra Chancada 1/2"</td>' +
+                                '<td style="text-align:right; font-weight:800; color:#ffffff;">' + m3Piedra + ' m³</td>' +
+                                '<td style="text-align:right; font-weight:700; color:var(--primary-cyan); font-size:10px;">~' + carretillasPiedra + ' Carr. • ' + baldesPiedra + ' Baldes</td>' +
+                            '</tr>' +
+                            '<tr>' +
+                                '<td style="font-weight:700; color:#ffffff;">💧 Agua Potable</td>' +
+                                '<td style="text-align:right; font-weight:800; color:#ffffff;">' + litrosAgua + ' L</td>' +
+                                '<td style="text-align:right; font-weight:700; color:var(--text-muted); font-size:10px;">~' + Math.round(litrosAgua/18) + ' Baldes 18L</td>' +
+                            '</tr>' +
+                            '<tr style="background:rgba(0,229,255,0.03);">' +
+                                '<td style="font-weight:700; color:#ffffff;">📐 Vol. Concreto (+5% desp.)</td>' +
+                                '<td style="text-align:right; font-weight:800; color:#00e5ff;">' + vol.toFixed(3) + ' m³</td>' +
+                                '<td style="text-align:right; font-weight:700; color:var(--primary-cyan); font-size:10px;">~' + carretillasVolTotal + ' Carr. • ' + baldes18LVolTotal + ' Baldes</td>' +
+                            '</tr>' +
+                            '<tr>' +
+                                '<td style="font-weight:700; color:#ffffff;">🪵 Área Estimada Encofrado</td>' +
+                                '<td style="text-align:right; font-weight:800; color:#ffffff;">' + areaEncofrado.toFixed(2) + ' m²</td>' +
+                                '<td style="text-align:right; font-weight:700; color:var(--text-muted); font-size:10px;">Contacto Madera</td>' +
+                            '</tr>' +
+                        '</tbody>' +
+                    '</table>' +
+                    '</div>';
             }
         }
 
@@ -3593,13 +3699,43 @@
 
             var res = document.getElementById('res_muros');
             if (res) {
-                res.innerHTML = '<div style="font-weight:900; font-size:14px; color:var(--primary-cyan); margin-bottom:8px;">🧱 MATERIALES DE ALBAÑILERÍA: ' + specs.name + '</div>' +
-                    '<div class="result-row"><span>Área Bruta de Muro:</span><span class="val-bold">' + area.toFixed(2) + ' m² <span style="color:var(--primary-cyan); font-weight:700;">(Espesor: ' + (specs.Esp * 100).toFixed(1) + ' cm • Junta: ' + specs.juntaCm.toFixed(1) + ' cm)</span></span></div>' +
-                    '<div class="result-row"><span>Rendimiento Teórico Ladrillo:</span><span class="val-bold">' + specs.undM2Neto.toFixed(1) + ' und/m² <span style="color:var(--primary-cyan); font-weight:700;">(+ ' + Math.round((mermaPct - 1.0)*100) + '% merma)</span></span></div>' +
-                    '<div class="result-row"><span>Unidades Totales Ladrillo:</span><span class="val-bold" style="color:#00e5ff;">' + totalLadrillos + ' Unidades</span></div>' +
-                    '<div class="result-row"><span>Volumen Mortero Cemento:Arena (1:4):</span><span class="val-bold">' + totalMorteroM3.toFixed(3) + ' m³ <span style="color:var(--primary-cyan); font-weight:700;">(~' + carretillasMortero + ' Carretillas • ' + baldes18LMortero + ' Baldes 18L)</span></span></div>' +
-                    '<div class="result-row"><span>Cemento para Mortero:</span><span class="val-bold">' + sacosCementoExact.toFixed(2) + ' Bolsas (42.5 kg)</span></div>' +
-                    '<div class="result-row"><span>Arena Gruesa Mortero:</span><span class="val-bold">' + m3Arena + ' m³ <span style="color:var(--primary-cyan); font-weight:700;">(~' + carretillasArenaMortero + ' Carretillas • ' + baldesArena + ' Baldes 18L)</span></span></div>';
+                res.innerHTML = '<div style="font-weight:900; font-size:13px; color:var(--primary-cyan); margin-bottom:4px;">🧱 MATERIALES Y CÓMPUTO DE ALBAÑILERÍA</div>' +
+                    '<div style="font-size:11px; font-weight:700; color:#e2e8f0; margin-bottom:10px; padding:6px 8px; background:rgba(255,255,255,0.04); border-radius:6px; border-left:3px solid var(--primary-cyan);">' +
+                        '<b>Tipo:</b> ' + specs.name + '<br><span style="color:var(--primary-cyan);"><b>Muro:</b> ' + area.toFixed(2) + ' m² (Espesor: ' + (specs.Esp * 100).toFixed(1) + ' cm • Junta: ' + specs.juntaCm.toFixed(1) + ' cm)</span>' +
+                    '</div>' +
+                    '<div class="res-table-wrapper">' +
+                    '<table class="res-table">' +
+                        '<thead>' +
+                            '<tr>' +
+                                '<th style="text-align:left;">MATERIAL / CONCEPTO</th>' +
+                                '<th style="text-align:right;">CANTIDAD</th>' +
+                                '<th style="text-align:right;">EQUIV. CAMPO</th>' +
+                            '</tr>' +
+                        '</thead>' +
+                        '<tbody>' +
+                            '<tr>' +
+                                '<td style="font-weight:700; color:#ffffff;">🧱 Unidades Ladrillo/Bloque</td>' +
+                                '<td style="text-align:right; font-weight:900; color:#00e5ff; font-size:13px;">' + totalLadrillos + ' Unid.</td>' +
+                                '<td style="text-align:right; font-weight:700; color:var(--text-muted); font-size:10px;">' + specs.undM2Neto.toFixed(1) + ' u/m² (+' + Math.round((mermaPct - 1.0)*100) + '% m)</td>' +
+                            '</tr>' +
+                            '<tr>' +
+                                '<td style="font-weight:700; color:#ffffff;">📦 Cemento Mortero (Exacto)</td>' +
+                                '<td style="text-align:right; font-weight:800; color:#ffffff;">' + sacosCementoExact.toFixed(2) + ' Bolsas</td>' +
+                                '<td style="text-align:right; font-weight:700; color:var(--text-muted); font-size:10px;">42.5 kg c/u (Mezcla 1:4)</td>' +
+                            '</tr>' +
+                            '<tr>' +
+                                '<td style="font-weight:700; color:#ffffff;">🏖️ Arena Gruesa Mortero</td>' +
+                                '<td style="text-align:right; font-weight:800; color:#ffffff;">' + m3Arena + ' m³</td>' +
+                                '<td style="text-align:right; font-weight:700; color:var(--primary-cyan); font-size:10px;">~' + carretillasArenaMortero + ' Carr. • ' + baldesArena + ' Baldes</td>' +
+                            '</tr>' +
+                            '<tr style="background:rgba(0,229,255,0.03);">' +
+                                '<td style="font-weight:700; color:#ffffff;">📐 Vol. Mortero (+10% desp.)</td>' +
+                                '<td style="text-align:right; font-weight:800; color:#00e5ff;">' + totalMorteroM3.toFixed(3) + ' m³</td>' +
+                                '<td style="text-align:right; font-weight:700; color:var(--primary-cyan); font-size:10px;">~' + carretillasMortero + ' Carr. • ' + baldes18LMortero + ' Baldes</td>' +
+                            '</tr>' +
+                        '</tbody>' +
+                    '</table>' +
+                    '</div>';
             }
         }
 
@@ -3697,14 +3833,53 @@
 
             var res = document.getElementById('res_tecnopor');
             if (res) {
-                res.innerHTML = '<div style="font-weight:900; font-size:14px; color:var(--primary-cyan); margin-bottom:8px;">🧇 MATERIALES DE LOSA TECNOPOR EPS</div>' +
-                    '<div class="result-row"><span>Área Total del Paño:</span><span class="val-bold">' + area.toFixed(2) + ' m²</span></div>' +
-                    '<div class="result-row"><span>Bloques Tecnopor EPS (+5% m):</span><span class="val-bold">' + totalBloques + ' Unidades (3.00m × 0.40m × ' + (peralte-5) + 'cm)</span></div>' +
-                    '<div class="result-row"><span>Viguetas de Concreto Armado:</span><span class="val-bold">' + numViguetas + ' Viguetas de ' + largoVigueta.toFixed(2) + 'm (' + totalMetersViguetas.toFixed(2) + ' m.l.)</span></div>' +
-                    '<div class="result-row"><span>Volumen Concreto Losa (+5% m):</span><span class="val-bold">' + volConcretoTotal.toFixed(2) + ' m³ <span style="color:var(--primary-cyan); font-weight:700;">(~' + carretillasConcretoLosa + ' Carretillas • ' + baldes18LConcretoLosa + ' Baldes 18L)</span></span></div>' +
-                    '<div class="result-row"><span>Cemento Portland I:</span><span class="val-bold">' + sacosCemento + ' Bolsas (42.5 kg)</span></div>' +
-                    '<div class="result-row"><span>Arena Gruesa Losa:</span><span class="val-bold">' + m3ArenaLosa + ' m³ <span style="color:var(--primary-cyan); font-weight:700;">(~' + carretillasArenaLosa + ' Carretillas • ' + baldesArena + ' Baldes 18L)</span></span></div>' +
-                    '<div class="result-row"><span>Piedra Chancada Losa:</span><span class="val-bold">' + m3PiedraLosa + ' m³ <span style="color:var(--primary-cyan); font-weight:700;">(~' + carretillasPiedraLosa + ' Carretillas • ' + baldesPiedra + ' Baldes 18L)</span></span></div>';
+                res.innerHTML = '<div style="font-weight:900; font-size:13px; color:var(--primary-cyan); margin-bottom:4px;">🧇 MATERIALES Y DOSIFICACIÓN DE LOSA TECNOPOR EPS</div>' +
+                    '<div style="font-size:11px; font-weight:700; color:#e2e8f0; margin-bottom:10px; padding:6px 8px; background:rgba(255,255,255,0.04); border-radius:6px; border-left:3px solid var(--primary-cyan);">' +
+                        '<b>Área Total:</b> ' + area.toFixed(2) + ' m² <br><span style="color:var(--primary-cyan);"><b>Peralte:</b> ' + peralte + ' cm (Losa ' + (peralte-5) + 'cm EPS + 5cm Carpeta)</span>' +
+                    '</div>' +
+                    '<div class="res-table-wrapper">' +
+                    '<table class="res-table">' +
+                        '<thead>' +
+                            '<tr>' +
+                                '<th style="text-align:left;">MATERIAL / CONCEPTO</th>' +
+                                '<th style="text-align:right;">CANTIDAD</th>' +
+                                '<th style="text-align:right;">EQUIV. CAMPO</th>' +
+                            '</tr>' +
+                        '</thead>' +
+                        '<tbody>' +
+                            '<tr>' +
+                                '<td style="font-weight:700; color:#ffffff;">🧇 Bloques Tecnopor EPS (+5% m)</td>' +
+                                '<td style="text-align:right; font-weight:900; color:#00e5ff; font-size:13px;">' + totalBloques + ' Unid.</td>' +
+                                '<td style="text-align:right; font-weight:700; color:var(--text-muted); font-size:10px;">' + bloqueL.toFixed(2) + 'm × 0.40m × ' + (peralte-5) + 'cm</td>' +
+                            '</tr>' +
+                            '<tr>' +
+                                '<td style="font-weight:700; color:#ffffff;">🏗️ Viguetas Concreto Armado</td>' +
+                                '<td style="text-align:right; font-weight:800; color:#ffffff;">' + numViguetas + ' Viguetas</td>' +
+                                '<td style="text-align:right; font-weight:700; color:var(--primary-cyan); font-size:10px;">' + largoVigueta.toFixed(2) + 'm c/u (' + totalMetersViguetas.toFixed(2) + ' m.l.)</td>' +
+                            '</tr>' +
+                            '<tr>' +
+                                '<td style="font-weight:700; color:#ffffff;">📦 Cemento Portland I</td>' +
+                                '<td style="text-align:right; font-weight:800; color:#ffffff;">' + sacosCemento + ' Bolsas</td>' +
+                                '<td style="text-align:right; font-weight:700; color:var(--text-muted); font-size:10px;">f&#39;c 210 (42.5 kg c/u)</td>' +
+                            '</tr>' +
+                            '<tr>' +
+                                '<td style="font-weight:700; color:#ffffff;">🏖️ Arena Gruesa Losa</td>' +
+                                '<td style="text-align:right; font-weight:800; color:#ffffff;">' + m3ArenaLosa + ' m³</td>' +
+                                '<td style="text-align:right; font-weight:700; color:var(--primary-cyan); font-size:10px;">~' + carretillasArenaLosa + ' Carr. • ' + baldesArena + ' Baldes</td>' +
+                            '</tr>' +
+                            '<tr>' +
+                                '<td style="font-weight:700; color:#ffffff;">🪨 Piedra Chancada 1/2"</td>' +
+                                '<td style="text-align:right; font-weight:800; color:#ffffff;">' + m3PiedraLosa + ' m³</td>' +
+                                '<td style="text-align:right; font-weight:700; color:var(--primary-cyan); font-size:10px;">~' + carretillasPiedraLosa + ' Carr. • ' + baldesPiedra + ' Baldes</td>' +
+                            '</tr>' +
+                            '<tr style="background:rgba(0,229,255,0.03);">' +
+                                '<td style="font-weight:700; color:#ffffff;">📐 Vol. Concreto Losa (+5% m)</td>' +
+                                '<td style="text-align:right; font-weight:800; color:#00e5ff;">' + volConcretoTotal.toFixed(2) + ' m³</td>' +
+                                '<td style="text-align:right; font-weight:700; color:var(--primary-cyan); font-size:10px;">~' + carretillasConcretoLosa + ' Carr. • ' + baldes18LConcretoLosa + ' Baldes</td>' +
+                            '</tr>' +
+                        '</tbody>' +
+                    '</table>' +
+                    '</div>';
             }
         }
 
@@ -3829,14 +4004,49 @@
 
             var res = document.getElementById('res_escalera');
             if (res) {
-                res.innerHTML = '<div style="font-weight:900; font-size:14px; color:var(--primary-cyan); margin-bottom:8px;">🪜 CÓMPUTO DE ESCALERA DINÁMICA</div>' +
-                    '<div class="result-row"><span>Geometría Escalones:</span><span class="val-bold" style="color:var(--primary-cyan);">' + numCP + ' CP (' + (h*100).toFixed(1) + 'cm) × ' + totalPasos + ' Pasos (' + (p*100).toFixed(1) + 'cm)</span></div>' +
-                    '<div class="result-row"><span>Altura Vert. / Largo Horiz. Proyectado:</span><span class="val-bold">H=' + alturaTotalVert.toFixed(2) + 'm • L=' + horizTotalProyectada.toFixed(2) + 'm</span></div>' +
-                    '<div class="result-row"><span>Volumen Total Concreto (Rampa+Pasos+Desc+Vigas):</span><span class="val-bold" style="color:var(--primary-cyan);">' + volConcretoTotal.toFixed(2) + ' m³ <span style="color:var(--primary-cyan); font-weight:700;">(~' + carretillasEsc + ' Carretillas • ' + baldes18LEsc + ' Baldes 18L)</span></span></div>' +
-                    '<div class="result-row"><span>Área de Contacto Encofrado:</span><span class="val-bold">' + areaEncofradoTotal.toFixed(2) + ' m² (~' + p2Madera + ' p² madera)</span></div>' +
-                    '<div class="result-row"><span>Cemento Portland I (f&#39;c 210):</span><span class="val-bold">' + sacosCemento + ' Bolsas (42.5 kg)</span></div>' +
-                    '<div class="result-row"><span>Arena Gruesa Escalera:</span><span class="val-bold">' + m3ArenaEsc + ' m³ <span style="color:var(--primary-cyan); font-weight:700;">(~' + carretillasArenaEsc + ' Carretillas • ' + baldesArena + ' Baldes 18L)</span></span></div>' +
-                    '<div class="result-row"><span>Piedra Chancada Escalera:</span><span class="val-bold">' + m3PiedraEsc + ' m³ <span style="color:var(--primary-cyan); font-weight:700;">(~' + carretillasPiedraEsc + ' Carretillas • ' + baldesPiedra + ' Baldes 18L)</span></span></div>';
+                res.innerHTML = '<div style="font-weight:900; font-size:13px; color:var(--primary-cyan); margin-bottom:4px;">🪜 CÓMPUTO Y DOSIFICACIÓN DE ESCALERA DINÁMICA</div>' +
+                    '<div style="font-size:11px; font-weight:700; color:#e2e8f0; margin-bottom:10px; padding:6px 8px; background:rgba(255,255,255,0.04); border-radius:6px; border-left:3px solid var(--primary-cyan);">' +
+                        '<b>Geometría:</b> ' + numCP + ' CP (' + (h*100).toFixed(1) + 'cm) × ' + totalPasos + ' Pasos (' + (p*100).toFixed(1) + 'cm)<br>' +
+                        '<span style="color:var(--primary-cyan);"><b>Dimensiones:</b> H=' + alturaTotalVert.toFixed(2) + 'm vert. • L=' + horizTotalProyectada.toFixed(2) + 'm horiz.</span>' +
+                    '</div>' +
+                    '<div class="res-table-wrapper">' +
+                    '<table class="res-table">' +
+                        '<thead>' +
+                            '<tr>' +
+                                '<th style="text-align:left;">MATERIAL / CONCEPTO</th>' +
+                                '<th style="text-align:right;">CANTIDAD</th>' +
+                                '<th style="text-align:right;">EQUIV. CAMPO</th>' +
+                            '</tr>' +
+                        '</thead>' +
+                        '<tbody>' +
+                            '<tr>' +
+                                '<td style="font-weight:700; color:#ffffff;">📦 Cemento Portland I</td>' +
+                                '<td style="text-align:right; font-weight:900; color:#00e5ff; font-size:13px;">' + sacosCemento + ' Bolsas</td>' +
+                                '<td style="text-align:right; font-weight:700; color:var(--text-muted); font-size:10px;">f&#39;c 210 (42.5 kg c/u)</td>' +
+                            '</tr>' +
+                            '<tr>' +
+                                '<td style="font-weight:700; color:#ffffff;">🏖️ Arena Gruesa Escalera</td>' +
+                                '<td style="text-align:right; font-weight:800; color:#ffffff;">' + m3ArenaEsc + ' m³</td>' +
+                                '<td style="text-align:right; font-weight:700; color:var(--primary-cyan); font-size:10px;">~' + carretillasArenaEsc + ' Carr. • ' + baldesArena + ' Baldes</td>' +
+                            '</tr>' +
+                            '<tr>' +
+                                '<td style="font-weight:700; color:#ffffff;">🪨 Piedra Chancada 1/2"</td>' +
+                                '<td style="text-align:right; font-weight:800; color:#ffffff;">' + m3PiedraEsc + ' m³</td>' +
+                                '<td style="text-align:right; font-weight:700; color:var(--primary-cyan); font-size:10px;">~' + carretillasPiedraEsc + ' Carr. • ' + baldesPiedra + ' Baldes</td>' +
+                            '</tr>' +
+                            '<tr style="background:rgba(0,229,255,0.03);">' +
+                                '<td style="font-weight:700; color:#ffffff;">📐 Vol. Concreto Total (+m)</td>' +
+                                '<td style="text-align:right; font-weight:800; color:#00e5ff;">' + volConcretoTotal.toFixed(2) + ' m³</td>' +
+                                '<td style="text-align:right; font-weight:700; color:var(--primary-cyan); font-size:10px;">~' + carretillasEsc + ' Carr. • ' + baldes18LEsc + ' Baldes</td>' +
+                            '</tr>' +
+                            '<tr>' +
+                                '<td style="font-weight:700; color:#ffffff;">🪵 Área Contacto Encofrado</td>' +
+                                '<td style="text-align:right; font-weight:800; color:#ffffff;">' + areaEncofradoTotal.toFixed(2) + ' m²</td>' +
+                                '<td style="text-align:right; font-weight:700; color:var(--text-muted); font-size:10px;">~' + p2Madera + ' p² madera hab.</td>' +
+                            '</tr>' +
+                        '</tbody>' +
+                    '</table>' +
+                    '</div>';
             }
         }
 
