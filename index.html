@@ -1555,6 +1555,85 @@
         // --- V2.0 PRO: REBAR 3D X-RAY STATE & VOICE SYNTHESIS ---
         var voiceEnabled = true;
 
+        // --- ⌚ SAFE DATE/TIME FORMATTERS FOR ANDROID WEBVIEW (NO LOCALE CRASHES) ---
+        function formatSafeTime(d) {
+            d = d || new Date();
+            try {
+                var h = String(d.getHours()).padStart(2, '0');
+                var m = String(d.getMinutes()).padStart(2, '0');
+                var s = String(d.getSeconds()).padStart(2, '0');
+                return h + ':' + m + ':' + s;
+            } catch(e) { return '12:00:00'; }
+        }
+
+        function formatSafeDate(d) {
+            d = d || new Date();
+            try {
+                var day = String(d.getDate()).padStart(2, '0');
+                var month = String(d.getMonth() + 1).padStart(2, '0');
+                var year = d.getFullYear();
+                return day + '/' + month + '/' + year;
+            } catch(e) { return '16/10/2026'; }
+        }
+
+        // --- 🔊 DUAL AUDIO ENGINE FOR CANCHA (WEB AUDIO API BEEP + TTS VOICE) ---
+        var voiceEnabled = true;
+        var audioCtx = null;
+
+        function getAudioContext() {
+            if (!audioCtx) {
+                var AudioCtx = window.AudioContext || window.webkitAudioContext;
+                if (AudioCtx) {
+                    try { audioCtx = new AudioCtx(); } catch(e) {}
+                }
+            }
+            if (audioCtx && audioCtx.state === 'suspended') {
+                try { audioCtx.resume(); } catch(e) {}
+            }
+            return audioCtx;
+        }
+
+        // Unlock Web Audio Context & SpeechSynthesis on initial touch/click
+        document.addEventListener('touchstart', function() { getAudioContext(); }, { passive: true });
+        document.addEventListener('click', function() { getAudioContext(); });
+
+        function playAudioBeep(type) {
+            try {
+                var ctx = getAudioContext();
+                if (!ctx) return;
+                var osc = ctx.createOscillator();
+                var gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+
+                var now = ctx.currentTime;
+                if (type === 'complete') {
+                    // Success chime chord (800Hz -> 1200Hz)
+                    osc.frequency.setValueAtTime(800, now);
+                    osc.frequency.exponentialRampToValueAtTime(1200, now + 0.25);
+                    gain.gain.setValueAtTime(0.35, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                    osc.start(now);
+                    osc.stop(now + 0.3);
+                } else if (type === 'warning') {
+                    // Low warning buzz (350Hz)
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(350, now);
+                    gain.gain.setValueAtTime(0.3, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+                    osc.start(now);
+                    osc.stop(now + 0.25);
+                } else {
+                    // Crisp 650Hz count beep
+                    osc.frequency.setValueAtTime(650, now);
+                    gain.gain.setValueAtTime(0.3, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
+                    osc.start(now);
+                    osc.stop(now + 0.12);
+                }
+            } catch(e) {}
+        }
+
         function toggleVoice() {
             voiceEnabled = !voiceEnabled;
             var btn = document.getElementById('btn_toggle_voice');
@@ -1564,19 +1643,195 @@
                 btn.style.color = voiceEnabled ? '#30d158' : '#ff453a';
                 btn.style.borderColor = voiceEnabled ? '#30d158' : '#ff453a';
             }
-            if (voiceEnabled) speakVoice('Voz activada en Asistente de Obra');
+            if (voiceEnabled) speakVoice('Voz activada en Asistente de Obra', 'complete');
         }
 
-        function speakVoice(text) {
+        function speakVoice(text, soundType) {
+            // 1. Trigger Web Audio API tone (100% reliable offline sound in APK)
+            playAudioBeep(soundType || 'count');
+
+            // 2. Trigger Speech Synthesis voice
             if (!voiceEnabled || !('speechSynthesis' in window)) return;
             try {
-                window.speechSynthesis.cancel();
                 var ut = new SpeechSynthesisUtterance(text);
-                ut.lang = 'es-PE';
-                ut.rate = 1.05;
+                ut.lang = 'es'; // Generic Spanish for maximum Android WebView support
+                ut.rate = 1.1;
                 ut.pitch = 1.0;
+
+                if (window.speechSynthesis.getVoices) {
+                    var voices = window.speechSynthesis.getVoices();
+                    if (voices && voices.length > 0) {
+                        var esVoice = voices.find(function(v) {
+                            return v.lang && (v.lang.indexOf('es') === 0 || v.lang.indexOf('Spanish') !== -1);
+                        });
+                        if (esVoice) ut.voice = esVoice;
+                    }
+                }
                 window.speechSynthesis.speak(ut);
             } catch(e) {}
+        }
+
+        // --- MANO DE OBRA & AUDITABLE LOG ---
+        var trompoCounts = { cemento: 0, arena: 0, piedra: 0, agua: 0 };
+        var auditableEnabled = true;
+        var auditLogs = [];
+
+        function toggleAuditableMode() {
+            auditableEnabled = !auditableEnabled;
+            ['btn_audit_toggle', 'btn_toggle_auditable'].forEach(function(id) {
+                var btn = document.getElementById(id);
+                if (btn) {
+                    if (auditableEnabled) {
+                        btn.innerText = '🟢 AUDITABLE: ACTIVADO';
+                        btn.style.backgroundColor = 'rgba(48,209,88,0.2)';
+                        btn.style.color = '#30d158';
+                        btn.style.borderColor = '#30d158';
+                    } else {
+                        btn.innerText = '⚪ AUDITABLE: DESACTIVADO';
+                        btn.style.backgroundColor = 'rgba(255,255,255,0.1)';
+                        btn.style.color = '#94a3b8';
+                        btn.style.borderColor = '#475569';
+                    }
+                }
+            });
+            showToast(auditableEnabled ? '🟢 Bitácora Auditable de Cemento ACTIVADA' : '⚪ Bitácora Auditable DESACTIVADA');
+        }
+
+        function countBucket(type) {
+            trompoCounts[type] = (trompoCounts[type] || 0) + 1;
+            var val = trompoCounts[type];
+            var targetVal = 1.0;
+            var name = 'balde';
+
+            if (type === 'arena') { targetVal = parseFloat(currentCalcData.bArenaPerBag) || 3.5; name = 'Arena'; }
+            else if (type === 'piedra') { targetVal = parseFloat(currentCalcData.bPiedraPerBag) || 3.5; name = 'Piedra'; }
+            else if (type === 'agua') { targetVal = parseFloat((currentCalcData.aguaLPerBag || 22.0) / 18.0) || 1.2; name = 'Agua'; }
+            else if (type === 'cemento') { targetVal = 1.0; name = 'Bolsa Cemento'; }
+
+            var targetStr = (targetVal % 1 === 0) ? targetVal.toFixed(0) : targetVal.toFixed(1);
+            var el = document.getElementById('cnt_' + type);
+            if (el) el.innerText = val + ' / ' + targetStr + ' b';
+            if (navigator.vibrate) navigator.vibrate(60);
+
+            var intTarget = Math.floor(targetVal);
+            var remainder = Math.round((targetVal - val) * 10) / 10;
+
+            if (val < intTarget) {
+                speakVoice(name + ': ' + val, 'count');
+            } else if (val === intTarget) {
+                if (remainder > 0) {
+                    speakVoice(val + ' baldes de ' + name + '. Queda un saldo de ' + remainder + ' baldes por añadir.', 'count');
+                    if (navigator.vibrate) navigator.vibrate([80, 40, 80]);
+                } else {
+                    speakVoice('¡Atención, ' + name + ' completa!', 'complete');
+                    if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+                }
+            } else {
+                if (val <= targetVal) {
+                    speakVoice(val + ' baldes de ' + name + '. Queda un saldo de ' + remainder + ' baldes.', 'count');
+                } else {
+                    speakVoice('Cuidado, exceso de ' + name + '. La receta es ' + targetStr + ' baldes.', 'warning');
+                    if (navigator.vibrate) navigator.vibrate([120, 60, 120]);
+                }
+            }
+        }
+
+        function registrarTandaCompletada() {
+            if (!auditableEnabled) {
+                showToast('⚠️ Activa la Bitácora Auditable arriba para registrar las tandas.');
+                return;
+            }
+            var timeStr = formatSafeTime();
+            var entry = {
+                tanda: auditLogs.length + 1,
+                hora: timeStr,
+                cemento: trompoCounts.cemento || 1,
+                arena: trompoCounts.arena || 0,
+                piedra: trompoCounts.piedra || 0,
+                agua: trompoCounts.agua || 0
+            };
+            auditLogs.unshift(entry);
+
+            try {
+                safeStorage.setItem('construye_audit_logs', JSON.stringify(auditLogs));
+            } catch (e) {}
+
+            renderAuditLog();
+            resetTrompo();
+            if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+            showToast('📋 Tanda #' + entry.tanda + ' registrada (' + entry.cemento + ' Bolsa de Cemento)');
+        }
+
+        function renderAuditLog() {
+            var listContainer1 = document.getElementById('audit_list_container');
+            var listContainer2 = document.getElementById('audit_list_container_mano_obra');
+            var badge1 = document.getElementById('audit_total_bags');
+            var badge2 = document.getElementById('audit_total_bags_mo');
+
+            try {
+                var stored = safeStorage.getItem('construye_audit_logs');
+                if (stored) auditLogs = JSON.parse(stored);
+            } catch (e) {}
+
+            var totalBolsas = 0;
+            if (!auditLogs || auditLogs.length === 0) {
+                var emptyHTML = '<div style="text-align:center; color:var(--text-muted); padding:10px; font-size:12px;">No hay tandas de cemento registradas hoy.</div>';
+                if (listContainer1) listContainer1.innerHTML = emptyHTML;
+                if (listContainer2) listContainer2.innerHTML = emptyHTML;
+                if (badge1) badge1.innerText = '0 Bolsas HOY';
+                if (badge2) badge2.innerText = '0 Bolsas HOY';
+                return;
+            }
+
+            var rowsHTML = '';
+            auditLogs.forEach(function(item, idx) {
+                var bags = item.cemento || 1;
+                totalBolsas += bags;
+                rowsHTML += '<div style="display:flex; justify-content:space-between; align-items:center; padding:6px 0; border-bottom:1px dashed rgba(255,255,255,0.1); font-size:11px;">' +
+                    '<div>' +
+                        '<span style="font-weight:900; color:var(--primary-cyan);">Tanda #' + (auditLogs.length - idx) + '</span> ' +
+                        '<span style="color:var(--text-muted); font-size:10px;">(' + item.hora + ')</span><br>' +
+                        '<span style="color:var(--text-main); font-weight:700;">📦 ' + bags + ' Bolsa | 🏜️ ' + (item.arena || 0) + 'b | 🪨 ' + (item.piedra || 0) + 'b | 💧 ' + (item.agua || 0) + 'b</span>' +
+                    '</div>' +
+                    '<div>' +
+                        '<button onclick="deleteAuditLogEntry(' + idx + ')" style="background:rgba(255,69,58,0.15); color:var(--primary-red); border:1px solid var(--primary-red); border-radius:4px; padding:2px 6px; font-size:10px; font-weight:800; cursor:pointer;" title="Eliminar tanda">🗑️</button>' +
+                    '</div>' +
+                '</div>';
+            });
+
+            var fullHTML = '<div style="margin-bottom:8px; font-weight:900; color:#30d158; font-size:12px; background:rgba(48,209,88,0.1); padding:6px 8px; border-radius:6px; border-left:3px solid #30d158;">' +
+                '📋 TOTAL JORNADA: ' + totalBolsas + ' BOLSAS DE CEMENTO VACIADAS' +
+            '</div>' + rowsHTML +
+            '<div style="margin-top:10px; text-align:right;">' +
+                '<button class="btn-secondary" style="font-size:10px; padding:4px 8px; color:var(--primary-red); border-color:var(--primary-red);" onclick="clearAuditLog()">🗑️ Limpiar Registros de Cemento</button>' +
+            '</div>';
+
+            if (listContainer1) listContainer1.innerHTML = fullHTML;
+            if (listContainer2) listContainer2.innerHTML = fullHTML;
+            if (badge1) badge1.innerText = totalBolsas + ' Bolsas HOY';
+            if (badge2) badge2.innerText = totalBolsas + ' Bolsas HOY';
+        }
+
+        function deleteAuditLogEntry(idx) {
+            if (auditLogs && idx >= 0 && idx < auditLogs.length) {
+                auditLogs.splice(idx, 1);
+                try {
+                    safeStorage.setItem('construye_audit_logs', JSON.stringify(auditLogs));
+                } catch (e) {}
+                renderAuditLog();
+                showToast('🗑️ Registro de tanda eliminado');
+            }
+        }
+
+        function clearAuditLog() {
+            if (confirm('¿Deseas reiniciar la bitácora auditable de cemento de la jornada?')) {
+                auditLogs = [];
+                try {
+                    safeStorage.setItem('construye_audit_logs', JSON.stringify(auditLogs));
+                } catch (e) {}
+                renderAuditLog();
+                showToast('🧹 Bitácora de cemento reiniciada');
+            }
         }
 
         var safeStorage = {
@@ -4215,7 +4470,7 @@
         function registrarTandaCompletada() {
             if (!auditableEnabled) return;
             var now = new Date();
-            var timeStr = now.toLocaleTimeString('es-PE', { hour12: false });
+            var timeStr = formatSafeTime(now);
             var entry = {
                 tanda: auditLogs.length + 1,
                 hora: timeStr,
@@ -4733,8 +4988,8 @@ function calcularPresupuesto() {
             }
 
             var now = new Date();
-            var dateStr = now.toLocaleDateString('es-PE', { day: '2-digit', month: '2-digit', year: 'numeric' });
-            var timeStr = now.toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+            var dateStr = formatSafeDate(now);
+            var timeStr = formatSafeTime(now);
 
             var newEntry = {
                 id: Date.now(),
@@ -4757,8 +5012,8 @@ function calcularPresupuesto() {
 
         function autoLogHito(tipo) {
             var now = new Date();
-            var dateStr = now.toLocaleDateString('es-PE', { day: '2-digit', month: '2-digit', year: 'numeric' });
-            var timeStr = now.toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+            var dateStr = formatSafeDate(now);
+            var timeStr = formatSafeTime(now);
 
             var cat = '📌 General';
             var text = '';
@@ -5318,7 +5573,7 @@ function calcularPresupuesto() {
 
             saveInventory();
             renderToolInventory();
-            showToast('✅ PRÉSTAMO REGISTRADO CON ÉXITO:\n• Herramienta: ' + tool.name + '\n• Responsable: ' + workerName + '\n• Disponibles restantes: ' + (tool.totalQty - tool.inUseCount) + ' de ' + tool.totalQty + '\n• Hora: ' + new Date().toLocaleTimeString('es-PE', {hour12:false}));
+            showToast('✅ PRÉSTAMO REGISTRADO CON ÉXITO:\n• Herramienta: ' + tool.name + '\n• Responsable: ' + workerName + '\n• Disponibles restantes: ' + (tool.totalQty - tool.inUseCount) + ' de ' + tool.totalQty + '\n• Hora: ' + formatSafeTime());
         }
 
         function devolverHerramienta(id) {
@@ -5342,7 +5597,7 @@ function calcularPresupuesto() {
 
             if (c1 && c2 && c3 && c4) {
                 var now = new Date();
-                var timeStr = now.toLocaleTimeString('es-PE', { hour12: false });
+                var timeStr = formatSafeTime(now);
                 box.style.background = 'rgba(48, 209, 88, 0.2)';
                 box.style.border = '1px solid #30d158';
                 box.style.color = '#30d158';
