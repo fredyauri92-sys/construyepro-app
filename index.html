@@ -20,21 +20,23 @@
             --accent-blue: #0a84ff;
             --gold-seal: #ffd700;
             --input-bg: #1c2331;
+            --row-highlight: rgba(0, 229, 255, 0.05);
         }
 
         body.light-mode {
-            --bg-color: #f4f6f9;
+            --bg-color: #f1f5f9;
             --card-bg: #ffffff;
             --card-border: #cbd5e1;
             --text-main: #0f172a;
             --text-muted: #475569;
             --primary-orange: #d97706;
-            --primary-green: #16a34a;
-            --primary-cyan: #0284c7;
+            --primary-green: #15803d;
+            --primary-cyan: #0369a1;
             --primary-red: #dc2626;
-            --accent-blue: #2563eb;
+            --accent-blue: #1d4ed8;
             --gold-seal: #b45309;
-            --input-bg: #f1f5f9;
+            --input-bg: #f8fafc;
+            --row-highlight: rgba(3, 105, 161, 0.06);
         }
 
         * {
@@ -46,169 +48,452 @@
         }
 
         html, body {
-            margin: 0; padding: 0; width: 100%; height: 100vh;
-            background-color: var(--bg-color); color: var(--text-main);
-            position: fixed !important; top: 0; left: 0; right: 0; bottom: 0;
-            overflow: hidden !important; overscroll-behavior: none !important; touch-action: none !important;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            height: 100vh;
+            height: -webkit-fill-available;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            -webkit-user-select: none;
+            user-select: none;
+            position: fixed !important;
+            top: 0; left: 0; right: 0; bottom: 0;
+            overflow: hidden !important;
+            overscroll-behavior: none !important;
+            touch-action: none !important;
         }
 
         #splash-screen {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background-color: #05080e; display: flex; flex-direction: column;
-            justify-content: center; align-items: center; z-index: 99999;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background-color: #05080e;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 99999;
             transition: opacity 0.4s ease, transform 0.4s ease-in-out;
-            text-align: center; padding: 20px; box-sizing: border-box;
+            text-align: center;
+            padding: 20px;
         }
 
         #app-container {
-            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            width: 100%; max-width: 520px; height: 100%; margin: 0 auto;
-            display: flex; flex-direction: column; background-color: var(--bg-color);
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            width: 100%;
+            max-width: 520px;
+            height: 100%;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--bg-color);
             box-shadow: 0 0 60px rgba(0, 229, 255, 0.18), 0 0 120px rgba(0, 0, 0, 0.9);
-            overflow: hidden !important; overscroll-behavior: none !important;
+            overflow: hidden !important;
         }
 
         @media (min-width: 600px) {
             body {
                 background: radial-gradient(circle at center, #1a2234 0%, #080b12 100%) !important;
-                display: flex !important; justify-content: center !important; align-items: center !important;
-                min-height: 100vh !important; padding: 16px !important;
+                display: flex !important;
+                justify-content: center !important;
+                align-items: center !important;
+                min-height: 100vh !important;
+                padding: 16px !important;
             }
             #app-container {
-                width: 100% !important; max-width: 520px !important; height: 92vh !important;
-                max-height: 900px !important; border-radius: 24px !important; border: 1px solid #1e293b !important;
+                height: 92vh !important;
+                max-height: 900px !important;
+                border-radius: 24px !important;
+                border: 1px solid #1e293b !important;
             }
         }
 
         header {
-            flex: 0 0 auto; background-color: var(--card-bg); padding: 10px 14px;
-            border-bottom: 1px solid var(--card-border); display: flex; align-items: center;
-            justify-content: space-between; gap: 10px; z-index: 100;
+            flex: 0 0 auto;
+            background-color: var(--card-bg);
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--card-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            z-index: 100;
         }
 
-        .brand-header { display: flex; align-items: center; gap: 8px; }
-        .brand-title { font-size: 16px; font-weight: 900; letter-spacing: 0.5px; color: var(--text-main); }
-        .header-controls { display: flex; align-items: center; gap: 8px; }
+        .brand-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .brand-title {
+            font-size: 16px;
+            font-weight: 900;
+            letter-spacing: 0.5px;
+            color: var(--text-main);
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
         .btn-toggle-theme, .region-select {
-            background-color: var(--input-bg); border: 1px solid var(--card-border);
-            color: var(--text-main); padding: 6px 10px; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer;
+            background-color: var(--input-bg);
+            border: 1px solid var(--card-border);
+            color: var(--text-main);
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 800;
+            cursor: pointer;
         }
 
         .main-viewport {
-            flex: 1 1 auto; height: 0; overflow-y: auto !important; overflow-x: hidden !important;
-            -webkit-overflow-scrolling: touch !important; padding: 14px; padding-bottom: 85px; box-sizing: border-box;
+            flex: 1 1 auto;
+            height: 0;
+            overflow-y: auto !important;
+            overflow-x: hidden !important;
+            -webkit-overflow-scrolling: touch !important;
+            touch-action: pan-y !important;
+            overscroll-behavior: none !important;
+            padding: 14px;
+            padding-bottom: 85px;
         }
 
         .bottom-nav {
-            flex: 0 0 auto; width: 100%; max-width: 520px; background-color: var(--card-bg);
-            border-top: 1px solid var(--card-border); display: flex; z-index: 1000; height: 62px; box-sizing: border-box;
+            flex: 0 0 auto;
+            width: 100%;
+            max-width: 520px;
+            background-color: var(--card-bg);
+            border-top: 1px solid var(--card-border);
+            display: flex;
+            z-index: 1000;
+            height: 62px;
         }
 
         .nav-item {
-            flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center;
-            background: none; border: none; color: var(--text-muted); font-size: 10px; font-weight: 700; cursor: pointer; gap: 3px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 10px;
+            font-weight: 800;
+            cursor: pointer;
+            gap: 3px;
         }
+
         .nav-item .nav-icon { font-size: 20px; }
-        .nav-item.active { color: var(--primary-orange); background-color: rgba(255, 159, 10, 0.08); }
+        .nav-item.active {
+            color: var(--primary-orange);
+            background-color: rgba(255, 159, 10, 0.1);
+        }
 
         .tab-pane { display: none; }
         .tab-pane.active { display: block; }
 
         .segmented-control {
-            display: flex; background-color: var(--input-bg); border: 1px solid var(--card-border);
-            border-radius: 8px; padding: 3px; margin-bottom: 14px; gap: 3px;
+            display: flex;
+            background-color: var(--input-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            padding: 3px;
+            margin-bottom: 14px;
+            gap: 3px;
         }
+
         .segment-btn {
-            flex: 1; padding: 8px 4px; background: none; border: none; color: var(--text-muted);
-            font-size: 12px; font-weight: 700; border-radius: 6px; cursor: pointer; text-align: center;
+            flex: 1;
+            padding: 8px 4px;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 11.5px;
+            font-weight: 800;
+            border-radius: 6px;
+            cursor: pointer;
+            text-align: center;
         }
-        .segment-btn.active { background-color: var(--primary-orange); color: #ffffff; }
+
+        .segment-btn.active {
+            background-color: var(--primary-orange);
+            color: #ffffff;
+        }
 
         .form-group { margin-bottom: 12px; }
-        label { display: block; font-size: 11px; font-weight: 800; color: var(--text-muted); margin-bottom: 5px; text-transform: uppercase; }
-        select, input, textarea {
-            width: 100%; padding: 12px 14px; background-color: var(--input-bg); border: 1px solid var(--card-border);
-            border-radius: 8px; color: var(--text-main); font-size: 15px; font-weight: 700; outline: none;
+
+        label {
+            display: block;
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+            text-transform: uppercase;
         }
+
+        select, input, textarea {
+            width: 100%;
+            padding: 11px 12px;
+            background-color: var(--input-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            color: var(--text-main);
+            font-size: 14px;
+            font-weight: 800;
+            outline: none;
+        }
+
         select:focus, input:focus { border-color: var(--primary-orange); }
 
         .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 
         .schematic-container {
-            position: relative; background-color: var(--card-bg); border: 1px solid var(--card-border);
-            border-radius: 12px; padding: 16px; margin-bottom: 14px; text-align: center; overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            position: relative;
+            background-color: #0b0f19;
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            padding: 0;
+            margin-bottom: 14px;
+            text-align: center;
+            overflow: hidden;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.35);
         }
 
         .pill-badge {
-            position: absolute; font-size: 10px; font-weight: 800; padding: 4px 10px; border-radius: 14px;
-            background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.15); z-index: 10; pointer-events: none; white-space: nowrap;
+            font-size: 10px;
+            font-weight: 800;
+            padding: 5px 10px;
+            border-radius: 14px;
+            background: rgba(15, 23, 42, 0.88);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            z-index: 10;
+            white-space: nowrap;
         }
 
         .btn-primary {
-            width: 100%; padding: 14px; background: linear-gradient(135deg, #ff9f0a, #ff7b00);
-            border: none; border-radius: 8px; color: #ffffff; font-size: 15px; font-weight: 900; cursor: pointer;
-            box-shadow: 0 4px 12px rgba(255, 159, 10, 0.25); margin-bottom: 14px;
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #ff9f0a, #ff7b00);
+            border: none;
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 900;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(255, 159, 10, 0.25);
+            margin-bottom: 14px;
         }
+
         .btn-secondary {
-            background-color: var(--input-bg); border: 1px solid var(--card-border); color: var(--text-main); border-radius: 6px; cursor: pointer;
+            background-color: var(--input-bg);
+            border: 1px solid var(--card-border);
+            color: var(--text-main);
+            border-radius: 6px;
+            cursor: pointer;
         }
-        .btn-green { background: linear-gradient(135deg, #30d158, #248a3d); box-shadow: 0 4px 12px rgba(48, 209, 88, 0.25); }
-        .btn-blue { background: linear-gradient(135deg, #0a84ff, #0056b3); box-shadow: 0 4px 12px rgba(10, 132, 255, 0.25); }
+
+        .btn-green {
+            background: linear-gradient(135deg, #30d158, #16a34a);
+            box-shadow: 0 4px 12px rgba(48, 209, 88, 0.25);
+        }
+
+        .btn-blue {
+            background: linear-gradient(135deg, #0a84ff, #0056b3);
+            box-shadow: 0 4px 12px rgba(10, 132, 255, 0.25);
+        }
 
         .result-card {
-            background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 10px;
-            padding: 14px; font-size: 13px; line-height: 1.5; margin-bottom: 14px;
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            padding: 14px;
+            font-size: 13px;
+            line-height: 1.5;
+            margin-bottom: 14px;
         }
+
         .result-header {
-            font-size: 13px; font-weight: 800; color: var(--primary-cyan); border-bottom: 1px solid var(--card-border);
-            padding-bottom: 6px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;
+            font-size: 13px;
+            font-weight: 800;
+            color: var(--primary-cyan);
+            border-bottom: 1px solid var(--card-border);
+            padding-bottom: 6px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .res-table-wrapper { width: 100%; overflow-x: auto; margin-top: 6px; -webkit-overflow-scrolling: touch; }
-        .res-table { width: 100%; border-collapse: collapse; font-size: 11px; line-height: 1.4; color: var(--text-main); }
-        .res-table th { padding: 6px 4px; border-bottom: 2px solid rgba(0, 229, 255, 0.35); color: var(--primary-cyan); font-weight: 800; font-size: 10px; text-transform: uppercase; }
-        .res-table td { padding: 6px 4px; border-bottom: 1px solid var(--card-border); vertical-align: middle; }
+        .res-table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            margin-top: 6px;
+        }
 
-        .result-row { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px dashed var(--card-border); }
-        .val-bold { font-weight: 800; color: var(--text-main); }
+        .res-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11.5px;
+            line-height: 1.4;
+        }
+
+        .res-table th {
+            padding: 6px 4px;
+            border-bottom: 2px solid var(--card-border);
+            color: var(--primary-cyan);
+            font-weight: 800;
+            font-size: 10px;
+            text-transform: uppercase;
+        }
+
+        .res-table td {
+            padding: 7px 4px;
+            border-bottom: 1px solid var(--card-border);
+            color: var(--text-main);
+            vertical-align: middle;
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px dashed var(--card-border);
+        }
+
+        .val-bold {
+            font-weight: 800;
+            color: var(--text-main);
+        }
 
         .giant-box {
-            background-color: var(--card-bg); border: 2px solid var(--primary-orange); border-radius: 12px; padding: 18px; text-align: center; margin-bottom: 14px;
+            background-color: var(--card-bg);
+            border: 2px solid var(--primary-orange);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            margin-bottom: 14px;
         }
-        .giant-number { font-size: 38px; font-weight: 900; color: var(--primary-orange); margin: 5px 0; }
 
-        .trompo-counter-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 10px; }
+        .giant-number {
+            font-size: 36px;
+            font-weight: 900;
+            color: var(--primary-orange);
+            margin: 4px 0;
+        }
+
+        .trompo-counter-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
         .btn-count {
-            padding: 16px 8px; background-color: var(--input-bg); border: 2px solid var(--card-border);
-            border-radius: 10px; color: var(--text-main); font-size: 14px; font-weight: 800; cursor: pointer; text-align: center;
+            padding: 16px 6px;
+            background-color: var(--input-bg);
+            border: 2px solid var(--card-border);
+            border-radius: 10px;
+            color: var(--text-main);
+            font-size: 13px;
+            font-weight: 900;
+            cursor: pointer;
+            text-align: center;
+            transition: transform 0.1s;
         }
-        .count-val { font-size: 22px; font-weight: 900; color: var(--primary-cyan); display: block; }
 
-        .chart-box { background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 10px; padding: 14px; text-align: center; margin-bottom: 14px; }
-        .attendance-table { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 8px; color: var(--text-main); }
-        .attendance-table th, .attendance-table td { border: 1px solid var(--card-border); padding: 6px 4px; text-align: center; }
-        .attendance-table th { background-color: var(--input-bg); color: var(--text-muted); font-weight: 800; }
-        .btn-att { padding: 4px 6px; border-radius: 4px; border: none; font-weight: 900; cursor: pointer; font-size: 11px; width: 28px; }
+        .btn-count:active {
+            transform: scale(0.96);
+            border-color: var(--primary-cyan);
+        }
+
+        .count-val {
+            font-size: 20px;
+            font-weight: 900;
+            color: var(--primary-cyan);
+            display: block;
+            margin-top: 4px;
+        }
+
+        .chart-box {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            padding: 14px;
+            text-align: center;
+            margin-bottom: 14px;
+        }
+
+        .attendance-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+            margin-top: 8px;
+        }
+
+        .attendance-table th, .attendance-table td {
+            border: 1px solid var(--card-border);
+            padding: 6px 4px;
+            text-align: center;
+        }
+
+        .attendance-table th {
+            background-color: var(--input-bg);
+            color: var(--text-muted);
+            font-weight: 800;
+        }
+
+        .btn-att {
+            padding: 4px 6px;
+            border-radius: 4px;
+            border: none;
+            font-weight: 900;
+            cursor: pointer;
+            font-size: 11px;
+            width: 28px;
+        }
+
         .att-P { background-color: #16a34a; color: white; }
         .att-M { background-color: #d97706; color: white; }
         .att-F { background-color: #dc2626; color: white; }
 
-        .badge { font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 12px; display: inline-block; }
+        .badge {
+            font-size: 10px;
+            font-weight: 800;
+            padding: 3px 8px;
+            border-radius: 12px;
+            display: inline-block;
+        }
+
         .badge-green { background: rgba(48,209,88,0.15); color: var(--primary-green); border: 1px solid rgba(48,209,88,0.3); }
         .badge-orange { background: rgba(255,159,10,0.15); color: var(--primary-orange); border: 1px solid rgba(255,159,10,0.3); }
+        .badge-red { background: rgba(255,69,58,0.15); color: var(--primary-red); border: 1px solid rgba(255,69,58,0.3); }
 
-        @keyframes spinGearRing { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .rotating-ring { animation: spinGearRing 10s linear infinite; transform-origin: 50px 50px; }
+        @keyframes spinGearRing {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .rotating-ring {
+            animation: spinGearRing 10s linear infinite;
+            transform-origin: 50px 50px;
+        }
     </style>
 </head>
 <body>
 
     <!-- Splash Screen -->
     <div id="splash-screen" onclick="dismissSplashNow()" ontouchstart="dismissSplashNow()">
-        <div style="position:relative; width:220px; height:220px; margin-bottom:16px;">
-            <svg viewBox="0 0 120 120" style="width:220px; height:220px; filter:drop-shadow(0 0 25px rgba(0,229,255,0.65));">
+        <div id="splash-bg-elements" style="position:relative; width:200px; height:200px; margin-bottom:14px; transition: filter 0.8s ease, opacity 0.8s ease;">
+            <svg viewBox="0 0 120 120" style="width:200px; height:200px; filter:drop-shadow(0 0 25px rgba(0,229,255,0.65));">
                 <defs>
                     <linearGradient id="splBldgGrad" x1="0%" y1="0%" x2="0%" y2="100%">
                         <stop offset="0%" stop-color="#00e5ff" />
@@ -228,26 +513,27 @@
                 <path d="M44,48 L60,66 L76,48 M60,66 L60,88" stroke="url(#splYGrad)" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round" fill="none" />
             </svg>
         </div>
-        <div>
-            <div style="font-size:28px; font-weight:900; letter-spacing:3px; color:#ffffff; text-shadow:0 0 20px rgba(0,229,255,0.85);">CONSTRUYE - PRO</div>
-            <div style="font-size:11px; font-weight:800; color:#ffd700; margin-top:8px; letter-spacing:2px;">SELLO DE INGENIERÍA Y EDIFICACIÓN</div>
+        <div id="splash-text-block" style="text-align:center;">
+            <div style="font-size:26px; font-weight:900; letter-spacing:3px; color:#ffffff; text-shadow:0 0 20px rgba(0,229,255,0.85);">
+                CONSTRUYE.PRO
+            </div>
+            <div style="font-size:11px; font-weight:800; color:#ffd700; margin-top:6px; letter-spacing:1.5px;">INGENIERÍA RNE & CONTROL DE OBRA</div>
         </div>
     </div>
 
     <div id="app-container">
-        <!-- Top Header -->
         <header>
             <div class="brand-header">
-                <div class="small-seal" style="width:38px; height:38px; display:flex; align-items:center; justify-content:center;">
-                    <svg viewBox="0 0 100 100" style="width:38px; height:38px;">
-                        <circle cx="50" cy="50" r="42" fill="rgba(15,23,42,0.9)" stroke="#00e5ff" stroke-width="2.5" />
+                <div class="small-seal" style="width:36px; height:36px; display:flex; align-items:center; justify-content:center;">
+                    <svg viewBox="0 0 100 100" style="width:36px; height:36px;">
+                        <circle cx="50" cy="50" r="42" fill="#0f172a" stroke="#00e5ff" stroke-width="2.5" />
                         <path d="M32 30 L50 52 L68 30 M50 52 L50 72" stroke="#ffd700" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none" />
                         <circle cx="50" cy="50" r="47" fill="none" stroke="#00e5ff" stroke-width="1.5" stroke-dasharray="6 3" class="rotating-ring" />
                     </svg>
                 </div>
                 <div>
                     <div class="brand-title">CONSTRUYE.PRO</div>
-                    <span class="badge badge-green" id="region_label">🇵🇪 Perú</span>
+                    <span class="badge badge-green" id="region_label">🇵🇪 RNE / CAPECO</span>
                 </div>
             </div>
             <div class="header-controls">
@@ -258,28 +544,39 @@
                     <option value="CL">🇨🇱 Chile</option>
                     <option value="AR">🇦🇷 Arg</option>
                 </select>
-                <button class="btn-toggle-theme" onclick="toggleTheme()">☀️/🌙</button>
+                <button class="btn-toggle-theme" onclick="toggleTheme()" title="Modo Sol / Noche">☀️/🌙</button>
             </div>
         </header>
 
-        <!-- Viewport Scroll Container -->
         <div class="main-viewport" id="main_viewport">
 
             <!-- TAB 1: CÁLCULOS & ESQUEMAS 3D -->
             <div id="tab1" class="tab-pane active">
                 <div class="schematic-container">
-                    <div style="position:absolute; top:12px; right:12px; z-index:20; display:flex; gap:6px;">
-                        <button class="pill-badge" style="position:static; margin:0; cursor:pointer; background:rgba(0,229,255,0.22); color:#00e5ff; border:1px solid #00e5ff; font-weight:800; padding:4px 10px;" onclick="toggleRayosXColumnas()" title="Modo Rayos X (Acero)">👁️ Rayos X</button>
-                        <button class="pill-badge" style="position:static; margin:0; cursor:pointer; background:rgba(0,229,255,0.22); color:#00e5ff; border:1px solid #00e5ff; font-weight:800; padding:4px 10px;" onclick="reset3DCamera()">🎯 Centrar</button>
+                    <!-- Botones Superiores del Visor 3D -->
+                    <div style="position:absolute; top:10px; left:10px; z-index:20;">
+                        <button id="btn_xray_rebar" class="pill-badge" style="cursor:pointer; background:rgba(255,159,10,0.22); color:#ff9f0a; border:1px solid #ff9f0a; font-weight:900;" onclick="toggleXrayRebar()">
+                            🦴 Ver Acero 3D: ON
+                        </button>
                     </div>
-                    <div style="position:absolute; bottom:12px; right:12px; z-index:20;">
-                        <div class="pill-badge" id="pill_tr" style="position:static; margin:0; background:rgba(15,23,42,0.85); color:#00e5ff; border:1px solid rgba(0,229,255,0.4); font-weight:800; padding:4px 10px;">📦 2.520 m³</div>
+                    <div style="position:absolute; top:10px; right:10px; z-index:20;">
+                        <button id="btn_reset_3d_cam" class="pill-badge" style="cursor:pointer; background:rgba(0,229,255,0.22); color:#00e5ff; border:1px solid #00e5ff; font-weight:800;" onclick="reset3DCamera()">
+                            🎯 Centrar 360°
+                        </button>
                     </div>
 
-                    <canvas id="canvas_3d_viewport" width="360" height="200" style="width:100%; height:200px; display:block; cursor:grab; border-radius:12px;"></canvas>
+                    <!-- Etiqueta Inferior Derecha -->
+                    <div style="position:absolute; bottom:10px; right:10px; z-index:20; pointer-events:none;">
+                        <div class="pill-badge" id="pill_tr" style="color:#00e5ff; border-color:rgba(0,229,255,0.4);">📦 2.52 m³</div>
+                    </div>
+                    <div style="position:absolute; bottom:10px; left:10px; z-index:20; pointer-events:none;">
+                        <div class="pill-badge" id="pill_bl" style="color:#30d158; border-color:rgba(48,209,88,0.4);">🛒 Compra: 25 Bolsas</div>
+                    </div>
+
+                    <canvas id="canvas_3d_viewport" width="380" height="210" style="width:100%; height:210px; display:block; cursor:grab;"></canvas>
                 </div>
 
-                <div class="segmented-control" style="grid-template-columns: repeat(5, 1fr);">
+                <div class="segmented-control">
                     <button class="segment-btn active" onclick="switchCalc('calc_concreto', this)">🏗️ Concreto</button>
                     <button class="segment-btn" onclick="switchCalc('calc_muros', this)">🧱 Muros</button>
                     <button class="segment-btn" onclick="switchCalc('calc_tecnopor', this)">🧇 Tecnopor</button>
@@ -287,219 +584,450 @@
                     <button class="segment-btn" onclick="switchCalc('calc_tarrajeo', this)">🖌️ Tarrajeo</button>
                 </div>
 
-                <!-- SUB-CALC 1: CONCRETO -->
+                <!-- SUB-CALC 1: CONCRETO (LOSA Y COLUMNA) -->
                 <div id="calc_concreto" class="calc-subpane">
                     <div class="form-group">
-                        <label id="lbl_tipo_vaciado">1. Dosificación de Concreto:</label>
+                        <label id="lbl_tipo_vaciado">1. Dosificación de Concreto (RNE E.060 / CAPECO):</label>
                         <select id="tipo_vaciado" onchange="renderSchematic(); updateInfoBanner();">
-                            <option value="210">Losa / Vigas / Columnas (f&#39;c 210) [1 : 2 : 2]</option>
-                            <option value="175_p">Pavimentos / Muros (f&#39;c 175) [1 : 2.5 : 2.5]</option>
-                            <option value="140">Solados / Sub-bases (f&#39;c 140) [1 : 6]</option>
-                            <option value="ciclopeo">Cimentación Ciclópea (1:10 + 30% PG)</option>
-                            <option value="manual">Personalizada (Ingreso Manual por 1 Bolsa)</option>
+                            <option value="210">Estructural Losas / Vigas / Columnas (f'c 210) [1 : 2 : 2]</option>
+                            <option value="175_p">Veredas / Falsopiso / Muros (f'c 175) [1 : 2.5 : 2.5]</option>
+                            <option value="140">Solados de Cimentación (f'c 140) [1 : 6]</option>
+                            <option value="ciclopeo">Cimiento Corrido Ciclópeo (1:10 + 30% PG)</option>
+                            <option value="manual">🛠️ Personalizada (Ingreso Libre por 1 Bolsa)</option>
                         </select>
                     </div>
 
-                    <div id="manual_inputs" style="display:none; padding:12px; background:rgba(0,229,255,0.06); border:1px solid rgba(0,229,255,0.3); border-radius:10px; margin-bottom:12px;">
-                        <div style="font-size:11px; font-weight:800; color:var(--primary-cyan); margin-bottom:8px;">📐 DOSIFICACIÓN LIBRE POR 1 BOLSA (42.5 kg):</div>
-                        <div class="grid-3" style="margin-bottom:8px;">
-                            <div><label>Cemento:</label><input type="text" value="1 Bolsa" disabled style="opacity:0.85;"></div>
-                            <div><label>Arena (Baldes 18L):</label><input type="number" id="m_arena_baldes" value="4.0" step="0.5" oninput="updateRendimientoConcreto(); renderSchematic();"></div>
-                            <div><label>Piedra (Baldes 18L):</label><input type="number" id="m_piedra_baldes" value="3.0" step="0.5" oninput="updateRendimientoConcreto(); renderSchematic();"></div>
+                    <div id="manual_inputs" style="display:none; padding:12px; background:var(--row-highlight); border:1px solid var(--primary-cyan); border-radius:10px; margin-bottom:12px;">
+                        <div style="font-size:11px; font-weight:800; color:var(--primary-cyan); margin-bottom:8px;">
+                            📐 DOSIFICACIÓN EN CAMPO POR 1 BOLSA DE CEMENTO (42.5 kg):
                         </div>
+                        <div class="grid-3" style="margin-bottom:8px;">
+                            <div>
+                                <label>Arena (Baldes 18L):</label>
+                                <input type="number" id="m_arena_baldes" value="3.5" step="0.5" min="0" oninput="updateRendimientoConcreto(); renderSchematic();">
+                            </div>
+                            <div>
+                                <label>Piedra (Baldes 18L):</label>
+                                <input type="number" id="m_piedra_baldes" value="3.5" step="0.5" min="0" oninput="updateRendimientoConcreto(); renderSchematic();">
+                            </div>
+                            <div>
+                                <label>Agua (Baldes 18L):</label>
+                                <input type="number" id="m_agua_baldes" value="1.2" step="0.1" min="0" oninput="updateRendimientoConcreto(); renderSchematic();">
+                            </div>
+                        </div>
+                        <input type="text" id="m_rendimiento_calculated" value="Rendimiento: ~0.103 m³ / bolsa" disabled style="font-size:12px; color:var(--primary-cyan); text-align:center;">
                     </div>
 
                     <div class="form-group">
-                        <label>2. Tipo de Elemento / Estructura:</label>
+                        <label>2. Elemento Estructural a Vaciar:</label>
                         <select id="forma_concreto" onchange="toggleFormaConcreto();">
-                            <option value="losa" selected>🔲 Losa / Pavimento / Base</option>
-                            <option value="columna">🏛️ Columna / Columneta Vertical (Incluye Acero RNE E.060)</option>
+                            <option value="losa" selected>🔲 Losa Maciza / Piso / Zapata (Largo m × Ancho m × Espesor cm)</option>
+                            <option value="columna">🏛️ Columna / Columneta (Altura m × Largo cm × Ancho cm + Acero E.060)</option>
                         </select>
                     </div>
 
+                    <!-- OPCIÓN A: LOSA -->
                     <div id="box_forma_losa" class="form-group">
-                        <label>3. Dimensiones de Losa:</label>
+                        <label>3. Dimensiones de Losa / Zapata:</label>
                         <div class="grid-3">
-                            <div><label>Largo (m):</label><input type="number" id="largo" value="5.0" step="0.1" oninput="renderSchematic()"></div>
-                            <div><label>Ancho (m):</label><input type="number" id="ancho" value="4.0" step="0.1" oninput="renderSchematic()"></div>
-                            <div><label>Espesor (cm):</label><input type="number" id="espesor" value="12" step="1" oninput="renderSchematic()"></div>
+                            <div><label>Largo (m):</label><input type="number" id="largo" value="5.0" step="0.1" min="0.1" oninput="calcularConcreto(); renderSchematic();"></div>
+                            <div><label>Ancho (m):</label><input type="number" id="ancho" value="4.0" step="0.1" min="0.1" oninput="calcularConcreto(); renderSchematic();"></div>
+                            <div><label>Espesor (cm):</label><input type="number" id="espesor" value="12" step="1" min="1" oninput="calcularConcreto(); renderSchematic();"></div>
                         </div>
                     </div>
 
+                    <!-- OPCIÓN B: COLUMNA + ACERO E.060 -->
                     <div id="box_forma_columna" class="form-group" style="display:none;">
-                        <label>3. Dimensiones y Acero de Columna:</label>
-                        <div class="grid-3">
-                            <div><label>Altura H (m):</label><input type="number" id="col_altura" value="3.0" step="0.1" oninput="renderSchematic()"></div>
-                            <div><label>Lado A (cm):</label><input type="number" id="col_largo" value="30" step="1" oninput="renderSchematic()"></div>
-                            <div><label>Lado B (cm):</label><input type="number" id="col_ancho" value="30" step="1" oninput="renderSchematic()"></div>
+                        <label>3. Dimensiones de Columna Rectangular:</label>
+                        <div class="grid-3" style="margin-bottom:8px;">
+                            <div><label>Altura H (m):</label><input type="number" id="col_altura" value="3.0" step="0.1" min="0.3" oninput="calcularConcreto(); renderSchematic();"></div>
+                            <div><label>Largo Lado A (cm):</label><input type="number" id="col_largo" value="30" step="1" min="15" oninput="calcularConcreto(); renderSchematic();"></div>
+                            <div><label>Ancho Lado B (cm):</label><input type="number" id="col_ancho" value="25" step="1" min="15" oninput="calcularConcreto(); renderSchematic();"></div>
                         </div>
-                        <div class="grid-2" style="margin-top:8px;">
-                            <div><label>N° Columnas:</label><input type="number" id="col_cantidad" value="1" step="1" oninput="renderSchematic()"></div>
+                        <div class="grid-3">
                             <div>
-                                <label>Varillas Longit. (Acero):</label>
-                                <select id="col_acero_diam">
-                                    <option value="3/8">4 varillas de 3/8"</option>
-                                    <option value="1/2" selected>4 varillas de 1/2"</option>
-                                    <option value="5/8">4 varillas de 5/8"</option>
+                                <label>Cant. Columnas:</label>
+                                <input type="number" id="col_cantidad" value="1" step="1" min="1" oninput="calcularConcreto(); renderSchematic();">
+                            </div>
+                            <div>
+                                <label>Fierro Principal:</label>
+                                <select id="col_rebar_type" onchange="calcularConcreto(); renderSchematic();">
+                                    <option value="4_1/2">4 Ø 1/2" (Confinam.)</option>
+                                    <option value="6_1/2" selected>6 Ø 1/2" (Pórtico)</option>
+                                    <option value="4_5/8">4 Ø 5/8" + 2 Ø 1/2"</option>
+                                    <option value="8_5/8">8 Ø 5/8" (Principal)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label>Sistema RNE:</label>
+                                <select id="col_sistema_rne" onchange="calcularConcreto(); renderSchematic();">
+                                    <option value="confinada">E.070 Confinada</option>
+                                    <option value="aporticada" selected>E.060 Aporticada</option>
                                 </select>
                             </div>
                         </div>
                     </div>
 
-                    <button class="btn-primary btn-green" onclick="calcularConcreto(); calcularPresupuesto(); renderSchematic(); showToast('✅ CÓMPUTO RECALCULADO');">🧮 CALCULAR CÓMPUTO TÉCNICO</button>
+                    <button class="btn-primary btn-green" onclick="calcularConcreto(); calcularPresupuesto(); renderSchematic(); showToast('✅ CÓMPUTO ESTRUCTURAL ACTUALIZADO');">🧮 CALCULAR CÓMPUTO Y DOSIFICACIÓN</button>
 
-                    <div class="result-card" id="res_concreto">
-                        <div class="result-header"><span>📊 RESULTADOS TÉCNICOS</span><span class="badge badge-green">RNE E.060</span></div>
-                        <div style="text-align:center; color:var(--text-muted); padding:10px;">Ingresa las medidas y presiona Calcular.</div>
-                    </div>
+                    <div class="result-card" id="res_concreto"></div>
                 </div>
 
                 <!-- SUB-CALC 2: MUROS -->
                 <div id="calc_muros" class="calc-subpane" style="display:none;">
                     <div class="form-group">
-                        <label>1. Tipo de Ladrillo:</label>
+                        <label>1. Tipo de Ladrillo / Bloque (RNE E.070):</label>
                         <select id="tipo_ladrillo" onchange="toggleTipoLadrillo();">
-                            <option value="kk_soga" selected>King Kong 18H (Soga)</option>
-                            <option value="kk_cabeza">King Kong 18H (Cabeza)</option>
-                            <option value="bloque_12">Bloque Concreto Soga</option>
-                            <option value="custom">🛠️ Personalizado (Medidas libres)</option>
+                            <option value="kk_soga" selected>King Kong 18H (Asentado Soga - 24×12×9 cm)</option>
+                            <option value="kk_cabeza">King Kong 18H (Asentado Cabeza - 24×12×9 cm)</option>
+                            <option value="pandereta">Pandereta Acanalado Tabiquería (23×11×9 cm)</option>
+                            <option value="bloque_12">Bloque Concreto Vibrado (28.5×12×18 cm)</option>
+                            <option value="custom">🛠️ Personalizado (Medidas Libres)</option>
                         </select>
                     </div>
 
-                    <div id="box_ladrillo_custom" style="display:none; padding:12px; background:rgba(0,229,255,0.06); border:1px solid rgba(0,229,255,0.3); border-radius:10px; margin-bottom:12px;">
+                    <div id="box_ladrillo_custom" style="display:none; padding:12px; background:var(--row-highlight); border:1px solid var(--primary-cyan); border-radius:10px; margin-bottom:12px;">
                         <div class="grid-3" style="margin-bottom:8px;">
-                            <div><label>Largo (cm):</label><input type="number" id="lad_largo" value="24" oninput="renderSchematic()"></div>
-                            <div><label>Ancho (cm):</label><input type="number" id="lad_ancho" value="12" oninput="renderSchematic()"></div>
-                            <div><label>Alto (cm):</label><input type="number" id="lad_alto" value="9" oninput="renderSchematic()"></div>
+                            <div><label>Largo (cm):</label><input type="number" id="lad_largo" value="24.0" step="0.5" oninput="calcularMuros(); renderSchematic();"></div>
+                            <div><label>Ancho (cm):</label><input type="number" id="lad_ancho" value="12.0" step="0.5" oninput="calcularMuros(); renderSchematic();"></div>
+                            <div><label>Alto (cm):</label><input type="number" id="lad_alto" value="9.0" step="0.5" oninput="calcularMuros(); renderSchematic();"></div>
                         </div>
+                        <select id="lad_asentado" onchange="calcularMuros(); renderSchematic();">
+                            <option value="soga" selected>Asentado de Soga (Espesor = Ancho)</option>
+                            <option value="cabeza">Asentado de Cabeza (Espesor = Largo)</option>
+                            <option value="canto">Asentado de Canto (Espesor = Alto)</option>
+                        </select>
                     </div>
 
                     <div class="form-group grid-2">
-                        <div><label>Largo Muro (m):</label><input type="number" id="muro_largo" value="6.0" oninput="renderSchematic()"></div>
-                        <div><label>Alto Muro (m):</label><input type="number" id="muro_alto" value="2.6" oninput="renderSchematic()"></div>
+                        <div><label>2. Largo Muro (m):</label><input type="number" id="muro_largo" value="6.0" step="0.1" oninput="calcularMuros(); renderSchematic();"></div>
+                        <div><label>Alto Muro (m):</label><input type="number" id="muro_alto" value="2.6" step="0.1" oninput="calcularMuros(); renderSchematic();"></div>
                     </div>
 
-                    <button class="btn-primary btn-green" onclick="calcularMuros(); calcularPresupuesto(); renderSchematic(); showToast('✅ MURO RECALCULADO');">🧱 CALCULAR MURO</button>
+                    <div class="form-group grid-3">
+                        <div><label>Junta (cm):</label><input type="number" id="mortero_junta" value="1.5" step="0.1" oninput="calcularMuros(); renderSchematic();"></div>
+                        <div>
+                            <label>Merma (%):</label>
+                            <select id="merma_ladrillo" onchange="calcularMuros(); renderSchematic();">
+                                <option value="1.05" selected>5% (Normal)</option>
+                                <option value="1.08">8% (Cortes)</option>
+                                <option value="1.10">10% (Alto)</option>
+                            </select>
+                        </div>
+                        <div><label>Baldes Arena/Bls:</label><input type="number" id="mortero_baldes_arena" value="4.0" step="0.5" oninput="calcularMuros(); renderSchematic();"></div>
+                    </div>
+
+                    <button class="btn-primary btn-green" onclick="calcularMuros(); calcularPresupuesto(); renderSchematic(); showToast('✅ CÓMPUTO DE MURO ACTUALIZADO');">🧱 CALCULAR MATERIALES DE MURO</button>
                     <div class="result-card" id="res_muros"></div>
                 </div>
 
-                <!-- SUB-CALC 3: TECNOPOR -->
+                <!-- SUB-CALC 3: LOSA ALIGERADA -->
                 <div id="calc_tecnopor" class="calc-subpane" style="display:none;">
                     <div class="form-group grid-2">
-                        <div><label>L1 (m):</label><input type="number" id="tec_largo" value="5.0" oninput="renderSchematic()"></div>
-                        <div><label>L2 (m):</label><input type="number" id="tec_ancho" value="4.0" oninput="renderSchematic()"></div>
+                        <div><label>Luz L1 (m):</label><input type="number" id="tec_largo" value="5.0" step="0.1" oninput="calcularTecnopor(); renderSchematic();"></div>
+                        <div><label>Ancho L2 (m):</label><input type="number" id="tec_ancho" value="4.0" step="0.1" oninput="calcularTecnopor(); renderSchematic();"></div>
                     </div>
-                    <button class="btn-primary btn-green" onclick="calcularTecnopor(); calcularPresupuesto(); renderSchematic(); showToast('✅ LOSA RECALCULADA');">🧇 CALCULAR LOSA</button>
+                    <div class="form-group">
+                        <label>Dirección de Viguetas:</label>
+                        <select id="tec_dir" onchange="calcularTecnopor(); renderSchematic();">
+                            <option value="h">Paralelo a L1 (Luz menor recomendada)</option>
+                            <option value="v">Paralelo a L2</option>
+                        </select>
+                    </div>
+                    <div class="form-group grid-2">
+                        <div>
+                            <label>Peralte de Losa (RNE E.060):</label>
+                            <select id="tec_peralte" onchange="calcularTecnopor(); renderSchematic();">
+                                <option value="17">17 cm (Luz hasta 4.0m)</option>
+                                <option value="20" selected>20 cm (Luz hasta 5.0m)</option>
+                                <option value="25">25 cm (Luz hasta 6.0m)</option>
+                                <option value="30">30 cm (Luz > 6.0m)</option>
+                            </select>
+                        </div>
+                        <div><label>Largo Bloque EPS (m):</label><input type="number" id="tec_bloque_l" value="3.00" step="0.1" oninput="calcularTecnopor(); renderSchematic();"></div>
+                    </div>
+                    <button class="btn-primary btn-green" onclick="calcularTecnopor(); calcularPresupuesto(); renderSchematic(); showToast('✅ LOSA ALIGERADA RECALCULADA');">🧇 CALCULAR LOSA ALIGERADA</button>
                     <div id="res_tecnopor" class="result-card"></div>
                 </div>
 
                 <!-- SUB-CALC 4: ESCALERA -->
                 <div id="calc_escalera" class="calc-subpane" style="display:none;">
                     <div class="form-group grid-2">
-                        <div><label>Ancho (m):</label><input type="number" id="esc_ancho" value="1.00" oninput="renderSchematic()"></div>
-                        <div><label>N° Contrapasos:</label><input type="number" id="esc_num_cp" value="16" oninput="renderSchematic()"></div>
+                        <div>
+                            <label>Configuración:</label>
+                            <select id="esc_tipo" onchange="toggleEscaleraDescanso(); renderSchematic();">
+                                <option value="recta">Tramo Recto Simple</option>
+                                <option value="descanso" selected>2 Tramos con Descanso en U</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label>Ancho Útil Tramo (m):</label>
+                            <input type="number" id="esc_ancho" value="1.00" step="0.05" oninput="calcularEscalera(); renderSchematic();">
+                        </div>
                     </div>
+                    <div class="form-group grid-3">
+                        <div><label>N° Contrapasos:</label><input type="number" id="esc_num_cp" value="16" step="1" min="2" max="30" oninput="updateEscaleraLargoPaso('paso'); calcularEscalera(); renderSchematic();"></div>
+                        <div><label>Contrapaso h (cm):</label><input type="number" id="esc_h" value="17.5" step="0.1" oninput="calcularEscalera(); renderSchematic();"></div>
+                        <div><label>Paso p (cm):</label><input type="number" id="esc_p" value="25.0" step="0.5" oninput="updateEscaleraLargoPaso('paso'); calcularEscalera(); renderSchematic();"></div>
+                    </div>
+                    <div class="form-group grid-2">
+                        <div><label>Garganta (cm):</label><input type="number" id="esc_garganta" value="15" step="1" oninput="calcularEscalera(); renderSchematic();"></div>
+                        <div><label>Largo Proyectado (m):</label><input type="number" id="esc_largo" value="2.75" step="0.1" oninput="updateEscaleraLargoPaso('largo'); calcularEscalera(); renderSchematic();"></div>
+                    </div>
+                    <div class="form-group grid-2" id="box_esc_desc_largo">
+                        <div><label>Largo Descanso (m):</label><input type="number" id="esc_desc_largo" value="1.00" step="0.05" oninput="updateEscaleraLargoPaso('paso'); calcularEscalera(); renderSchematic();"></div>
+                        <div><label>Ancho Descanso (m):</label><input type="number" id="esc_desc_ancho" value="2.10" step="0.05" oninput="calcularEscalera(); renderSchematic();"></div>
+                    </div>
+                    <input type="hidden" id="esc_desc_esp" value="15">
+                    <input type="hidden" id="esc_viga_arr" value="si">
+                    <input type="hidden" id="esc_viga_lleg" value="si">
+
                     <button class="btn-primary btn-green" onclick="calcularEscalera(); calcularPresupuesto(); renderSchematic(); showToast('✅ ESCALERA RECALCULADA');">🪜 CALCULAR ESCALERA</button>
                     <div id="res_escalera" class="result-card"></div>
                 </div>
 
                 <!-- SUB-CALC 5: TARRAJEO -->
                 <div id="calc_tarrajeo" class="calc-subpane" style="display:none;">
-                    <div class="form-group">
-                        <label>Área (m²):</label><input type="number" id="tar_area" value="25.0" oninput="renderSchematic()">
+                    <div class="form-group grid-2">
+                        <div>
+                            <label>Tipo de Superficie:</label>
+                            <select id="tar_tipo" onchange="calcularTarrajeo(); renderSchematic();">
+                                <option value="muro_int">Muro Interior (e=1.5 cm) [1:4]</option>
+                                <option value="muro_ext">Muro Exterior (e=1.5 cm) [1:3]</option>
+                                <option value="cielorraso">Cielorraso Techo (e=1.0 cm) [1:3]</option>
+                            </select>
+                        </div>
+                        <div><label>Área a Tarrajear (m²):</label><input type="number" id="tar_area" value="25.0" step="1.0" oninput="calcularTarrajeo(); renderSchematic();"></div>
                     </div>
-                    <button class="btn-primary btn-green" onclick="calcularTarrajeo(); calcularPresupuesto(); renderSchematic(); showToast('✅ TARRAJEO RECALCULADO');">🖌️ CALCULAR TARRAJEO</button>
+                    <div class="form-group grid-2">
+                        <div><label>Baldes Arena Fina / Bolsa:</label><input type="number" id="tar_baldes_arena" value="4.0" step="0.5" oninput="calcularTarrajeo(); renderSchematic();"></div>
+                        <div><label>Merma Mortero (%):</label><input type="number" id="tar_merma" value="10" step="1" oninput="calcularTarrajeo(); renderSchematic();"></div>
+                    </div>
+                    <button class="btn-primary btn-green" onclick="calcularTarrajeo(); calcularPresupuesto(); renderSchematic(); showToast('✅ TARRAJEO RECALCULADO');">🖌️ CALCULAR TARRAJEO Y PINTURA</button>
                     <div id="res_tarrajeo" class="result-card"></div>
                 </div>
-
             </div>
 
-            <!-- TAB 2: MODO OBRA -->
+            <!-- TAB 2: MODO OBRA & ASISTENTE CON VOZ -->
             <div id="tab2" class="tab-pane">
                 <div class="giant-box">
-                    <span class="badge badge-orange">📢 MODO OBRA DE ALTA VISIBILIDAD</span>
-                    <div class="giant-number" id="giant_cemento">0 BOLSAS CEMENTO</div>
-                    <div style="font-weight:800; color:var(--text-muted);" id="giant_volumen">0.00 m³ Concreto</div>
-                    <div style="background:rgba(0,229,255,0.08); border:1px solid rgba(0,229,255,0.3); border-radius:8px; padding:8px; margin-top:8px; font-size:12px; text-align:left;">
-                        <div style="font-weight:800; color:var(--primary-cyan);">📋 RECETA POR TROMPO:</div>
-                        <div id="trompo_receta_text" style="color:#ffffff; font-weight:700;">1 Bolsa Cemento + 3.5 Baldes Arena + 3.5 Baldes Piedra</div>
+                    <span class="badge badge-orange">📢 MODO OBRA ALTO CONTRASTE SOLAR</span>
+                    <div class="giant-number" id="giant_cemento">25 BOLSAS</div>
+                    <div style="font-size:12px; font-weight:800; color:var(--primary-cyan); margin-bottom:4px;" id="giant_exact_sub">Cálculo técnico exacto: 24.52 bolsas</div>
+                    <div style="font-weight:800; color:var(--text-muted); margin-bottom:6px; font-size:12px;" id="giant_volumen">2.52 m³ Concreto Estructural</div>
+                    <div style="background:var(--row-highlight); border:1px solid var(--primary-cyan); border-radius:8px; padding:10px; margin-top:8px; font-size:12px; text-align:left;">
+                        <div style="font-weight:900; color:var(--primary-cyan); margin-bottom:3px;">📋 DOSIFICACIÓN POR CADA 1 BOLSA DE CEMENTO:</div>
+                        <div id="trompo_receta_text" style="color:var(--text-main); font-weight:800;">1 Bolsa Cemento + 3.1 Baldes Arena + 3.1 Baldes Piedra + 20L Agua</div>
                     </div>
                 </div>
 
                 <div class="result-card">
                     <div class="result-header">
-                        <span>🔊 ASISTENTE DE TROMPO</span>
-                        <button class="badge badge-green" id="btn_audit_toggle" onclick="toggleAuditableMode()">🟢 AUDITABLE</button>
+                        <span>🔊 CONTADOR DE TROMPO (VOZ + VIBRACIÓN)</span>
+                        <button class="badge badge-green" id="btn_voice_toggle" onclick="toggleVoiceAssistant()" style="cursor:pointer;">🔊 VOZ: ACTIVA</button>
                     </div>
+                    <p style="font-size:11.5px; color:var(--text-muted); margin-bottom:10px;">Toca cada botón al vaciar el balde de 18L al trompo. El celular cantará la cuenta en voz alta:</p>
+                    
                     <div class="trompo-counter-grid">
-                        <button class="btn-count" onclick="countBucket('arena')">🪣 ARENA<span class="count-val" id="cnt_arena">0</span></button>
-                        <button class="btn-count" onclick="countBucket('piedra')">🪨 PIEDRA<span class="count-val" id="cnt_piedra">0</span></button>
-                        <button class="btn-count" onclick="countBucket('agua')">💧 AGUA<span class="count-val" id="cnt_agua">0</span></button>
+                        <button class="btn-count" onclick="countBucket('arena')">
+                            🪣 ARENA
+                            <span class="count-val" id="cnt_arena">0</span>
+                        </button>
+                        <button class="btn-count" onclick="countBucket('piedra')">
+                            🪨 PIEDRA
+                            <span class="count-val" id="cnt_piedra">0</span>
+                        </button>
+                        <button class="btn-count" onclick="countBucket('agua')">
+                            💧 AGUA
+                            <span class="count-val" id="cnt_agua">0</span>
+                        </button>
                     </div>
-                    <button class="btn-primary" style="margin-top:12px;" onclick="registrarTandaCompletada()">📋 REGISTRAR TANDA (1 BOLSA)</button>
-                    <button class="btn-primary" style="background:#dc2626; margin-bottom:0;" onclick="resetTrompo()">🔄 REINICIAR</button>
+
+                    <button class="btn-primary btn-green" style="margin-top:12px;" onclick="registrarTandaCompletada()">✅ REGISTRAR TANDA VACIADA (1 BOLSA)</button>
+                    <button class="btn-primary" style="background:#dc2626; margin-bottom:0; padding:10px; font-size:12px;" onclick="resetTrompo()">🔄 REINICIAR CONTADOR DE BALDES</button>
                 </div>
 
                 <div class="result-card">
-                    <div class="result-header"><span>📝 BITÁCORA DE CEMENTO</span><span class="badge badge-orange" id="audit_total_bags">0 Bolsas HOY</span></div>
-                    <div id="audit_list_container"><div style="text-align:center; color:var(--text-muted); padding:10px;">No hay tandas registradas.</div></div>
+                    <div class="result-header">
+                        <span>📝 BITÁCORA AUDITABLE DE TANDAS HOY</span>
+                        <span class="badge badge-orange" id="audit_total_bags">0 Bolsas HOY</span>
+                    </div>
+                    <div id="audit_list_container"></div>
                 </div>
             </div>
 
-            <!-- TAB 3: PRECIOS -->
+            <!-- TAB 3: PRECIOS & PRESUPUESTO -->
             <div id="tab3" class="tab-pane">
                 <div class="form-group grid-3">
-                    <div><label>S/ Cemento:</label><input type="number" id="p_cemento" value="28.50"></div>
-                    <div><label>S/ Arena:</label><input type="number" id="p_arena" value="55.00"></div>
-                    <div><label>S/ Piedra:</label><input type="number" id="p_piedra" value="65.00"></div>
+                    <div><label>S/ Bolsa Cem.:</label><input type="number" id="p_cemento" value="28.50" step="0.5" oninput="calcularPresupuesto()"></div>
+                    <div><label>S/ m³ Arena:</label><input type="number" id="p_arena" value="55.00" step="1" oninput="calcularPresupuesto()"></div>
+                    <div><label>S/ m³ Piedra:</label><input type="number" id="p_piedra" value="65.00" step="1" oninput="calcularPresupuesto()"></div>
                 </div>
                 <div class="form-group grid-2">
-                    <div><label>S/ Acero (Varilla):</label><input type="number" id="p_acero_var" value="34.00"></div>
-                    <div><label>S/ Millar Ladrillo:</label><input type="number" id="p_ladrillo" value="850.00"></div>
+                    <div><label>S/ Varilla 1/2":</label><input type="number" id="p_acero" value="36.00" step="1" oninput="calcularPresupuesto()"></div>
+                    <div><label>S/ Millar Ladrillo:</label><input type="number" id="p_ladrillo" value="850.00" step="10" oninput="calcularPresupuesto()"></div>
                 </div>
-                <button class="btn-primary btn-green" onclick="calcularPresupuesto(); showToast('✅ PRESUPUESTO ACTUALIZADO');">💵 CALCULAR PRESUPUESTO</button>
 
-                <div class="chart-box"><canvas id="chartCanvas" width="280" height="150"></canvas></div>
+                <button class="btn-primary btn-green" onclick="calcularPresupuesto(); showToast('✅ PRESUPUESTO ACTUALIZADO');">💵 ACTUALIZAR PRESUPUESTO & GRÁFICO</button>
+
+                <div class="chart-box">
+                    <div style="color:var(--primary-cyan); font-weight:800; font-size:11px; margin-bottom:8px;">📊 INCIDENCIA ECONÓMICA DE INSUMOS</div>
+                    <canvas id="chartCanvas" width="280" height="145"></canvas>
+                </div>
+
                 <div class="result-card" id="res_presupuesto"></div>
-                <button class="btn-primary btn-blue" onclick="exportarWhatsApp()">📲 EXPORTAR A WHATSAPP</button>
+                <button class="btn-primary btn-blue" onclick="exportarWhatsApp()">📲 ENVIAR PROFORMA DE COMPRA POR WHATSAPP</button>
             </div>
 
-            <!-- TAB 4: HERRAMIENTAS -->
+            <!-- TAB 4: HERRAMIENTAS & ALMACÉN -->
             <div id="tab4" class="tab-pane">
                 <div class="grid-2" style="margin-bottom:12px;">
                     <div style="background:rgba(48,209,88,0.12); border:1px solid #30d158; border-radius:10px; padding:12px; text-align:center;">
-                        <div style="font-size:10px; font-weight:800; color:#30d158;">🟢 EN USO HOY</div>
-                        <div style="font-size:24px; font-weight:900; color:#ffffff;" id="tool_cnt_in_use">0</div>
+                        <div style="font-size:10px; font-weight:800; color:var(--primary-green);">🟢 EN CAMPO HOY</div>
+                        <div style="font-size:22px; font-weight:900; color:var(--text-main);" id="tool_cnt_in_use">0 En Uso</div>
                     </div>
                     <div style="background:rgba(255,69,58,0.12); border:1px solid #ff453a; border-radius:10px; padding:12px; text-align:center;">
-                        <div style="font-size:10px; font-weight:800; color:#ff453a;">🔴 FALTANTES</div>
-                        <div style="font-size:24px; font-weight:900; color:#ffffff;" id="tool_cnt_missing">0</div>
+                        <div style="font-size:10px; font-weight:800; color:var(--primary-red);">🔴 PENDIENTE DEVOLVER</div>
+                        <div style="font-size:22px; font-weight:900; color:var(--text-main);" id="tool_cnt_missing">0 Faltantes</div>
                     </div>
                 </div>
-                <div class="result-card">
-                    <div class="result-header"><span>📋 PRÉSTAMO RÁPIDO</span></div>
-                    <div class="form-group"><label>Herramienta:</label><select id="loan_tool_select"></select></div>
-                    <div class="form-group"><label>Responsable:</label><select id="loan_worker_select"></select></div>
-                    <button class="btn-primary btn-green" onclick="registrarPrestamoHerramienta()">💾 REGISTRAR PRÉSTAMO</button>
+
+                <div class="segmented-control">
+                    <button class="segment-btn active" id="btn_sub_loan" onclick="switchToolSubPane('sub_loan')">➕ Préstamo</button>
+                    <button class="segment-btn" id="btn_sub_stock" onclick="switchToolSubPane('sub_stock')">📦 Stock Caseta</button>
+                    <button class="segment-btn" id="btn_sub_checklist" onclick="switchToolSubPane('sub_checklist')">🔒 Cierre</button>
                 </div>
-                <div class="result-card">
-                    <div class="result-header"><span>📦 INVENTARIO EN CASETA</span></div>
+
+                <div id="sub_loan" class="tool-subpane result-card" style="display:block;">
+                    <div class="result-header"><span>📋 SALIDA DE HERRAMIENTA</span></div>
+                    <div class="form-group"><label>1. Herramienta / Equipo:</label><select id="loan_tool_select"></select></div>
+                    <div class="form-group"><label>2. Trabajador Responsable:</label><select id="loan_worker_select"></select></div>
+                    <div class="form-group"><label>3. Estado de Entrega:</label><input type="text" id="loan_state_input" value="Operativa / Con accesorios"></div>
+                    <button class="btn-primary btn-green" style="margin-bottom:0;" onclick="registrarPrestamoHerramienta()">💾 REGISTRAR ENTREGA</button>
+                </div>
+
+                <div id="sub_stock" class="tool-subpane result-card" style="display:none;">
+                    <div class="result-header">
+                        <span>📦 KARDEX DE ALMACÉN</span>
+                        <span class="badge badge-green" id="stock_status_pill">STOCK OK</span>
+                    </div>
+                    <div style="background:var(--row-highlight); border:1px solid var(--primary-cyan); border-radius:10px; padding:10px; margin-bottom:12px;">
+                        <div class="grid-2" style="margin-bottom:8px;">
+                            <div><label>Nueva Herramienta:</label><input type="text" id="add_stock_name" placeholder="Ej: Vibrador, Amoladora"></div>
+                            <div>
+                                <label>Categoría:</label>
+                                <select id="add_stock_cat">
+                                    <option value="manuales">🛠️ Manuales</option>
+                                    <option value="equipos">🏗️ Equipos</option>
+                                    <option value="epps">🪖 EPPs</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="grid-2" style="margin-bottom:8px;">
+                            <div><label>Cantidad:</label><input type="number" id="add_stock_qty" value="1" min="1"></div>
+                            <div><label>Estado:</label><input type="text" id="add_stock_state" value="Operativa"></div>
+                        </div>
+                        <button class="btn-primary btn-green" style="margin-bottom:0; padding:10px; font-size:12px;" onclick="addStockItem()">➕ AGREGAR AL INVENTARIO</button>
+                    </div>
+                    <div style="font-size:11px; font-weight:800; color:var(--primary-cyan); margin:8px 0 4px 0;">🛠️ HERRAMIENTAS MANUALES:</div>
                     <div id="list_cat_manuales"></div>
+                    <div style="font-size:11px; font-weight:800; color:var(--primary-cyan); margin:10px 0 4px 0;">🏗️ EQUIPOS ELÉCTRICOS Y MAQUINARIA:</div>
+                    <div id="list_cat_equipos"></div>
+                    <div style="font-size:11px; font-weight:800; color:var(--primary-cyan); margin:10px 0 4px 0;">🪖 SEGURIDAD Y EPPs:</div>
+                    <div id="list_cat_epps"></div>
+                </div>
+
+                <div id="sub_checklist" class="tool-subpane result-card" style="display:none;">
+                    <div class="result-header"><span>🔒 PROTOCOLO DE CIERRE DE CASETA</span></div>
+                    <div style="display:flex; flex-direction:column; gap:10px; font-size:12px;">
+                        <label style="display:flex; align-items:center; gap:8px; text-transform:none; color:var(--text-main); cursor:pointer;">
+                            <input type="checkbox" id="chk1" style="width:18px; height:18px;" onchange="checkChecklistState()">
+                            <span>Amoladoras, taladros y vibrador guardados bajo llave</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:8px; text-transform:none; color:var(--text-main); cursor:pointer;">
+                            <input type="checkbox" id="chk2" style="width:18px; height:18px;" onchange="checkChecklistState()">
+                            <span>Extensiones vulcanizadas y niveles verificados</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:8px; text-transform:none; color:var(--text-main); cursor:pointer;">
+                            <input type="checkbox" id="chk3" style="width:18px; height:18px;" onchange="checkChecklistState()">
+                            <span>Trompo mezclador lavado sin restos de concreto</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:8px; text-transform:none; color:var(--text-main); cursor:pointer;">
+                            <input type="checkbox" id="chk4" style="width:18px; height:18px;" onchange="checkChecklistState()">
+                            <span>Llave general eléctrica y de agua cerradas</span>
+                        </label>
+                    </div>
+                    <div id="visto_bueno_box" style="margin-top:12px; padding:10px; background:var(--input-bg); border-radius:8px; text-align:center; font-weight:800; font-size:12px; color:var(--text-muted);">
+                        ⚠️ Completa los 4 puntos de verificación antes de retirarte.
+                    </div>
                 </div>
             </div>
 
-            <!-- TAB 5: PERSONAL -->
+            <!-- TAB 5: PERSONAL & BITÁCORA -->
             <div id="tab5" class="tab-pane">
+                <div style="background:var(--row-highlight); border:1px solid var(--primary-cyan); border-radius:10px; padding:12px; margin-bottom:12px;">
+                    <div style="font-size:11px; font-weight:800; color:var(--primary-cyan); margin-bottom:8px;">➕ REGISTRAR PERSONAL EN CUADRILLA:</div>
+                    <div class="grid-2" style="margin-bottom:8px;">
+                        <div><label>Nombre y Cargo:</label><input type="text" id="new_worker_name" placeholder="Ej: Luis Ríos (Operario)"></div>
+                        <div><label>Jornal Diario (S/):</label><input type="number" id="new_worker_jornal" value="95.00" step="5.0"></div>
+                    </div>
+                    <button class="btn-primary btn-green" style="margin-bottom:0; padding:10px; font-size:12px;" onclick="addWorkerToStaff()">➕ AGREGAR A PLANILLA</button>
+                </div>
+
                 <div class="result-card">
-                    <div class="result-header">👥 PLANILLA Y JORNALES</div>
+                    <div class="result-header">👥 TAREO SEMANAL Y PAGO DE JORNALES</div>
                     <table class="attendance-table">
-                        <thead><tr><th>Personal</th><th>Jornal</th><th>Lun</th><th>Mar</th><th>Mié</th><th>Jue</th><th>Vie</th><th>Sáb</th><th>Subtotal</th></tr></thead>
+                        <thead>
+                            <tr>
+                                <th style="text-align:left;">Trabajador</th>
+                                <th>S/ Día</th>
+                                <th>L</th><th>M</th><th>M</th><th>J</th><th>V</th><th>S</th>
+                                <th>Pago</th>
+                                <th>🗑️</th>
+                            </tr>
+                        </thead>
                         <tbody id="att_tbody"></tbody>
                     </table>
                     <div class="result-row" style="margin-top:10px;">
-                        <span style="font-weight:800;">TOTAL SEMANAL:</span>
+                        <span style="font-weight:900;">TOTAL PLANILLA SEMANAL:</span>
                         <span class="val-bold" style="color:var(--primary-green); font-size:16px;" id="total_planilla">S/ 0.00</span>
                     </div>
+                </div>
+
+                <div class="result-card">
+                    <div class="result-header">
+                        <span>📸 CUADERNO / BITÁCORA DIGITAL DE OBRA</span>
+                        <span class="badge badge-green" id="badge_total_notas">0 NOTAS</span>
+                    </div>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:6px; margin-bottom:10px;">
+                        <button class="btn-secondary" style="font-size:10px; padding:7px; font-weight:800;" onclick="autoLogHito('vaciado')">⚡ Auto-Nota Vaciado</button>
+                        <button class="btn-secondary" style="font-size:10px; padding:7px; font-weight:800;" onclick="autoLogHito('asistencia')">⚡ Auto-Nota Planilla</button>
+                    </div>
+                    <div class="grid-2" style="margin-bottom:8px;">
+                        <div>
+                            <label>Partida:</label>
+                            <select id="note_category" style="font-size:12px;">
+                                <option value="🏗️ Vaciado Concreto">🏗️ Vaciado Concreto</option>
+                                <option value="🧱 Albañilería / Acero">🧱 Albañilería / Acero</option>
+                                <option value="✅ Control Calidad">✅ Control Calidad</option>
+                                <option value="⚠️ Observación">⚠️ Observación</option>
+                            </select>
+                        </div>
+                        <div><label>Responsable:</label><input type="text" id="note_author" value="Residente / Maestro" style="font-size:12px;"></div>
+                    </div>
+                    <textarea id="note_text" rows="2" placeholder="Anota ocurrencia, dosificación usada o avance del día..." style="margin-bottom:8px; font-size:12px;"></textarea>
+                    
+                    <div style="margin-bottom:10px; padding:8px; border:1px dashed var(--primary-cyan); border-radius:8px; display:flex; justify-content:space-between; align-items:center;">
+                        <label for="note_file" style="cursor:pointer; color:var(--primary-cyan); font-weight:800; font-size:11px; margin:0;">📷 TOMAR FOTO DE EVIDENCIA</label>
+                        <input type="file" id="note_file" accept="image/*" capture="environment" onchange="previewSelectedNotePhoto(this)" style="display:none;">
+                        <span id="photo_filename_status" style="font-size:10px; color:var(--text-muted);">Sin foto</span>
+                    </div>
+                    <div id="photo_preview_box" style="display:none; margin-bottom:10px; text-align:center; position:relative;">
+                        <img id="img_preview_thumb" src="" style="max-height:110px; border-radius:8px; border:2px solid var(--primary-cyan);">
+                        <button onclick="clearSelectedNotePhoto()" style="position:absolute; top:4px; right:4px; background:var(--primary-red); color:#fff; border:none; border-radius:50%; width:22px; height:22px; font-weight:bold;">✕</button>
+                    </div>
+                    <button class="btn-primary btn-green" style="font-size:13px; padding:11px;" onclick="addBitacoraNote()">📌 GUARDAR EN CUADERNO DE OBRA</button>
+                    <div id="notes_container" style="display:flex; flex-direction:column; gap:8px; max-height:320px; overflow-y:auto;"></div>
                 </div>
             </div>
 
@@ -507,306 +1035,562 @@
 
         <!-- Bottom Navigation -->
         <div class="bottom-nav">
-            <button class="nav-item active" onclick="switchMainTab('tab1', this)"><span class="nav-icon">🏗️</span><span>Cálculo</span></button>
-            <button class="nav-item" onclick="switchMainTab('tab2', this)"><span class="nav-icon">📢</span><span>Modo Obra</span></button>
-            <button class="nav-item" onclick="switchMainTab('tab3', this)"><span class="nav-icon">💰</span><span>Precios</span></button>
-            <button class="nav-item" onclick="switchMainTab('tab4', this)"><span class="nav-icon">🧰</span><span>Herramientas</span></button>
-            <button class="nav-item" onclick="switchMainTab('tab5', this)"><span class="nav-icon">👥</span><span>Personal</span></button>
+            <button class="nav-item active" onclick="switchMainTab('tab1', this)">
+                <span class="nav-icon">🏗️</span><span>Cálculo</span>
+            </button>
+            <button class="nav-item" onclick="switchMainTab('tab2', this)">
+                <span class="nav-icon">📢</span><span>Modo Obra</span>
+            </button>
+            <button class="nav-item" onclick="switchMainTab('tab3', this)">
+                <span class="nav-icon">💰</span><span>Costos</span>
+            </button>
+            <button class="nav-item" onclick="switchMainTab('tab4', this)">
+                <span class="nav-icon">🧰</span><span>Almacén</span>
+            </button>
+            <button class="nav-item" onclick="switchMainTab('tab5', this)">
+                <span class="nav-icon">👥</span><span>Personal</span>
+            </button>
         </div>
 
-        <!-- TOAST -->
-        <div id="app_toast" onclick="hideToast()" style="display:none; opacity:0; position:fixed; bottom:78px; left:50%; transform:translateX(-50%); background:rgba(15,23,42,0.96); color:#00e5ff; border:1px solid #00e5ff; padding:10px 16px; border-radius:10px; font-size:12px; font-weight:800; z-index:99999; transition:opacity 0.3s; text-align:center;">
+        <!-- TOAST FLOTANTE -->
+        <div id="app_toast" onclick="hideToast()" style="display:none; opacity:0; position:fixed; bottom:74px; left:50%; transform:translateX(-50%); background:rgba(15,23,42,0.96); color:#00e5ff; border:1px solid #00e5ff; padding:10px 16px; border-radius:10px; font-size:12px; font-weight:800; z-index:99999; box-shadow:0 8px 25px rgba(0,0,0,0.6); transition:opacity 0.3s; text-align:center; width:88%;">
             <span id="toast_msg"></span>
+        </div>
+
+        <!-- MODAL CONFIRMACIÓN -->
+        <div id="app_confirm_modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:99999; justify-content:center; align-items:center; padding:20px;">
+            <div style="background:var(--card-bg); border:1px solid var(--primary-cyan); border-radius:12px; padding:18px; max-width:340px; width:100%; text-align:center;">
+                <div id="confirm_modal_title" style="font-size:14px; font-weight:900; color:var(--primary-orange); margin-bottom:8px;">⚠️ CONFIRMACIÓN</div>
+                <div id="confirm_modal_msg" style="font-size:12px; color:var(--text-main); margin-bottom:16px;"></div>
+                <div class="grid-2">
+                    <button class="btn-primary" style="background:#475569; margin-bottom:0; padding:10px;" onclick="closeConfirmModal(false)">Cancelar</button>
+                    <button class="btn-primary" style="background:#dc2626; margin-bottom:0; padding:10px;" onclick="closeConfirmModal(true)">Confirmar</button>
+                </div>
+            </div>
         </div>
     </div>
 
 <script>
         var safeStorage = {
-            getItem: function(k) { try { return localStorage.getItem(k); } catch(e){ return null; } },
-            setItem: function(k, v) { try { localStorage.setItem(k, v); } catch(e){} }
+            getItem: function(key) { try { return localStorage.getItem(key); } catch(e) { return null; } },
+            setItem: function(key, val) { try { localStorage.setItem(key, val); } catch(e) {} },
+            removeItem: function(key) { try { localStorage.removeItem(key); } catch(e) {} }
         };
 
+        var _toastTimer = null;
         function showToast(msg) {
-            var t = document.getElementById('app_toast'), m = document.getElementById('toast_msg');
-            if(!t || !m) return;
-            m.innerText = msg; t.style.display = 'block'; t.style.opacity = '1';
-            setTimeout(function() { t.style.opacity = '0'; setTimeout(function(){ t.style.display = 'none'; }, 300); }, 3000);
+            var toast = document.getElementById('app_toast');
+            var msgEl = document.getElementById('toast_msg');
+            if (!toast || !msgEl) return;
+            msgEl.innerText = msg;
+            toast.style.display = 'block';
+            toast.style.opacity = '1';
+            if (_toastTimer) clearTimeout(_toastTimer);
+            _toastTimer = setTimeout(hideToast, 2800);
+        }
+        function hideToast() {
+            var toast = document.getElementById('app_toast');
+            if (toast) {
+                toast.style.opacity = '0';
+                setTimeout(function() { toast.style.display = 'none'; }, 300);
+            }
         }
 
-        function toggleTheme() { document.body.classList.toggle('light-mode'); }
-
-        function switchMainTab(id, btn) {
-            document.querySelectorAll('.tab-pane').forEach(function(el){ el.classList.remove('active'); });
-            document.querySelectorAll('.nav-item').forEach(function(el){ el.classList.remove('active'); });
-            document.getElementById(id).classList.add('active');
-            if(btn) btn.classList.add('active');
-            if(id === 'tab1') renderSchematic();
-            else if(id === 'tab3') calcularPresupuesto();
-            else if(id === 'tab4') renderToolInventory();
-            else if(id === 'tab5') renderAttendanceTable();
+        var _confirmCallback = null;
+        function showConfirmModal(title, msg, callback) {
+            var modal = document.getElementById('app_confirm_modal');
+            document.getElementById('confirm_modal_title').innerText = title || '⚠️ CONFIRMACIÓN';
+            document.getElementById('confirm_modal_msg').innerText = msg;
+            _confirmCallback = callback;
+            modal.style.display = 'flex';
+        }
+        function closeConfirmModal(result) {
+            document.getElementById('app_confirm_modal').style.display = 'none';
+            if (result && typeof _confirmCallback === 'function') _confirmCallback();
+            _confirmCallback = null;
         }
 
-        function switchCalc(id, btn) {
-            currentElement = id;
-            document.querySelectorAll('.calc-subpane').forEach(function(el){ el.style.display = 'none'; });
-            document.querySelectorAll('.segment-btn').forEach(function(el){ el.classList.remove('active'); });
-            document.getElementById(id).style.display = 'block';
-            if(btn) btn.classList.add('active');
+        function toggleTheme() {
+            document.body.classList.toggle('light-mode');
+            renderSchematic();
+        }
+
+        // --- VOZ SINTÉTICA NATIVA PARA OBRA (OFFLINE TTS) ---
+        var voiceEnabled = true;
+        function toggleVoiceAssistant() {
+            voiceEnabled = !voiceEnabled;
+            var btn = document.getElementById('btn_voice_toggle');
+            if (btn) {
+                btn.innerText = voiceEnabled ? '🔊 VOZ: ACTIVA' : '🔇 VOZ: MUDA';
+                btn.className = voiceEnabled ? 'badge badge-green' : 'badge badge-orange';
+            }
+            if (voiceEnabled) speakObra("Asistente de voz activado");
+        }
+
+        function speakObra(texto) {
+            if (!voiceEnabled || !('speechSynthesis' in window)) return;
+            try {
+                window.speechSynthesis.cancel();
+                var utter = new SpeechSynthesisUtterance(texto);
+                utter.lang = 'es-PE';
+                utter.rate = 1.1;
+                utter.pitch = 1.0;
+                window.speechSynthesis.speak(utter);
+            } catch(e) {}
+        }
+
+        var regions = {
+            PE: { name: '🇵🇪 RNE / CAPECO', label_vac: '1. Dosificación de Concreto (RNE E.060 / CAPECO):' },
+            CO: { name: '🇨🇴 NSR-10', label_vac: '1. Dosificación de Mezcla (Norma NSR-10):' },
+            MX: { name: '🇲🇽 ONCCE', label_vac: '1. Dosificación de Concreto (Norma ONCCE):' },
+            CL: { name: '🇨🇱 NCh 170', label_vac: '1. Dosificación de Hormigón (NCh 170):' },
+            AR: { name: '🇦🇷 CIRSOC 201', label_vac: '1. Dosificación de Hormigón (CIRSOC 201):' }
+        };
+
+        function changeRegion() {
+            var r = document.getElementById('region_select').value;
+            var reg = regions[r] || regions.PE;
+            document.getElementById('region_label').innerText = reg.name;
+            document.getElementById('lbl_tipo_vaciado').innerText = reg.label_vac;
+        }
+
+        var currentElement = 'calc_concreto';
+        var showXrayRebar = true;
+
+        function toggleXrayRebar() {
+            showXrayRebar = !showXrayRebar;
+            var btn = document.getElementById('btn_xray_rebar');
+            if (btn) {
+                btn.innerText = showXrayRebar ? '🦴 Ver Acero 3D: ON' : '🧱 Sólido Opaco';
+                btn.style.background = showXrayRebar ? 'rgba(255,159,10,0.22)' : 'rgba(148,163,184,0.2)';
+                btn.style.color = showXrayRebar ? '#ff9f0a' : '#cbd5e1';
+            }
+            renderSchematic();
+        }
+
+        function switchMainTab(tabId, btn) {
+            document.querySelectorAll('.tab-pane').forEach(function(el) { el.classList.remove('active'); });
+            document.querySelectorAll('.nav-item').forEach(function(el) { el.classList.remove('active'); });
+            document.getElementById(tabId).classList.add('active');
+            if (btn) btn.classList.add('active');
+
+            if (tabId === 'tab1') renderSchematic();
+            else if (tabId === 'tab3') calcularPresupuesto();
+            else if (tabId === 'tab4') renderToolInventory();
+            else if (tabId === 'tab5') renderAttendanceTable();
+        }
+
+        function switchCalc(calcId, btn) {
+            currentElement = calcId;
+            document.querySelectorAll('.calc-subpane').forEach(function(el) { el.style.display = 'none'; });
+            document.querySelectorAll('.segment-btn').forEach(function(el) { el.classList.remove('active'); });
+            document.getElementById(calcId).style.display = 'block';
+            if (btn) btn.classList.add('active');
+
+            if (calcId === 'calc_concreto') calcularConcreto();
+            else if (calcId === 'calc_muros') calcularMuros();
+            else if (calcId === 'calc_tecnopor') calcularTecnopor();
+            else if (calcId === 'calc_escalera') calcularEscalera();
+            else if (calcId === 'calc_tarrajeo') calcularTarrajeo();
+
             calcularPresupuesto();
+            renderSchematic();
+        }
+
+        function updateRendimientoConcreto() {
+            var arenaB = parseFloat(document.getElementById('m_arena_baldes').value) || 3.5;
+            var piedraB = parseFloat(document.getElementById('m_piedra_baldes').value) || 3.5;
+            var aguaB = parseFloat(document.getElementById('m_agua_baldes').value) || 1.2;
+            var vCem = 0.0283 / 3.15;
+            var vAre = (arenaB * 0.018) * 0.60;
+            var vPie = (piedraB * 0.018) * 0.55;
+            var vAgua = (aguaB * 0.018);
+            var rendM3 = (vCem + vAre + vPie + vAgua) * 1.02;
+            document.getElementById('m_rendimiento_calculated').value = '⚡ Rendimiento: ~' + rendM3.toFixed(3) + ' m³ (' + (rendM3 * 35.315).toFixed(1) + ' p³) por bolsa';
+            calcularConcreto();
+        }
+
+        function updateInfoBanner() {
+            var val = document.getElementById('tipo_vaciado').value;
+            document.getElementById('manual_inputs').style.display = (val === 'manual') ? 'block' : 'none';
+            calcularConcreto();
             renderSchematic();
         }
 
         function toggleFormaConcreto() {
-            var f = document.getElementById('forma_concreto').value;
-            document.getElementById('box_forma_losa').style.display = (f === 'columna') ? 'none' : 'block';
-            document.getElementById('box_forma_columna').style.display = (f === 'columna') ? 'block' : 'none';
+            var forma = document.getElementById('forma_concreto').value;
+            document.getElementById('box_forma_losa').style.display = (forma === 'columna') ? 'none' : 'block';
+            document.getElementById('box_forma_columna').style.display = (forma === 'columna') ? 'block' : 'none';
             calcularConcreto();
             calcularPresupuesto();
             renderSchematic();
         }
 
-        var rayoxXMode = false;
-        function toggleRayosXColumnas() {
-            rayoxXMode = !rayoxXMode;
-            showToast(rayoxXMode ? '👁️ Modo Rayos X: Estructura de Acero Visible' : '👁️ Modo Sólido Normal');
+        function toggleEscaleraDescanso() {
+            var tipo = document.getElementById('esc_tipo').value;
+            document.getElementById('box_esc_desc_largo').style.display = (tipo === 'descanso') ? 'grid' : 'none';
+            calcularEscalera();
             renderSchematic();
         }
 
-        var camRotX = 0.45, camRotY = -0.65, camZoom = 1.0;
-        var isDragging3D = false, lastX = 0, lastY = 0;
-
-        function init3DOrbitalControls() {
-            var c = document.getElementById('canvas_3d_viewport');
-            if(!c) return;
-            c.addEventListener('mousedown', function(e){ isDragging3D = true; lastX = e.clientX; lastY = e.clientY; });
-            window.addEventListener('mousemove', function(e){
-                if(!isDragging3D) return;
-                camRotY += (e.clientX - lastX) * 0.012;
-                camRotX = Math.max(-1.3, Math.min(1.3, camRotX + (e.clientY - lastY) * 0.012));
-                lastX = e.clientX; lastY = e.clientY;
-                renderSchematic();
-            });
-            window.addEventListener('mouseup', function(){ isDragging3D = false; });
-            c.addEventListener('touchstart', function(e){ if(e.touches.length === 1){ isDragging3D = true; lastX = e.touches[0].clientX; lastY = e.touches[0].clientY; } }, {passive:true});
-            c.addEventListener('touchmove', function(e){
-                if(!isDragging3D || e.touches.length !== 1) return;
-                camRotY += (e.touches[0].clientX - lastX) * 0.015;
-                camRotX = Math.max(-1.3, Math.min(1.3, camRotX + (e.touches[0].clientY - lastY) * 0.015));
-                lastX = e.touches[0].clientX; lastY = e.touches[0].clientY;
-                renderSchematic();
-            }, {passive:true});
-            c.addEventListener('touchend', function(){ isDragging3D = false; });
+        function dismissSplashNow() {
+            var splash = document.getElementById('splash-screen');
+            if (splash) {
+                splash.style.opacity = '0';
+                splash.style.transform = 'translateY(-100%)';
+                setTimeout(function() { splash.style.display = 'none'; }, 400);
+            }
         }
 
-        function reset3DCamera() { camRotX = 0.45; camRotY = -0.65; camZoom = 1.0; renderSchematic(); }
+        // --- MOTOR 3D ORBITAL CON JAULA DE ACERO INTERNA ---
+        var camRotX = 0.42, camRotY = -0.62, camZoom = 1.0, isDragging3D = false, lastTouchX = 0, lastTouchY = 0;
+
+        function init3DOrbitalControls() {
+            var canvas = document.getElementById('canvas_3d_viewport');
+            if (!canvas) return;
+
+            canvas.addEventListener('mousedown', function(e) {
+                isDragging3D = true; lastTouchX = e.clientX; lastTouchY = e.clientY;
+            });
+            window.addEventListener('mousemove', function(e) {
+                if (!isDragging3D) return;
+                camRotY += (e.clientX - lastTouchX) * 0.012;
+                camRotX = Math.max(-1.25, Math.min(1.25, camRotX + (e.clientY - lastTouchY) * 0.012));
+                lastTouchX = e.clientX; lastTouchY = e.clientY;
+                renderSchematic();
+            });
+            window.addEventListener('mouseup', function() { isDragging3D = false; });
+
+            canvas.addEventListener('touchstart', function(e) {
+                if (e.touches && e.touches.length === 1) {
+                    isDragging3D = true;
+                    lastTouchX = e.touches[0].clientX;
+                    lastTouchY = e.touches[0].clientY;
+                }
+            }, { passive: true });
+
+            canvas.addEventListener('touchmove', function(e) {
+                if (!isDragging3D || !e.touches || e.touches.length !== 1) return;
+                camRotY += (e.touches[0].clientX - lastTouchX) * 0.015;
+                camRotX = Math.max(-1.25, Math.min(1.25, camRotX + (e.touches[0].clientY - lastTouchY) * 0.015));
+                lastTouchX = e.touches[0].clientX;
+                lastTouchY = e.touches[0].clientY;
+                renderSchematic();
+            }, { passive: true });
+
+            canvas.addEventListener('touchend', function() { isDragging3D = false; });
+        }
+
+        function reset3DCamera() {
+            camRotX = 0.42; camRotY = -0.62; camZoom = 1.0;
+            renderSchematic();
+        }
 
         function project3D(x, y, z, cx, cy) {
             var cosY = Math.cos(camRotY), sinY = Math.sin(camRotY);
-            var x1 = x * cosY - z * sinY, z1 = x * sinY + z * cosY;
+            var x1 = x * cosY - z * sinY;
+            var z1 = x * sinY + z * cosY;
             var cosX = Math.cos(camRotX), sinX = Math.sin(camRotX);
-            var y2 = y * cosX - z1 * sinX, z2 = y * sinX + z1 * cosX;
-            var scale = 110 * camZoom;
+            var y2 = y * cosX - z1 * sinX;
+            var z2 = y * sinX + z1 * cosX;
+            var scale = 108 * camZoom;
             return { x: cx + x1 * scale, y: cy - y2 * scale, z: z2 };
         }
 
-        function drawPolygon3D(ctx, pts, fill, stroke) {
-            if(!pts || pts.length < 3) return;
-            ctx.beginPath(); ctx.moveTo(pts[0].x, pts[0].y);
-            for(var i=1; i<pts.length; i++) ctx.lineTo(pts[i].x, pts[i].y);
+        function drawPolygon3D(ctx, pts, fillColor, strokeColor, strokeW) {
+            ctx.beginPath();
+            ctx.moveTo(pts[0].x, pts[0].y);
+            for (var i = 1; i < pts.length; i++) ctx.lineTo(pts[i].x, pts[i].y);
             ctx.closePath();
-            if(fill) { ctx.fillStyle = fill; ctx.fill(); }
-            if(stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = 1; ctx.stroke(); }
+            if (fillColor) { ctx.fillStyle = fillColor; ctx.fill(); }
+            if (strokeColor) { ctx.strokeStyle = strokeColor; ctx.lineWidth = strokeW || 1; ctx.stroke(); }
         }
 
-        function drawDimensionLine3D(ctx, p1, p2, color, text) {
-            if(!p1 || !p2) return;
-            ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = 1.8; ctx.setLineDash([4,3]);
+        function drawDimensionLine3D(ctx, p1, p2, labelColor, textStr) {
+            ctx.save();
+            ctx.strokeStyle = labelColor;
+            ctx.lineWidth = 1.8;
+            ctx.setLineDash([4, 3]);
             ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y); ctx.stroke();
             ctx.setLineDash([]);
-            var midX = (p1.x + p2.x)/2, midY = (p1.y + p2.y)/2;
-            ctx.fillStyle = 'rgba(15,23,42,0.9)'; ctx.strokeStyle = color; ctx.lineWidth = 1;
-            ctx.beginPath(); ctx.roundRect(midX - 35, midY - 7, 70, 14, 4); ctx.fill(); ctx.stroke();
-            ctx.fillStyle = color; ctx.font = 'bold 10px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-            ctx.fillText(text, midX, midY); ctx.restore();
+
+            var midX = (p1.x + p2.x) / 2, midY = (p1.y + p2.y) / 2;
+            ctx.font = 'bold 10px sans-serif';
+            var tw = ctx.measureText(textStr).width + 10;
+
+            ctx.fillStyle = 'rgba(15, 23, 42, 0.92)';
+            ctx.strokeStyle = labelColor;
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.roundRect(midX - tw/2, midY - 7, tw, 15, 4);
+            ctx.fill(); ctx.stroke();
+
+            ctx.fillStyle = labelColor;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(textStr, midX, midY);
+            ctx.restore();
+        }
+
+        function clear3DCanvas(ctx, canvas) {
+            var bgGrad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            bgGrad.addColorStop(0, '#0f172a');
+            bgGrad.addColorStop(1, '#070a10');
+            ctx.fillStyle = bgGrad;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+
+        function drawGridFloor3D(ctx, cx, cy) {
+            ctx.strokeStyle = 'rgba(56, 189, 248, 0.14)';
+            ctx.lineWidth = 1;
+            var gridSize = 1.4, step = 0.28;
+            for (var i = -gridSize; i <= gridSize; i += step) {
+                var p1 = project3D(i, -0.65, -gridSize, cx, cy);
+                var p2 = project3D(i, -0.65, gridSize, cx, cy);
+                ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y); ctx.stroke();
+                var p3 = project3D(-gridSize, -0.65, i, cx, cy);
+                var p4 = project3D(gridSize, -0.65, i, cx, cy);
+                ctx.beginPath(); ctx.moveTo(p3.x, p3.y); ctx.lineTo(p4.x, p4.y); ctx.stroke();
+            }
         }
 
         function render3DCanvasConcrete() {
-            var c = document.getElementById('canvas_3d_viewport');
-            if(!c) return;
-            var ctx = c.getContext('2d');
-            var bg = ctx.createLinearGradient(0,0,0,c.height);
-            bg.addColorStop(0, '#0f172a'); bg.addColorStop(1, '#090d16');
-            ctx.fillStyle = bg; ctx.fillRect(0,0,c.width,c.height);
+            var canvas = document.getElementById('canvas_3d_viewport');
+            if (!canvas) return;
+            var ctx = canvas.getContext('2d');
+            clear3DCanvas(ctx, canvas);
 
             var forma = document.getElementById('forma_concreto').value;
-            var cx = c.width/2, cy = c.height/2 + 5;
-            var vol = 0, sx = 0.5, sy = 0.5, sz = 0.5;
+            var cx = canvas.width / 2, cy = canvas.height / 2 + 8;
+            drawGridFloor3D(ctx, cx, cy);
 
-            if(forma === 'columna') {
-                var h = parseFloat(document.getElementById('col_altura').value) || 3.0;
-                var l = parseFloat(document.getElementById('col_largo').value) || 30;
-                var a = parseFloat(document.getElementById('col_ancho').value) || 30;
-                var n = parseInt(document.getElementById('col_cantidad').value) || 1;
-                vol = n * h * (l/100.0) * (a/100.0) * 1.05;
-                document.getElementById('pill_tr').innerText = '📦 ' + vol.toFixed(3) + ' m³';
-                sx = Math.min(0.5, Math.max(0.2, (a/100.0)*0.9));
-                sy = Math.min(1.2, Math.max(0.5, h*0.25));
-                sz = Math.min(0.5, Math.max(0.2, (l/100.0)*0.9));
+            var sx = 0.5, sy = 0.5, sz = 0.5;
+            var pill_tr = document.getElementById('pill_tr');
+            var pill_bl = document.getElementById('pill_bl');
+
+            if (forma === 'columna') {
+                var colH = parseFloat(document.getElementById('col_altura').value) || 3.0;
+                var colL = parseFloat(document.getElementById('col_largo').value) || 30;
+                var colA = parseFloat(document.getElementById('col_ancho').value) || 25;
+                var colN = parseInt(document.getElementById('col_cantidad').value) || 1;
+
+                var vol = colN * colH * (colL / 100.0) * (colA / 100.0) * 1.05;
+                var sacosExact = vol * 9.73;
+
+                if (pill_tr) pill_tr.innerText = '📦 Vol: ' + vol.toFixed(3) + ' m³ (' + colN + ' Col)';
+                if (pill_bl) pill_bl.innerText = '🛒 Compra: ' + Math.ceil(sacosExact) + ' Bolsas (' + sacosExact.toFixed(2) + ')';
+
+                sx = Math.min(0.42, Math.max(0.18, (colA / 100.0) * 0.95));
+                sy = Math.min(0.75, Math.max(0.45, colH * 0.22));
+                sz = Math.min(0.42, Math.max(0.18, (colL / 100.0) * 0.95));
             } else {
-                var largo = parseFloat(document.getElementById('largo').value) || 5.0;
-                var ancho = parseFloat(document.getElementById('ancho').value) || 4.0;
-                var esp = parseFloat(document.getElementById('espesor').value) || 12;
-                vol = largo * ancho * (esp/100.0) * 1.05;
-                document.getElementById('pill_tr').innerText = '📦 ' + vol.toFixed(2) + ' m³';
-                sx = Math.min(1.1, Math.max(0.4, ancho*0.16));
-                sy = Math.min(0.5, Math.max(0.12, (esp/100.0)*1.4));
-                sz = Math.min(1.1, Math.max(0.4, largo*0.16));
+                var l = parseFloat(document.getElementById('largo').value) || 5.0;
+                var a = parseFloat(document.getElementById('ancho').value) || 4.0;
+                var e = parseFloat(document.getElementById('espesor').value) || 12;
+
+                var volL = l * a * (e / 100.0) * 1.05;
+                var sacosL = volL * 9.73;
+
+                if (pill_tr) pill_tr.innerText = '📦 Vol: ' + volL.toFixed(2) + ' m³';
+                if (pill_bl) pill_bl.innerText = '🛒 Compra: ' + Math.ceil(sacosL) + ' Bolsas (' + sacosL.toFixed(1) + ')';
+
+                sx = Math.min(1.05, Math.max(0.4, a * 0.16));
+                sy = Math.min(0.45, Math.max(0.12, (e / 100.0) * 1.4));
+                sz = Math.min(1.05, Math.max(0.4, l * 0.16));
             }
 
-            // Render Sólido / Rayos X
-            var raw = [[-sx,-sy,-sz],[sx,-sy,-sz],[sx,sy,-sz],[-sx,sy,-sz],[-sx,-sy,sz],[sx,-sy,sz],[sx,sy,sz],[-sx,sy,sz]];
-            var proj = raw.map(function(v){ return project3D(v[0], v[1], v[2], cx, cy); });
-            var fillCol = rayoxXMode ? 'rgba(0,229,255,0.15)' : '#94a3b8';
-            var faces = [
-                { idx: [0,1,2,3], fill: fillCol, stroke: '#cbd5e1' },
-                { idx: [4,5,6,7], fill: fillCol, stroke: '#f1f5f9' },
-                { idx: [0,1,5,4], fill: fillCol, stroke: '#cbd5e1' },
-                { idx: [3,2,6,7], fill: fillCol, stroke: '#475569' },
-                { idx: [0,3,7,4], fill: fillCol, stroke: '#64748b' },
-                { idx: [1,2,6,5], fill: fillCol, stroke: '#64748b' }
+            var rawVertices = [
+                [-sx, -sy, -sz], [sx, -sy, -sz], [sx, sy, -sz], [-sx, sy, -sz],
+                [-sx, -sy,  sz], [sx, -sy,  sz], [sx, sy,  sz], [-sx, sy,  sz]
             ];
-            faces.forEach(function(f){ f.avgZ = (proj[f.idx[0]].z + proj[f.idx[1]].z + proj[f.idx[2]].z + proj[f.idx[3]].z)/4; });
-            faces.sort(function(a,b){ return a.avgZ - b.avgZ; });
-            faces.forEach(function(f){ drawPolygon3D(ctx, f.idx.map(function(i){ return proj[i]; }), f.fill, f.stroke); });
+            var proj = rawVertices.map(function(v) { return project3D(v[0], v[1], v[2], cx, cy); });
 
-            // Si es columna en modo Rayos X, dibuja acero interior
-            if(forma === 'columna' && rayoxXMode) {
-                ctx.strokeStyle = '#ff3b30'; ctx.lineWidth = 2;
-                // 4 Varillas longitudinales
-                var v1 = project3D(-sx*0.7, -sy, -sz*0.7, cx, cy), v2 = project3D(-sx*0.7, sy, -sz*0.7, cx, cy);
-                ctx.beginPath(); ctx.moveTo(v1.x, v1.y); ctx.lineTo(v2.x, v2.y); ctx.stroke();
-            }
+            var alphaFill = showXrayRebar ? 0.32 : 0.92;
+            var faces = [
+                { idx: [0, 1, 2, 3], fill: 'rgba(51, 65, 85, ' + alphaFill + ')', stroke: '#64748b' },
+                { idx: [4, 5, 6, 7], fill: 'rgba(100, 116, 139, ' + alphaFill + ')', stroke: '#cbd5e1' },
+                { idx: [0, 1, 5, 4], fill: 'rgba(30, 41, 59, ' + alphaFill + ')', stroke: '#475569' },
+                { idx: [3, 2, 6, 7], fill: 'rgba(148, 163, 184, ' + alphaFill + ')', stroke: '#f8fafc' },
+                { idx: [0, 3, 7, 4], fill: 'rgba(71, 85, 105, ' + alphaFill + ')', stroke: '#94a3b8' },
+                { idx: [1, 2, 6, 5], fill: 'rgba(71, 85, 105, ' + alphaFill + ')', stroke: '#94a3b8' }
+            ];
 
-            drawDimensionLine3D(ctx, proj[4], proj[5], '#00e5ff', 'Ancho');
-            drawDimensionLine3D(ctx, proj[5], proj[6], '#ff9f0a', 'Altura/Esp');
-            drawDimensionLine3D(ctx, proj[5], proj[1], '#30d158', 'Largo');
-        }
-
-        var currentElement = 'calc_concreto';
-        var currentCalcData = { volM3: 2.52, sacosCemento: 25, elemName: 'Concreto f\'c 210', bArenaPerBag: 3.5, bPiedraPerBag: 3.5 };
-
-        function calcularConcreto() {
-            var forma = document.getElementById('forma_concreto').value;
-            var vol = 0, desc = '';
-            if(forma === 'columna') {
-                var h = parseFloat(document.getElementById('col_altura').value) || 3;
-                var l = parseFloat(document.getElementById('col_largo').value) || 30;
-                var a = parseFloat(document.getElementById('col_ancho').value) || 30;
-                var n = parseInt(document.getElementById('col_cantidad').value) || 1;
-                vol = n * h * (l/100.0) * (a/100.0) * 1.05;
-                desc = n + ' Columna(s) ' + l + '×' + a + 'cm (H=' + h + 'm)';
-            } else {
-                var largo = parseFloat(document.getElementById('largo').value) || 5;
-                var ancho = parseFloat(document.getElementById('ancho').value) || 4;
-                var esp = parseFloat(document.getElementById('espesor').value) || 12;
-                vol = largo * ancho * (esp/100.0) * 1.05;
-                desc = 'Losa ' + largo + 'm × ' + ancho + 'm × ' + esp + 'cm';
-            }
-
-            var sacos = vol * 9.73;
-            var baldesArena = Math.round(sacos * 3.1);
-            var baldesPiedra = Math.round(sacos * 3.1);
-
-            currentCalcData = { volM3: vol, sacosCemento: sacos, elemName: desc, bArenaPerBag: 3.1, bPiedraPerBag: 3.1 };
-
-            var res = document.getElementById('res_concreto');
-            if(res) {
-                res.innerHTML = '<div class="res-table-wrapper"><table class="res-table">' +
-                    '<thead><tr><th>Material</th><th style="text-align:right;">Cantidad</th><th style="text-align:right;">Campo</th></tr></thead>' +
-                    '<tbody>' +
-                    '<tr><td>📦 Cemento</td><td style="text-align:right; font-weight:900; color:#00e5ff;">' + sacos.toFixed(2) + ' Bls</td><td style="text-align:right;">42.5 kg</td></tr>' +
-                    '<tr><td>🏖️ Arena</td><td style="text-align:right;">' + (baldesArena*0.018).toFixed(2) + ' m³</td><td style="text-align:right;">' + baldesArena + ' Baldes</td></tr>' +
-                    '<tr><td>🪨 Piedra</td><td style="text-align:right;">' + (baldesPiedra*0.018).toFixed(2) + ' m³</td><td style="text-align:right;">' + baldesPiedra + ' Baldes</td></tr>' +
-                    '</tbody></table></div>';
-            }
-        }
-
-        function calcularMuros() {
-            var l = parseFloat(document.getElementById('muro_largo').value) || 6;
-            var h = parseFloat(document.getElementById('muro_alto').value) || 2.6;
-            var und = Math.ceil(l * h * 37.3 * 1.05);
-            var res = document.getElementById('res_muros');
-            if(res) res.innerHTML = '<div style="font-weight:900; color:#00e5ff;">🧱 Ladrillos necesarios: ' + und + ' Unidades (Inc. 5% merma)</div>';
-        }
-
-        function calcularTecnopor() {
-            var l1 = parseFloat(document.getElementById('tec_largo').value) || 5;
-            var l2 = parseFloat(document.getElementById('tec_ancho').value) || 4;
-            var area = l1 * l2;
-            var bls = Math.ceil(area * 0.087 * 9.73);
-            var res = document.getElementById('res_tecnopor');
-            if(res) res.innerHTML = '<div style="font-weight:900; color:#00e5ff;">🧇 Concreto Losa: ' + bls + ' Bolsas Cemento para ' + area.toFixed(2) + ' m²</div>';
-        }
-
-        function calcularEscalera() {
-            var cp = parseInt(document.getElementById('esc_num_cp').value) || 16;
-            var res = document.getElementById('res_escalera');
-            if(res) res.innerHTML = '<div style="font-weight:900; color:#00e5ff;">🪜 Escalera con ' + cp + ' Contrapasos calculada correctamente.</div>';
-        }
-
-        function calcularTarrajeo() {
-            var area = parseFloat(document.getElementById('tar_area').value) || 25;
-            var bls = Math.ceil(area * 0.015 * 8.5);
-            var res = document.getElementById('res_tarrajeo');
-            if(res) res.innerHTML = '<div style="font-weight:900; color:#00e5ff;">🖌️ Tarrajeo: ' + bls + ' Bolsas de cemento para ' + area + ' m²</div>';
-        }
-
-        function calcularPresupuesto() {
-            var pCem = parseFloat(document.getElementById('p_cemento').value) || 28.50;
-            var cBolsas = currentCalcData.sacosCemento || 25;
-            var total = cBolsas * pCem * 1.8; // Factor estimado agregados y acero
-            var res = document.getElementById('res_presupuesto');
-            if(res) res.innerHTML = '<div style="font-weight:900; color:#30d158; font-size:16px;">Costo Estimado Materiales: S/ ' + total.toFixed(2) + '</div>';
-        }
-
-        function exportarWhatsApp() {
-            var txt = "⚙️ *PROFORMA CONSTRUYE.PRO*\n📍 Partida: " + currentCalcData.elemName + "\n📦 Cemento: " + currentCalcData.sacosCemento.toFixed(2) + " Bolsas\nGenerado desde CONSTRUYE.PRO";
-            window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(txt), '_blank');
-        }
-
-        var workersList = [
-            { name: 'Maestro de Obra', jornal: 120, att: [1,1,1,1,1,0.5] },
-            { name: 'Oficial Juan', jornal: 90, att: [1,1,1,1,1,0.5] }
-        ];
-
-        function renderAttendanceTable() {
-            var tbody = document.getElementById('att_tbody');
-            if(!tbody) return;
-            var html = '', total = 0;
-            workersList.forEach(function(w, idx) {
-                var sum = w.att.reduce((a,b)=>a+b, 0);
-                var sub = sum * w.jornal; total += sub;
-                html += '<tr><td>' + w.name + '</td><td>S/' + w.jornal + '</td>';
-                w.att.forEach(function(val){ html += '<td>' + (val==1?'P':(val==0.5?'½':'F')) + '</td>'; });
-                html += '<td>S/' + sub.toFixed(2) + '</td></tr>';
+            faces.forEach(function(f) {
+                f.avgZ = (proj[f.idx[0]].z + proj[f.idx[1]].z + proj[f.idx[2]].z + proj[f.idx[3]].z) / 4;
             });
-            tbody.innerHTML = html;
-            document.getElementById('total_planilla').innerText = 'S/ ' + total.toFixed(2);
+            faces.sort(function(m, n) { return m.avgZ - n.avgZ; });
+
+            // Dibujar caras traseras primero
+            for (var i = 0; i < 3; i++) {
+                drawPolygon3D(ctx, faces[i].idx.map(function(k){ return proj[k]; }), faces[i].fill, faces[i].stroke, 1.0);
+            }
+
+            // DIBUJAR ACERO INTERNO 3D (SI RAYOS-X ESTÁ ACTIVO)
+            if (showXrayRebar) {
+                if (forma === 'columna') {
+                    var rx = sx * 0.72, rz = sz * 0.72;
+                    var corners = [[-rx, -rz], [rx, -rz], [rx, rz], [-rx, rz]];
+                    // 4 Varillas Longitudinales Corrugadas (Naranja/Dorado)
+                    ctx.strokeStyle = '#ff9f0a';
+                    ctx.lineWidth = 2.6;
+                    corners.forEach(function(c) {
+                        var pBot = project3D(c[0], -sy * 0.95, c[1], cx, cy);
+                        var pTop = project3D(c[0], sy * 1.12, c[1], cx, cy); // Mechas sobresaliendo
+                        ctx.beginPath(); ctx.moveTo(pBot.x, pBot.y); ctx.lineTo(pTop.x, pTop.y); ctx.stroke();
+                    });
+
+                    // Estribos de Confinamiento E.060 (Más juntos en extremos, separados al centro)
+                    var stirrupRatios = [-0.88, -0.78, -0.66, -0.52, -0.25, 0.0, 0.25, 0.52, 0.66, 0.78, 0.88];
+                    ctx.strokeStyle = '#00e5ff';
+                    ctx.lineWidth = 1.3;
+                    stirrupRatios.forEach(function(r) {
+                        var yPos = sy * r;
+                        var sPts = corners.map(function(c) { return project3D(c[0], yPos, c[1], cx, cy); });
+                        ctx.beginPath();
+                        ctx.moveTo(sPts[0].x, sPts[0].y);
+                        ctx.lineTo(sPts[1].x, sPts[1].y);
+                        ctx.lineTo(sPts[2].x, sPts[2].y);
+                        ctx.lineTo(sPts[3].x, sPts[3].y);
+                        ctx.closePath();
+                        ctx.stroke();
+                    });
+                } else {
+                    // Malla de Acero en Losa / Zapata
+                    ctx.strokeStyle = '#ff9f0a';
+                    ctx.lineWidth = 1.5;
+                    for (var m = -0.75; m <= 0.75; m += 0.3) {
+                        var a1 = project3D(m * sx, 0, -sz * 0.85, cx, cy);
+                        var a2 = project3D(m * sx, 0, sz * 0.85, cx, cy);
+                        ctx.beginPath(); ctx.moveTo(a1.x, a1.y); ctx.lineTo(a2.x, a2.y); ctx.stroke();
+
+                        var b1 = project3D(-sx * 0.85, 0, m * sz, cx, cy);
+                        var b2 = project3D(sx * 0.85, 0, m * sz, cx, cy);
+                        ctx.beginPath(); ctx.moveTo(b1.x, b1.y); ctx.lineTo(b2.x, b2.y); ctx.stroke();
+                    }
+                }
+            }
+
+            // Dibujar caras delanteras
+            for (var j = 3; j < 6; j++) {
+                drawPolygon3D(ctx, faces[j].idx.map(function(k){ return proj[k]; }), faces[j].fill, faces[j].stroke, 1.2);
+            }
+
+            // Cotas 3D
+            var pBotLeft = project3D(-sx, -sy, sz, cx, cy);
+            var pBotRight = project3D(sx, -sy, sz, cx, cy);
+            var pTopRight = project3D(sx, sy, sz, cx, cy);
+            var pBackRight = project3D(sx, -sy, -sz, cx, cy);
+
+            if (forma === 'columna') {
+                var colH2 = parseFloat(document.getElementById('col_altura').value) || 3.0;
+                var colL2 = parseFloat(document.getElementById('col_largo').value) || 30;
+                var colA2 = parseFloat(document.getElementById('col_ancho').value) || 25;
+                drawDimensionLine3D(ctx, pBotLeft, pBotRight, '#00e5ff', 'b: ' + colA2 + 'cm');
+                drawDimensionLine3D(ctx, pBotRight, pTopRight, '#ff9f0a', 'H: ' + colH2.toFixed(2) + 'm');
+                drawDimensionLine3D(ctx, pBotRight, pBackRight, '#30d158', 'd: ' + colL2 + 'cm');
+            } else {
+                var l2 = parseFloat(document.getElementById('largo').value) || 5.0;
+                var a2 = parseFloat(document.getElementById('ancho').value) || 4.0;
+                var e2 = parseFloat(document.getElementById('espesor').value) || 12;
+                drawDimensionLine3D(ctx, pBotLeft, pBotRight, '#00e5ff', 'Ancho: ' + a2.toFixed(2) + 'm');
+                drawDimensionLine3D(ctx, pBotRight, pTopRight, '#ff9f0a', 'e: ' + e2 + 'cm');
+                drawDimensionLine3D(ctx, pBotRight, pBackRight, '#30d158', 'Largo: ' + l2.toFixed(2) + 'm');
+            }
         }
 
-        function renderToolInventory() {
-            var l = document.getElementById('list_cat_manuales');
-            if(l) l.innerHTML = '<div style="font-size:11px; color:#30d158;">🟢 Almacén en orden (Amoladoras, Niveles y Arneses registrados)</div>';
-            document.getElementById('tool_cnt_in_use').innerText = '0';
-            document.getElementById('tool_cnt_missing').innerText = '0';
-        }
-
-        window.addEventListener('load', function() {
-            setTimeout(function(){ document.getElementById('splash-screen').style.display='none'; }, 2000);
-            init3DOrbitalControls();
-            calcularConcreto();
+        function toggleTipoLadrillo() {
+            var op = document.getElementById('tipo_ladrillo').value;
+            document.getElementById('box_ladrillo_custom').style.display = (op === 'custom') ? 'block' : 'none';
+            calcularMuros();
+            calcularPresupuesto();
             renderSchematic();
-        });
-    </script>
-</body>
-</html>
+        }
+
+        function getBrickSpecs() {
+            var op = document.getElementById('tipo_ladrillo').value;
+            var juntaCm = parseFloat(document.getElementById('mortero_junta').value) || 1.5;
+            var L_cm = 24.0, A_cm = 12.0, H_cm = 9.0, asentado = 'soga', name = 'King Kong 18H (Soga)', isConcreteBlock = false;
+
+            if (op === 'kk_cabeza') {
+                L_cm = 24.0; A_cm = 12.0; H_cm = 9.0; asentado = 'cabeza'; name = 'King Kong 18H (Cabeza)';
+            } else if (op === 'pandereta') {
+                L_cm = 23.0; A_cm = 11.0; H_cm = 9.0; asentado = 'soga'; name = 'Ladrillo Pandereta (Soga)';
+            } else if (op === 'bloque_12') {
+                L_cm = 28.5; A_cm = 12.0; H_cm = 18.0; asentado = 'soga'; name = 'Bloque Concreto 12×18×28.5'; isConcreteBlock = true;
+            } else if (op === 'custom') {
+                L_cm = parseFloat(document.getElementById('lad_largo').value) || 24.0;
+                A_cm = parseFloat(document.getElementById('lad_ancho').value) || 12.0;
+                H_cm = parseFloat(document.getElementById('lad_alto').value) || 9.0;
+                asentado = document.getElementById('lad_asentado').value;
+                name = 'Personalizado (' + L_cm + '×' + A_cm + '×' + H_cm + 'cm)';
+            }
+
+            var L = L_cm / 100.0, A = A_cm / 100.0, H = H_cm / 100.0, j = juntaCm / 100.0;
+            var Lv = L, Hv = H, Esp = A;
+            if (asentado === 'cabeza') { Lv = A; Hv = H; Esp = L; }
+            else if (asentado === 'canto') { Lv = L; Hv = A; Esp = H; }
+
+            var undM2Neto = 1.0 / ((Lv + j) * (Hv + j));
+            var volMorteroM2Neto = Math.max(0.001, Esp - (undM2Neto * (L * A * H)));
+
+            return {
+                op: op, name: name, L_cm: L_cm, A_cm: A_cm, H_cm: H_cm,
+                juntaCm: juntaCm, j: j, Lv: Lv, Hv: Hv, Esp: Esp,
+                undM2Neto: undM2Neto, volMorteroM2Neto: volMorteroM2Neto, isConcreteBlock: isConcreteBlock
+            };
+        }
+
+        function render3DCanvasWall() {
+            var canvas = document.getElementById('canvas_3d_viewport');
+            if (!canvas) return;
+            var ctx = canvas.getContext('2d');
+            clear3DCanvas(ctx, canvas);
+
+            var l = parseFloat(document.getElementById('muro_largo').value) || 6.0;
+            var h = parseFloat(document.getElementById('muro_alto').value) || 2.6;
+            var mermaPct = parseFloat(document.getElementById('merma_ladrillo').value) || 1.05;
+            var specs = getBrickSpecs();
+            var area = l * h;
+            var totalLadrillos = Math.ceil(area * specs.undM2Neto * mermaPct);
+            var sacosM = (area * specs.volMorteroM2Neto * 1.10) * 7.5;
+
+            document.getElementById('pill_tr').innerText = '🧱 ' + totalLadrillos + ' Ladrillos';
+            document.getElementById('pill_bl').innerText = '🛒 Compra: ' + Math.ceil(sacosM) + ' Bolsas Mortero';
+
+            var cx = canvas.width / 2, cy = canvas.height / 2 + 5;
+            drawGridFloor3D(ctx, cx, cy);
+
+            var wallW = Math.min(1.05, Math.max(0.4, l * 0.16));
+            var wallH = Math.min(0.75, Math.max(0.3, h * 0.22));
+            var wallD = Math.min(0.30, Math.max(0.08, specs.Esp * 0.9));
+
+            var numCourses = 6, numCols = 6;
+            var brickH = (wallH * 2) / numCourses, brickW = (wallW * 2) / numCols, mortarGap = 0.012;
+            var brickFill = specs.isConcreteBlock ? '#475569' : '#c0392b';
+            var brickStroke = specs.isConcreteBlock ? '#94a3b8' : '#e74c3c';
+            var topFill = specs.isConcreteBlock ? '#64748b' : '#d9534f';
+
+            var allBricks3D = [];
+            for (var r = 0; r < numCourses; r++) {
+                var yBot = -wallH + r * brickH + mortarGap, yTop = yBot + brickH - mortarGap;
+                var isStaggered = (r % 2 === 1);
+                for (var c = 0; c < numCols; c++) {
+                    var xLeft = -wallW + c * brickW + (isStaggered ? brickW * 0.5 : 0) + mortarGap;
+                    var xRight = Math.min(wallW - mortarGap, xLeft + brickW - mortarGap);
+                    if (xRight <= xLeft) continue;
+
+                    var rawB = [
+                        [xLeft, yBot, -wallD], [xRight, yBot, -wallD], [xRight, yTop, -wallD], [xLeft, yTop, -wallD],
+                        [xLeft, yBot,  wallD], [xRight, yBot,  wallD], [xRight, yTop,  wallD], [xLeft, yTop,  wallD]
+                    ];
+                    var projB = rawB.map(function(v) { return project3D(v[0], v[1], v[2], cx, cy); });
+                    var bFaces = [
+                        { idx: [0, 1, 2, 3], fill: '#7b241c', stroke: brickStroke },
+                        { idx: [4, 5, 6, 7], fill: brickFill, stroke: brickStroke },
+                        { idx: [3, 2, 6, 7], fill: topFill, stroke: '#f1948a' },
+                        { idx: [0, 3, 7, 4], fill: '#922b21', stroke: brickStroke },
+                        { idx: [1, 2, 6, 5], fill: '#922b21', stroke: brickStroke }
+                    ];
+                    bFaces.forEach(function(f) {
+                        f.avgZ = (projB[f.idx[0]].z + projB[f.idx[1]].z + projB[f.idx[2]].z + projB[f.idx[3]].z) / 4;
+                        f.proj = projB;
