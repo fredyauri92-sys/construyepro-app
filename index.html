@@ -1169,6 +1169,9 @@
                     <div id="audit_list_container">
                         <div style="text-align:center; color:var(--text-muted); padding:10px;">No hay tandas registradas hoy.</div>
                     </div>
+                    <div style="margin-top:10px; text-align:right;">
+                        <button class="btn-secondary" style="font-size:10px; padding:4px 8px; color:var(--primary-red); border-color:var(--primary-red);" onclick="clearAuditLog()">🗑️ Limpiar Registros de Cemento</button>
+                    </div>
                 </div>
             </div>
 
@@ -1378,6 +1381,20 @@
                     <button class="btn-primary btn-green" style="margin-bottom:0; font-size:13px;" onclick="addWorkerToStaff()">
                         ➕ AGREGAR TRABAJADOR A PLANILLA Y VINCULAR
                     </button>
+                </div>
+
+                <!-- VINCULACIÓN CON AUDITORÍA DE CEMENTO POR MANO DE OBRA -->
+                <div class="result-card" id="audit_log_box_mo">
+                    <div class="result-header">
+                        <span>📝 BITÁCORA AUDITABLE DE CEMENTO (RITMO DE CUADRILLA)</span>
+                        <span class="badge badge-orange" id="audit_total_bags_mo">0 Bolsas HOY</span>
+                    </div>
+                    <div id="audit_list_container_mano_obra">
+                        <div style="text-align:center; color:var(--text-muted); padding:10px;">No hay tandas registradas hoy por la cuadrilla.</div>
+                    </div>
+                    <div style="margin-top:10px; text-align:right;">
+                        <button class="btn-secondary" style="font-size:10px; padding:4px 8px; color:var(--primary-red); border-color:var(--primary-red);" onclick="clearAuditLog()">🗑️ Limpiar Registros de Cemento</button>
+                    </div>
                 </div>
 
                 <div class="result-card">
@@ -4219,31 +4236,72 @@
         }
 
         function renderAuditLog() {
-            var list = document.getElementById('audit_log_list');
-            if (!list) return;
+            var listContainer1 = document.getElementById('audit_list_container');
+            var listContainer2 = document.getElementById('audit_list_container_mano_obra');
+            var badge1 = document.getElementById('audit_total_bags');
+            var badge2 = document.getElementById('audit_total_bags_mo');
 
             try {
                 var stored = safeStorage.getItem('construye_audit_logs');
                 if (stored) auditLogs = JSON.parse(stored);
             } catch (e) {}
 
-            if (auditLogs.length === 0) {
-                list.innerHTML = '<div style="color:#64748b; font-size:12px; font-style:italic;">No hay tandas registradas en la jornada.</div>';
+            var totalBolsas = 0;
+            if (!auditLogs || auditLogs.length === 0) {
+                var emptyHTML = '<div style="text-align:center; color:var(--text-muted); padding:10px; font-size:12px;">No hay tandas de cemento registradas hoy.</div>';
+                if (listContainer1) listContainer1.innerHTML = emptyHTML;
+                if (listContainer2) listContainer2.innerHTML = emptyHTML;
+                if (badge1) badge1.innerText = '0 Bolsas HOY';
+                if (badge2) badge2.innerText = '0 Bolsas HOY';
                 return;
             }
 
-            var html = '';
-            var totalBolsas = 0;
-
-            auditLogs.forEach(function(item) {
-                totalBolsas += (item.cemento || 1);
-                html += '<div style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid rgba(255,255,255,0.08); font-size:12px;">' +
-                    '<span style="font-weight:800; color:var(--primary-cyan);">Tanda #' + item.tanda + ' (' + item.hora + ')</span>' +
-                    '<span style="color:#ffffff;">📦 ' + (item.cemento || 1) + ' Bolsa | 🏜️ ' + item.arena + 'b | 🪨 ' + item.piedra + 'b</span>' +
+            var rowsHTML = '';
+            auditLogs.forEach(function(item, idx) {
+                var bags = item.cemento || 1;
+                totalBolsas += bags;
+                rowsHTML += '<div style="display:flex; justify-content:space-between; align-items:center; padding:6px 0; border-bottom:1px dashed rgba(255,255,255,0.1); font-size:11px;">' +
+                    '<div>' +
+                        '<span style="font-weight:900; color:var(--primary-cyan);">Tanda #' + (auditLogs.length - idx) + '</span> ' +
+                        '<span style="color:var(--text-muted); font-size:10px;">(' + item.hora + ')</span><br>' +
+                        '<span style="color:var(--text-main); font-weight:700;">📦 ' + bags + ' Bolsa | 🏜️ ' + (item.arena || 0) + 'b | 🪨 ' + (item.piedra || 0) + 'b | 💧 ' + (item.agua || 0) + 'b</span>' +
+                    '</div>' +
+                    '<div>' +
+                        '<button onclick="deleteAuditLogEntry(' + idx + ')" style="background:rgba(255,69,58,0.15); color:var(--primary-red); border:1px solid var(--primary-red); border-radius:4px; padding:2px 6px; font-size:10px; font-weight:800; cursor:pointer;" title="Eliminar tanda">🗑️</button>' +
+                    '</div>' +
                 '</div>';
             });
 
-            list.innerHTML = '<div style="margin-bottom:8px; font-weight:800; color:#30d158; font-size:13px;">📋 TOTAL JORNADA: ' + totalBolsas + ' BOLSAS CONSUMIDAS</div>' + html;
+            var fullHTML = '<div style="margin-bottom:8px; font-weight:900; color:#30d158; font-size:12px; background:rgba(48,209,88,0.1); padding:6px 8px; border-radius:6px; border-left:3px solid #30d158;">' +
+                '📋 TOTAL JORNADA: ' + totalBolsas + ' BOLSAS DE CEMENTO VACIADAS' +
+            '</div>' + rowsHTML;
+
+            if (listContainer1) listContainer1.innerHTML = fullHTML;
+            if (listContainer2) listContainer2.innerHTML = fullHTML;
+            if (badge1) badge1.innerText = totalBolsas + ' Bolsas HOY';
+            if (badge2) badge2.innerText = totalBolsas + ' Bolsas HOY';
+        }
+
+        function deleteAuditLogEntry(idx) {
+            if (auditLogs && idx >= 0 && idx < auditLogs.length) {
+                auditLogs.splice(idx, 1);
+                try {
+                    safeStorage.setItem('construye_audit_logs', JSON.stringify(auditLogs));
+                } catch (e) {}
+                renderAuditLog();
+                showToast('🗑️ Registro de tanda eliminado');
+            }
+        }
+
+        function clearAuditLog() {
+            if (confirm('¿Deseas reiniciar la bitácora auditable de cemento de la jornada?')) {
+                auditLogs = [];
+                try {
+                    safeStorage.setItem('construye_audit_logs', JSON.stringify(auditLogs));
+                } catch (e) {}
+                renderAuditLog();
+                showToast('🧹 Bitácora de cemento reiniciada');
+            }
         }
 
         function resetTrompo() {
