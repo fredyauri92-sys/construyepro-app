@@ -740,9 +740,8 @@
                 <!-- SUB-CALC 1: CONCRETO -->
                 <div id="calc_concreto" class="calc-subpane">
                     <div class="form-group">
-                        <label id="lbl_tipo_vaciado">1. Tipo de Estructura & Dosificación:</label>
-                        <select id="tipo_vaciado" onchange="renderSchematic();
-            renderToolInventory(); updateInfoBanner();">
+                        <label id="lbl_tipo_vaciado">1. Dosificación de Concreto:</label>
+                        <select id="tipo_vaciado" onchange="renderSchematic(); renderToolInventory(); updateInfoBanner();">
                             <option value="210">Losa / Vigas / Columnas (f&#39;c 210) [1 : 2 : 2]</option>
                             <option value="175_p">Pavimentos / Muros (f&#39;c 175) [1 : 2.5 : 2.5]</option>
                             <option value="175_h">Pavimento c/ Hormigón (f&#39;c 175) [1 : 5]</option>
@@ -787,11 +786,34 @@
                     </div>
 
                     <div class="form-group">
-                        <label>2. Dimensiones de la Estructura (Largo m × Ancho m × Espesor cm):</label>
+                        <label>2. Tipo de Elemento / Estructura a Vaciar:</label>
+                        <select id="forma_concreto" onchange="toggleFormaConcreto();">
+                            <option value="losa" selected>🔲 Losa / Pavimento / Base (Largo m × Ancho m × Espesor cm)</option>
+                            <option value="columna">🏛️ Vaciado de Columna (Altura m × Largo cm × Ancho cm)</option>
+                        </select>
+                    </div>
+
+                    <!-- OPCIÓN A: LOSA / PAVIMENTO -->
+                    <div id="box_forma_losa" class="form-group">
+                        <label>3. Dimensiones de la Losa / Estructura:</label>
                         <div class="grid-3">
-                            <div><label>Largo (m):</label><input type="number" id="largo" value="5.0" step="0.1" oninput="renderSchematic()"></div>
-                            <div><label>Ancho (m):</label><input type="number" id="ancho" value="4.0" step="0.1" oninput="renderSchematic()"></div>
-                            <div><label>Espesor (cm):</label><input type="number" id="espesor" value="12" step="1" oninput="renderSchematic()"></div>
+                            <div><label>Largo (m):</label><input type="number" id="largo" value="5.0" step="0.1" min="0" oninput="renderSchematic()"></div>
+                            <div><label>Ancho (m):</label><input type="number" id="ancho" value="4.0" step="0.1" min="0" oninput="renderSchematic()"></div>
+                            <div><label>Espesor (cm):</label><input type="number" id="espesor" value="12" step="1" min="0" oninput="renderSchematic()"></div>
+                        </div>
+                    </div>
+
+                    <!-- OPCIÓN B: VACIADO DE COLUMNA -->
+                    <div id="box_forma_columna" class="form-group" style="display:none;">
+                        <label>3. Dimensiones de la Columna Rectangular:</label>
+                        <div class="grid-3">
+                            <div><label>Altura H (m):</label><input type="number" id="col_altura" value="3.0" step="0.1" min="0.1" oninput="renderSchematic()"></div>
+                            <div><label>Largo / Lado A (cm):</label><input type="number" id="col_largo" value="30" step="1" min="5" oninput="renderSchematic()"></div>
+                            <div><label>Ancho / Lado B (cm):</label><input type="number" id="col_ancho" value="30" step="1" min="5" oninput="renderSchematic()"></div>
+                        </div>
+                        <div style="margin-top:10px;">
+                            <label>Cantidad de Columnas iguales:</label>
+                            <input type="number" id="col_cantidad" value="1" step="1" min="1" oninput="renderSchematic()">
                         </div>
                     </div>
 
@@ -809,31 +831,66 @@
 
                 <div id="calc_muros" class="calc-subpane" style="display:none;">
                     <div class="form-group">
-                        <label>Tipo de Ladrillo / Bloque Estructural:</label>
-                        <select id="tipo_ladrillo" onchange="renderSchematic()">
-                            <option value="kk_soga">King Kong 18H (Asentado Soga - 37.3 und/m²)</option>
-                            <option value="kk_cabeza">King Kong 18H (Asentado Cabeza - 65.0 und/m²)</option>
-                            <option value="bloque_12">Bloque Concreto Soga 12×18×28.5 cm (17.1 und/m²)</option>
+                        <label>1. Tipo de Ladrillo / Bloque Estructural:</label>
+                        <select id="tipo_ladrillo" onchange="toggleTipoLadrillo();">
+                            <option value="kk_soga" selected>King Kong 18H (Asentado Soga - 24×12×9 cm)</option>
+                            <option value="kk_cabeza">King Kong 18H (Asentado Cabeza - 24×12×9 cm)</option>
+                            <option value="bloque_12">Bloque Concreto Soga (28.5×12×18 cm)</option>
+                            <option value="custom">🛠️ Libre / Personalizado (Medidas a Medida del Maestro)</option>
                         </select>
                     </div>
 
-                    <!-- 3. MORTERO PERSONALIZABLE -->
-                    <div class="form-group grid-2">
-                        <div>
-                            <label>Largo Muro (m):</label>
-                            <input type="number" id="muro_largo" value="6.0" step="0.1" oninput="renderSchematic()">
+                    <!-- CONTENEDOR DE LADRILLO PERSONALIZADO LIBRE -->
+                    <div id="box_ladrillo_custom" style="display:none; padding:12px; background:rgba(0,229,255,0.06); border:1px solid rgba(0,229,255,0.3); border-radius:10px; margin-bottom:12px;">
+                        <div style="font-size:11px; font-weight:800; color:var(--primary-cyan); margin-bottom:8px;">
+                            📐 DIMENSIONES Y DISPOSICIÓN DEL LADRILLO PERSONALIZADO:
+                        </div>
+                        <div class="grid-3" style="margin-bottom:8px;">
+                            <div>
+                                <label>Largo Ladrillo (cm):</label>
+                                <input type="number" id="lad_largo" value="24.0" step="0.5" min="5" max="100" oninput="renderSchematic()">
+                            </div>
+                            <div>
+                                <label>Ancho Ladrillo (cm):</label>
+                                <input type="number" id="lad_ancho" value="12.0" step="0.5" min="5" max="100" oninput="renderSchematic()">
+                            </div>
+                            <div>
+                                <label>Alto Ladrillo (cm):</label>
+                                <input type="number" id="lad_alto" value="9.0" step="0.5" min="3" max="100" oninput="renderSchematic()">
+                            </div>
                         </div>
                         <div>
-                            <label>Alto Muro (m):</label>
-                            <input type="number" id="muro_alto" value="2.6" step="0.1" oninput="renderSchematic()">
+                            <label>Tipo de Asentado / Disposición en Muro:</label>
+                            <select id="lad_asentado" onchange="renderSchematic()">
+                                <option value="soga" selected>Soga (Vista Largo×Alto • Espesor Muro = Ancho)</option>
+                                <option value="cabeza">Cabeza (Vista Ancho×Alto • Espesor Muro = Largo)</option>
+                                <option value="canto">Canto (Vista Largo×Ancho • Espesor Muro = Alto)</option>
+                            </select>
                         </div>
                     </div>
 
+                    <!-- DIMENSIONES DEL MURO -->
                     <div class="form-group grid-2">
                         <div>
-                            <label>Factor Merma (%):</label>
-                            <select id="merma_ladrillo">
-                                <option value="1.05">5% (Estándar)</option>
+                            <label>2. Largo Muro (m):</label>
+                            <input type="number" id="muro_largo" value="6.0" step="0.1" min="0.1" oninput="renderSchematic()">
+                        </div>
+                        <div>
+                            <label>Alto Muro (m):</label>
+                            <input type="number" id="muro_alto" value="2.6" step="0.1" min="0.1" oninput="renderSchematic()">
+                        </div>
+                    </div>
+
+                    <!-- JUNTA Y MERMA -->
+                    <div class="form-group grid-3">
+                        <div>
+                            <label>3. Junta Mortero (cm):</label>
+                            <input type="number" id="mortero_junta" value="1.5" step="0.1" min="0.5" max="4.0" oninput="renderSchematic()">
+                        </div>
+                        <div>
+                            <label>Factor Merma Ladrillo (%):</label>
+                            <select id="merma_ladrillo" onchange="renderSchematic()">
+                                <option value="1.05" selected>5% (Estándar)</option>
                                 <option value="1.08">8% (Cortes)</option>
                                 <option value="1.10">10% (Complejo)</option>
                             </select>
@@ -847,13 +904,11 @@
                     <button class="btn-primary btn-green" style="margin-top:12px; margin-bottom:14px; font-size:14px; font-weight:800;" onclick="calcularMuros(); renderSchematic(); renderToolInventory(); showToast('✅ CÓMPUTO DE ALBAÑILERÍA RECALCULADO');">🧱 CALCULAR MATERIALES DE ALBAÑILERÍA</button>
 
                     <div class="result-card" id="res_muros">
-                        <div class="result-header">📊 RESULTADO DE MURO</div>
-                        <div style="text-align:center; color:var(--text-muted); padding:10px;">Presiona Calcular Muro.</div>
+                        <div class="result-header">📊 RESULTADO DE MURO DE ALBAÑILERÍA</div>
+                        <div style="text-align:center; color:var(--text-muted); padding:10px;">Presiona Calcular Materiales de Albañilería.</div>
                     </div>
                 </div>
 
-                <!-- SUB-CALC 3: ACERO Y VARILLAS -->
-                                <!-- SUB-CALC 3: LOSA TECNOPOR -->
                 <div id="calc_tecnopor" class="calc-subpane" style="display:none;">
                     <div class="form-group grid-2">
                         <div>
@@ -1288,12 +1343,84 @@
                     </div>
                 </div>
 
-                <div class="result-card">
-                    <div class="result-header">📝 BITÁCORA DIGITAL CON FOTO</div>
-                    <input type="text" id="note_text" placeholder="Escribe observación o avance..." style="margin-bottom:8px;">
-                    <input type="file" id="note_file" accept="image/*" capture="environment" style="margin-bottom:8px; font-size:11px;">
-                    <button class="btn-primary" onclick="addNote()">📌 GUARDAR NOTA EN OBRABOX</button>
-                    <div id="notes_container" style="margin-top:10px;"></div>
+                <div class="result-card" id="card_bitacora_digital">
+                    <div class="result-header" style="display:flex; justify-content:space-between; align-items:center;">
+                        <span>📸 BITÁCORA DIGITAL CON FOTO Y OBSERVACIONES</span>
+                        <span class="badge badge-green" id="badge_total_notas">0 NOTAS</span>
+                    </div>
+
+                    <!-- BOTONES DE AUTO-REGISTRO AUTOMATIZADO (QUICK AUTO-LOGS) -->
+                    <div style="margin-bottom:12px; padding:10px; background:rgba(0,229,255,0.05); border:1px solid rgba(0,229,255,0.25); border-radius:10px;">
+                        <div style="font-size:11px; font-weight:800; color:var(--primary-cyan); margin-bottom:6px;">⚡ AUTO-REGISTRO RÁPIDO DE HITOS DE OBRA:</div>
+                        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap:6px;">
+                            <button class="btn-secondary" style="font-size:10px; padding:6px; font-weight:700;" onclick="autoLogHito('vaciado')">🏗️ Registrar Vaciado</button>
+                            <button class="btn-secondary" style="font-size:10px; padding:6px; font-weight:700;" onclick="autoLogHito('asistencia')">👷 Registrar Asistencia</button>
+                            <button class="btn-secondary" style="font-size:10px; padding:6px; font-weight:700;" onclick="autoLogHito('avance')">🧱 Registrar Avance</button>
+                            <button class="btn-secondary" style="font-size:10px; padding:6px; font-weight:700;" onclick="autoLogHito('seguridad')">⚠️ Alerta Seguridad</button>
+                        </div>
+                    </div>
+
+                    <!-- FORMULARIO DE NUEVA NOTA CON FOTO Y SELECCIÓN DE CATEGORÍA -->
+                    <div style="margin-bottom:12px;">
+                        <div class="grid-2" style="margin-bottom:8px;">
+                            <div>
+                                <label>Categoría / Tipo de Hito:</label>
+                                <select id="note_category" style="font-size:12px; font-weight:700;">
+                                    <option value="📌 General">📌 General / Observación</option>
+                                    <option value="🏗️ Vaciado Concreto">🏗️ Vaciado Concreto</option>
+                                    <option value="🧱 Avance Estructura">🧱 Avance Estructura</option>
+                                    <option value="👷 Personal & Cuadrilla">👷 Personal & Cuadrilla</option>
+                                    <option value="⚠️ Incidencia / Clima">⚠️ Incidencia / Clima</option>
+                                    <option value="✅ Control de Calidad">✅ Control de Calidad</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label>Responsable / Inspector:</label>
+                                <input type="text" id="note_author" value="Maestro / Residente de Obra" style="font-size:12px; font-weight:700;">
+                            </div>
+                        </div>
+
+                        <div style="margin-bottom:8px;">
+                            <label>Descripción u Observación de la Obra:</label>
+                            <textarea id="note_text" rows="2" placeholder="Escribe observación, ubicación de vaciado, prueba de asentamiento Slump, estado del tiempo, etc..." style="width:100%; font-size:12px; padding:8px; border-radius:8px; background:var(--input-bg); color:var(--text-main); border:1px solid var(--card-border); resize:vertical;"></textarea>
+                        </div>
+
+                        <!-- CAPTURA / SELECCIÓN DE FOTO -->
+                        <div style="margin-bottom:10px; padding:8px; background:rgba(255,255,255,0.03); border:1px dashed var(--primary-cyan); border-radius:8px;">
+                            <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap;">
+                                <label for="note_file" style="cursor:pointer; display:inline-flex; align-items:center; gap:6px; background:rgba(0,229,255,0.12); color:var(--primary-cyan); border:1px solid var(--primary-cyan); padding:7px 12px; border-radius:8px; font-size:11px; font-weight:800;">
+                                    📷 CAPTURAR FOTO CON CÁMARA / SUBIR IMAGEN
+                                </label>
+                                <input type="file" id="note_file" accept="image/*" capture="environment" onchange="previewSelectedNotePhoto(this)" style="display:none;">
+                                <span id="photo_filename_status" style="font-size:10px; color:var(--text-muted); font-style:italic;">Sin foto adjunta</span>
+                            </div>
+
+                            <!-- PREVIEW DE LA FOTO SELECCIONADA -->
+                            <div id="photo_preview_box" style="display:none; margin-top:8px; text-align:center; position:relative;">
+                                <img id="img_preview_thumb" src="" alt="Vista previa" style="max-height:120px; max-width:100%; border-radius:8px; border:2px solid var(--primary-cyan); object-fit:cover;">
+                                <button onclick="clearSelectedNotePhoto()" style="position:absolute; top:4px; right:4px; background:rgba(255,69,58,0.9); color:#fff; border:none; border-radius:50%; width:24px; height:24px; font-weight:bold; cursor:pointer; font-size:12px;">✕</button>
+                            </div>
+                        </div>
+
+                        <button class="btn-primary btn-green" style="font-size:13px; font-weight:900; width:100%; margin-bottom:10px;" onclick="addBitacoraNote()">📌 GUARDAR REGISTRO EN BITÁCORA</button>
+                    </div>
+
+                    <!-- FILTROS Y CONTENEDOR DE REGISTROS -->
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:6px;">
+                        <span style="font-size:11px; font-weight:800; color:var(--primary-cyan);">📋 REGISTROS ALMACENADOS EN BITÁCORA:</span>
+                        <button class="btn-secondary" style="font-size:10px; padding:4px 8px;" onclick="clearAllBitacora()">🗑️ Limpiar Bitácora</button>
+                    </div>
+
+                    <div id="notes_container" style="display:flex; flex-direction:column; gap:8px; max-height:400px; overflow-y:auto; padding-right:4px;">
+                        <!-- JS Rendered entries -->
+                    </div>
+                </div>
+
+                <!-- MODAL PARA VER FOTO COMPLETA (LIGHTBOX) -->
+                <div id="modal_bitacora_photo" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:99999; justify-content:center; align-items:center; padding:20px; flex-direction:column;">
+                    <button onclick="closePhotoModal()" style="position:absolute; top:15px; right:15px; background:var(--primary-red); color:#fff; border:none; padding:8px 14px; border-radius:8px; font-weight:800; cursor:pointer; font-size:14px;">✕ CERRAR VISTA</button>
+                    <img id="modal_img_full" src="" style="max-width:100%; max-height:80vh; border-radius:10px; border:2px solid var(--primary-cyan); object-fit:contain;">
+                    <div id="modal_img_caption" style="color:#ffffff; margin-top:10px; font-size:12px; text-align:center; font-weight:700;"></div>
                 </div>
 
                 <div class="chart-box">
@@ -1348,15 +1475,15 @@
             };
         }
 
-        var safeStorage = {
+                var safeStorage = {
             getItem: function(key) {
-                try { return safeStorage.getItem(key); } catch(e) { return null; }
+                try { return localStorage.getItem(key); } catch(e) { return null; }
             },
             setItem: function(key, val) {
-                try { safeStorage.setItem(key, val); } catch(e) {}
+                try { localStorage.setItem(key, val); } catch(e) {}
             },
             removeItem: function(key) {
-                try { safeStorage.removeItem(key); } catch(e) {}
+                try { localStorage.removeItem(key); } catch(e) {}
             }
         };
 
@@ -1539,6 +1666,24 @@
                 else man.style.display = 'none';
             }
             updateRendimientoConcreto();
+            renderSchematic();
+            renderToolInventory();
+        }
+
+        
+        function toggleFormaConcreto() {
+            var formaEl = document.getElementById('forma_concreto');
+            var forma = formaEl ? formaEl.value : 'losa';
+            var boxLosa = document.getElementById('box_forma_losa');
+            var boxCol = document.getElementById('box_forma_columna');
+            if (forma === 'columna') {
+                if (boxLosa) boxLosa.style.display = 'none';
+                if (boxCol) boxCol.style.display = 'block';
+            } else {
+                if (boxLosa) boxLosa.style.display = 'block';
+                if (boxCol) boxCol.style.display = 'none';
+            }
+            calcularConcreto();
             renderSchematic();
             renderToolInventory();
         }
@@ -1910,12 +2055,12 @@
             var proj = rawVertices.map(function(v) { return project3D(v[0], v[1], v[2], cx, cy); });
 
             var faces = [
-                { idx: [0, 1, 2, 3], fill: 'rgba(2,132,199,0.7)', stroke: '#38bdf8' },
-                { idx: [4, 5, 6, 7], fill: 'rgba(3,105,161,0.8)', stroke: '#00e5ff' },
-                { idx: [0, 1, 5, 4], fill: 'rgba(15,23,42,0.9)', stroke: '#334155' },
-                { idx: [3, 2, 6, 7], fill: 'rgba(56,189,248,0.85)', stroke: '#00e5ff' },
-                { idx: [0, 3, 7, 4], fill: 'rgba(30,58,138,0.75)', stroke: '#60a5fa' },
-                { idx: [1, 2, 6, 5], fill: 'rgba(30,58,138,0.75)', stroke: '#60a5fa' }
+                { idx: [0, 1, 2, 3], fill: '#475569', stroke: '#64748b' },
+                { idx: [4, 5, 6, 7], fill: '#94a3b8', stroke: '#cbd5e1' },
+                { idx: [0, 1, 5, 4], fill: '#cbd5e1', stroke: '#f1f5f9' },
+                { idx: [3, 2, 6, 7], fill: '#334155', stroke: '#475569' },
+                { idx: [0, 3, 7, 4], fill: '#64748b', stroke: '#94a3b8' },
+                { idx: [1, 2, 6, 5], fill: '#64748b', stroke: '#94a3b8' }
             ];
 
             faces.forEach(function(f) {
@@ -1992,31 +2137,55 @@
             if (!ctx) return;
             clear3DCanvas(ctx, canvas);
 
-            var l = parseFloat(document.getElementById('largo').value) || 5.0;
-            var a = parseFloat(document.getElementById('ancho').value) || 4.0;
-            var e = parseFloat(document.getElementById('espesor').value) || 12;
+            var formaEl = document.getElementById('forma_concreto');
+            var forma = formaEl ? formaEl.value : 'losa';
+            var vol = 0, sacos = 0;
+            var sx = 0.5, sy = 0.5, sz = 0.5;
 
-            var vol = l * a * (e / 100.0) * 1.05;
-            var sacos = Math.ceil(vol * 9.73);
+            var pill_tl = document.getElementById('pill_tl');
+            var pill_tr = document.getElementById('pill_tr');
+            var pill_bl = document.getElementById('pill_bl');
+            var pill_br = document.getElementById('pill_br');
 
-            var p_pill_tl = document.getElementById('pill_tl'); if (p_pill_tl) p_pill_tl.innerText = '🏗️ CONCRETO ESTRUCTURAL 3D 360°';
-            var p_pill_tr = document.getElementById('pill_tr'); if (p_pill_tr) p_pill_tr.innerText = '📦 ' + vol.toFixed(2) + ' m³';
-            var p_pill_bl = document.getElementById('pill_bl'); if (p_pill_bl) p_pill_bl.innerText = '📏 ' + l.toFixed(2) + 'm × ' + a.toFixed(2) + 'm × ' + e + 'cm';
-            var p_pill_br = document.getElementById('pill_br'); if (p_pill_br) p_pill_br.innerText = '📦 ' + sacos + ' Bolsas Cemento';
+            if (forma === 'columna') {
+                var colH = parseFloat(document.getElementById('col_altura').value) || 3.0;
+                var colL = parseFloat(document.getElementById('col_largo').value) || 30;
+                var colA = parseFloat(document.getElementById('col_ancho').value) || 30;
+                var colN = parseInt(document.getElementById('col_cantidad').value) || 1;
 
-            var p_pill_tl = document.getElementById('pill_tl'); if (p_pill_tl) p_pill_tl.innerText = '🏗️ CONCRETO ESTRUCTURAL 3D 360°';
-            document.getElementById('pill_tr').innerText = '📦 ' + (l*a*e/100*1.05).toFixed(2) + ' m³';
-            var p_pill_bl = document.getElementById('pill_bl'); if (p_pill_bl) p_pill_bl.innerText = '📏 ' + l.toFixed(2) + 'm × ' + a.toFixed(2) + 'm × ' + e + 'cm';
-            
+                vol = colN * colH * (colL / 100.0) * (colA / 100.0) * 1.05;
+                sacos = vol * 9.73;
+
+                if (pill_tl) pill_tl.innerText = '🏛️ COLUMNA 3D 360° INTERACTIVA';
+                if (pill_tr) pill_tr.innerText = '📦 ' + vol.toFixed(3) + ' m³';
+                if (pill_bl) pill_bl.innerText = '📏 H:' + colH.toFixed(2) + 'm • Sec:' + colL + '×' + colA + 'cm' + (colN > 1 ? ' (' + colN + ' col)' : '');
+                if (pill_br) pill_br.innerText = '📦 ' + sacos.toFixed(2) + ' Bolsas Cemento';
+
+                sx = Math.min(0.5, Math.max(0.2, (colA / 100.0) * 0.9));
+                sy = Math.min(1.2, Math.max(0.5, colH * 0.25));
+                sz = Math.min(0.5, Math.max(0.2, (colL / 100.0) * 0.9));
+            } else {
+                var l = parseFloat(document.getElementById('largo').value) || 5.0;
+                var a = parseFloat(document.getElementById('ancho').value) || 4.0;
+                var e = parseFloat(document.getElementById('espesor').value) || 12;
+
+                vol = l * a * (e / 100.0) * 1.05;
+                sacos = vol * 9.73;
+
+                if (pill_tl) pill_tl.innerText = '🏗️ CONCRETO ESTRUCTURAL 3D 360°';
+                if (pill_tr) pill_tr.innerText = '📦 ' + vol.toFixed(2) + ' m³';
+                if (pill_bl) pill_bl.innerText = '📏 ' + l.toFixed(2) + 'm × ' + a.toFixed(2) + 'm × ' + e + 'cm';
+                if (pill_br) pill_br.innerText = '📦 ' + sacos.toFixed(2) + ' Bolsas Cemento';
+
+                sx = Math.min(1.1, Math.max(0.4, a * 0.16));
+                sy = Math.min(0.5, Math.max(0.12, (e / 100.0) * 1.4));
+                sz = Math.min(1.1, Math.max(0.4, l * 0.16));
+            }
 
             var cx = canvas.width / 2;
             var cy = canvas.height / 2 + 5;
 
             drawGridFloor3D(ctx, cx, cy);
-
-            var sx = Math.min(1.1, Math.max(0.4, a * 0.16));
-            var sy = Math.min(0.5, Math.max(0.12, (e / 100.0) * 1.4));
-            var sz = Math.min(1.1, Math.max(0.4, l * 0.16));
 
             var rawVertices = [
                 [-sx, -sy, -sz], [sx, -sy, -sz], [sx, sy, -sz], [-sx, sy, -sz],
@@ -2026,12 +2195,12 @@
             var proj = rawVertices.map(function(v) { return project3D(v[0], v[1], v[2], cx, cy); });
 
             var faces = [
-                { idx: [0, 1, 2, 3], fill: '#1e3a8a', stroke: '#3b82f6' },
-                { idx: [4, 5, 6, 7], fill: '#2563eb', stroke: '#60a5fa' },
-                { idx: [0, 1, 5, 4], fill: '#0f172a', stroke: '#334155' },
-                { idx: [3, 2, 6, 7], fill: '#3b82f6', stroke: '#93c5fd' },
-                { idx: [0, 3, 7, 4], fill: '#1d4ed8', stroke: '#3b82f6' },
-                { idx: [1, 2, 6, 5], fill: '#1d4ed8', stroke: '#3b82f6' }
+                { idx: [0, 1, 2, 3], fill: '#475569', stroke: '#64748b' }, // Back
+                { idx: [4, 5, 6, 7], fill: '#94a3b8', stroke: '#cbd5e1' }, // Front (Claro Plomo)
+                { idx: [0, 1, 5, 4], fill: '#cbd5e1', stroke: '#f1f5f9' }, // Top (Plomo Claro)
+                { idx: [3, 2, 6, 7], fill: '#334155', stroke: '#475569' }, // Bottom
+                { idx: [0, 3, 7, 4], fill: '#64748b', stroke: '#94a3b8' }, // Left
+                { idx: [1, 2, 6, 5], fill: '#64748b', stroke: '#94a3b8' }  // Right
             ];
 
             faces.forEach(function(f) {
@@ -2042,14 +2211,104 @@
 
             faces.forEach(function(f) {
                 var pts = f.idx.map(function(i) { return proj[i]; });
-                drawPolygon3D(ctx, pts, f.fill, f.stroke, 1.5);
+                drawPolygon3D(ctx, pts, f.fill, f.stroke, 1.0);
             });
 
-            // --- 3D COTAS / DIMENSION LINES ---
-            drawDimensionLine3D(ctx, proj[4], proj[5], '#00e5ff', 'Ancho: ' + a.toFixed(2) + 'm');
-            drawDimensionLine3D(ctx, proj[5], proj[6], '#ff9f0a', 'e: ' + e + 'cm');
-            drawDimensionLine3D(ctx, proj[5], proj[1], '#30d158', 'Largo: ' + l.toFixed(2) + 'm');
+            // Dibujar cotas / dimensiones 3D interactivas
+            var pBotLeft = project3D(-sx, -sy, sz, cx, cy);
+            var pBotRight = project3D(sx, -sy, sz, cx, cy);
+            var pTopRight = project3D(sx, sy, sz, cx, cy);
+            var pBackRight = project3D(sx, -sy, -sz, cx, cy);
+
+            if (forma === 'columna') {
+                var colH = parseFloat(document.getElementById('col_altura').value) || 3.0;
+                var colL = parseFloat(document.getElementById('col_largo').value) || 30;
+                var colA = parseFloat(document.getElementById('col_ancho').value) || 30;
+
+                drawDimensionLine3D(ctx, pBotLeft, pBotRight, '#00e5ff', 'Ancho: ' + colA + ' cm');
+                drawDimensionLine3D(ctx, pBotRight, pTopRight, '#ff9f0a', 'Altura: ' + colH.toFixed(2) + ' m');
+                drawDimensionLine3D(ctx, pBotRight, pBackRight, '#30d158', 'Largo: ' + colL + ' cm');
+            } else {
+                var l = parseFloat(document.getElementById('largo').value) || 5.0;
+                var a = parseFloat(document.getElementById('ancho').value) || 4.0;
+                var e = parseFloat(document.getElementById('espesor').value) || 12;
+
+                drawDimensionLine3D(ctx, pBotLeft, pBotRight, '#00e5ff', 'Ancho: ' + a.toFixed(2) + ' m');
+                drawDimensionLine3D(ctx, pBotRight, pTopRight, '#ff9f0a', 'Espesor: ' + e + ' cm');
+                drawDimensionLine3D(ctx, pBotRight, pBackRight, '#30d158', 'Largo: ' + l.toFixed(2) + ' m');
+            }
         }
+
+                function toggleTipoLadrillo() {
+            var opEl = document.getElementById('tipo_ladrillo');
+            var op = opEl ? opEl.value : 'kk_soga';
+            var boxCustom = document.getElementById('box_ladrillo_custom');
+            var juntaEl = document.getElementById('mortero_junta');
+
+            if (op === 'custom') {
+                if (boxCustom) boxCustom.style.display = 'block';
+            } else {
+                if (boxCustom) boxCustom.style.display = 'none';
+                if (juntaEl) {
+                    if (op === 'bloque_12') juntaEl.value = '1.0';
+                    else juntaEl.value = '1.5';
+                }
+            }
+            calcularMuros();
+            renderSchematic();
+            renderToolInventory();
+        }
+
+        function getBrickSpecs() {
+            var opEl = document.getElementById('tipo_ladrillo');
+            var op = opEl ? opEl.value : 'kk_soga';
+            var juntaEl = document.getElementById('mortero_junta');
+            var juntaCm = juntaEl ? (parseFloat(juntaEl.value) || 1.5) : 1.5;
+
+            var L_cm = 24.0, A_cm = 12.0, H_cm = 9.0, asentado = 'soga', name = 'King Kong 18H (Soga)';
+            var isConcreteBlock = false;
+
+            if (op === 'kk_cabeza') {
+                L_cm = 24.0; A_cm = 12.0; H_cm = 9.0; asentado = 'cabeza'; name = 'King Kong 18H (Cabeza)';
+            } else if (op === 'bloque_12') {
+                L_cm = 28.5; A_cm = 12.0; H_cm = 18.0; asentado = 'soga'; name = 'Bloque Concreto (12×18×28.5 cm)'; isConcreteBlock = true;
+            } else if (op === 'custom') {
+                L_cm = parseFloat(document.getElementById('lad_largo') ? document.getElementById('lad_largo').value : 24.0) || 24.0;
+                A_cm = parseFloat(document.getElementById('lad_ancho') ? document.getElementById('lad_ancho').value : 12.0) || 12.0;
+                H_cm = parseFloat(document.getElementById('lad_alto') ? document.getElementById('lad_alto').value : 9.0) || 9.0;
+                asentado = document.getElementById('lad_asentado') ? document.getElementById('lad_asentado').value : 'soga';
+                name = 'Ladrillo Personalizado (' + L_cm + '×' + A_cm + '×' + H_cm + ' cm)';
+            }
+
+            var L = L_cm / 100.0, A = A_cm / 100.0, H = H_cm / 100.0, j = juntaCm / 100.0;
+            var Lv = L, Hv = H, Esp = A;
+
+            if (asentado === 'cabeza') {
+                Lv = A; Hv = H; Esp = L;
+            } else if (asentado === 'canto') {
+                Lv = L; Hv = A; Esp = H;
+            }
+
+            // Formula RNE E.070: C = 1 / ((Lv + j) * (Hv + j))
+            var undM2Neto = 1.0 / ((Lv + j) * (Hv + j));
+            var volMuroM2 = Esp;
+            var volLadrilloUnd = L * A * H;
+            var volMorteroM2Neto = Math.max(0.001, volMuroM2 - (undM2Neto * volLadrilloUnd));
+
+            return {
+                op: op,
+                name: name,
+                L_cm: L_cm, A_cm: A_cm, H_cm: H_cm,
+                L: L, A: A, H: H,
+                asentado: asentado,
+                juntaCm: juntaCm, j: j,
+                Lv: Lv, Hv: Hv, Esp: Esp,
+                undM2Neto: undM2Neto,
+                volMorteroM2Neto: volMorteroM2Neto,
+                isConcreteBlock: isConcreteBlock
+            };
+        }
+
 
         function render3DCanvasWall() {
             var canvas = document.getElementById('canvas_3d_viewport');
@@ -2060,21 +2319,19 @@
 
             var l = parseFloat(document.getElementById('muro_largo').value) || 6.0;
             var h = parseFloat(document.getElementById('muro_alto').value) || 2.6;
-            var op = document.getElementById('tipo_ladrillo').value;
+            var mermaPct = parseFloat(document.getElementById('merma_ladrillo') ? document.getElementById('merma_ladrillo').value : 1.05) || 1.05;
 
-            var undM2 = (op === 'kk_cabeza') ? 65.0 : (op === 'bloque_12' ? 17.1 : 37.3);
-            var totalLadrillos = Math.ceil(l * h * undM2 * 1.05);
-            var sacos = Math.ceil((l * h * 0.027 * 1.10) * 7.5);
+            var specs = getBrickSpecs();
 
-            var p_pill_tl = document.getElementById('pill_tl'); if (p_pill_tl) p_pill_tl.innerText = '🧱 MURO DE LADRILLOS 3D 360°';
-            var p_pill_tr = document.getElementById('pill_tr'); if (p_pill_tr) p_pill_tr.innerText = '🧱 ' + totalLadrillos + ' Ladrillos';
-            var p_pill_bl = document.getElementById('pill_bl'); if (p_pill_bl) p_pill_bl.innerText = '📏 ' + l.toFixed(2) + 'm Largo × ' + h.toFixed(2) + 'm Alto';
-            var p_pill_br = document.getElementById('pill_br'); if (p_pill_br) p_pill_br.innerText = '📦 ' + sacos + ' Bolsas • ' + totalLadrillos + ' Ladrillos';
+            var area = l * h;
+            var totalLadrillos = Math.ceil(area * specs.undM2Neto * mermaPct);
+            var totalMorteroM3 = area * specs.volMorteroM2Neto * 1.10;
+            var sacosExact = totalMorteroM3 * 7.5;
 
-            var p_pill_tl = document.getElementById('pill_tl'); if (p_pill_tl) p_pill_tl.innerText = '🧱 MURO DE LADRILLOS 3D 360°';
-            document.getElementById('pill_tr').innerText = '🧱 ' + totalLadrillos + ' Ladrillos';
-            var p_pill_bl = document.getElementById('pill_bl'); if (p_pill_bl) p_pill_bl.innerText = '📏 ' + l.toFixed(2) + 'm Largo × ' + h.toFixed(2) + 'm Alto';
-            
+            var pill_tl = document.getElementById('pill_tl'); if (pill_tl) pill_tl.innerText = '🧱 MURO 3D 360° INTERACTIVO (' + specs.name + ')';
+            var pill_tr = document.getElementById('pill_tr'); if (pill_tr) pill_tr.innerText = '🧱 ' + totalLadrillos + ' Unidades (' + specs.undM2Neto.toFixed(1) + ' u/m²)';
+            var pill_bl = document.getElementById('pill_bl'); if (pill_bl) pill_bl.innerText = '📏 ' + l.toFixed(2) + 'm×' + h.toFixed(2) + 'm • Lad: ' + specs.L_cm + '×' + specs.A_cm + '×' + specs.H_cm + 'cm (Junta ' + specs.juntaCm + 'cm)';
+            var pill_br = document.getElementById('pill_br'); if (pill_br) pill_br.innerText = '📦 ' + sacosExact.toFixed(2) + ' Bolsas • ' + totalMorteroM3.toFixed(3) + ' m³ Mortero';
 
             var cx = canvas.width / 2;
             var cy = canvas.height / 2 + 5;
@@ -2083,18 +2340,18 @@
 
             var wallW = Math.min(1.1, Math.max(0.4, l * 0.16));
             var wallH = Math.min(0.8, Math.max(0.3, h * 0.22));
-            var wallD = (op === 'kk_cabeza') ? 0.22 : 0.12;
+            var wallD = Math.min(0.35, Math.max(0.08, specs.Esp * 0.9));
 
-            var numCourses = 6;
-            var numCols = 7;
+            var numCourses = Math.min(12, Math.max(4, Math.round((h / (specs.Hv + specs.j)) * 0.4)));
+            var numCols = Math.min(12, Math.max(4, Math.round((l / (specs.Lv + specs.j)) * 0.4)));
+
             var brickH = (wallH * 2) / numCourses;
             var brickW = (wallW * 2) / numCols;
-            var mortarGap = 0.012;
+            var mortarGap = Math.min(0.02, Math.max(0.005, (specs.j / (specs.Hv + specs.j)) * brickH));
 
-            var isConcreteBlock = (op === 'bloque_12');
-            var brickFill = isConcreteBlock ? '#475569' : '#c0392b';
-            var brickStroke = isConcreteBlock ? '#94a3b8' : '#e74c3c';
-            var topFill = isConcreteBlock ? '#64748b' : '#d9534f';
+            var brickFill = specs.isConcreteBlock ? '#475569' : '#c0392b';
+            var brickStroke = specs.isConcreteBlock ? '#94a3b8' : '#e74c3c';
+            var topFill = specs.isConcreteBlock ? '#64748b' : '#d9534f';
 
             var allBricks3D = [];
 
@@ -2150,7 +2407,7 @@
 
             drawDimensionLine3D(ctx, pBottomLeft, pBottomRight, '#00e5ff', 'Largo: ' + l.toFixed(2) + 'm');
             drawDimensionLine3D(ctx, pBottomRight, pTopRight, '#ff9f0a', 'Alto: ' + h.toFixed(2) + 'm');
-            drawDimensionLine3D(ctx, pBottomRight, pSideBack, '#30d158', 'Esp: ' + (wallD*100).toFixed(0) + 'cm');
+            drawDimensionLine3D(ctx, pBottomRight, pSideBack, '#30d158', 'Espesor: ' + (specs.Esp * 100).toFixed(1) + 'cm');
         }
 
         function render3DCanvasTecnopor() {
@@ -2192,11 +2449,11 @@
             var pBase = rawBase.map(function(v) { return project3D(v[0], v[1], v[2], cx, cy); });
 
             var baseFaces = [
-                { idx: [0, 1, 2, 3], fill: '#0f172a', stroke: '#334155' },
-                { idx: [4, 5, 6, 7], fill: '#1e293b', stroke: '#3b82f6' },
-                { idx: [0, 3, 7, 4], fill: '#0f172a', stroke: '#334155' },
-                { idx: [1, 2, 6, 5], fill: '#1e293b', stroke: '#3b82f6' },
-                { idx: [0, 1, 5, 4], fill: '#0b0f19', stroke: '#1e293b' }
+                { idx: [0, 1, 2, 3], fill: '#334155', stroke: '#475569' },
+                { idx: [4, 5, 6, 7], fill: '#475569', stroke: '#64748b' },
+                { idx: [0, 3, 7, 4], fill: '#334155', stroke: '#475569' },
+                { idx: [1, 2, 6, 5], fill: '#475569', stroke: '#64748b' },
+                { idx: [0, 1, 5, 4], fill: '#1e293b', stroke: '#334155' }
             ];
 
             baseFaces.forEach(function(f) {
@@ -2220,11 +2477,11 @@
                 var tB = ((b + 1) / numBands) * 2 - 1;
 
                 var isEPS = (b % 2 === 0);
-                var fillTop = isEPS ? '#ffffff' : (dir === 'h' ? '#0284c7' : '#d97706');
-                var fillSide = isEPS ? '#f1f5f9' : (dir === 'h' ? '#0369a1' : '#b45309');
-                var fillFront = isEPS ? '#e2e8f0' : (dir === 'h' ? '#0284c7' : '#d97706');
-                var fillBack = isEPS ? '#cbd5e1' : (dir === 'h' ? '#0f172a' : '#78350f');
-                var strokeCol = isEPS ? '#cbd5e1' : (dir === 'h' ? '#38bdf8' : '#f59e0b');
+                var fillTop = isEPS ? '#ffffff' : '#cbd5e1';
+                var fillSide = isEPS ? '#f1f5f9' : '#64748b';
+                var fillFront = isEPS ? '#e2e8f0' : '#94a3b8';
+                var fillBack = isEPS ? '#cbd5e1' : '#475569';
+                var strokeCol = isEPS ? '#cbd5e1' : '#f1f5f9';
 
                 var rawBox;
                 if (dir === 'h') {
@@ -2287,9 +2544,9 @@
             var pTop = rawTopSlab.map(function(v) { return project3D(v[0], v[1], v[2], cx, cy); });
 
             var topFaces = [
-                { idx: [3, 2, 6, 7], fill: 'rgba(56, 189, 248, 0.30)', stroke: '#00e5ff', isCapTop: true },
-                { idx: [4, 5, 6, 7], fill: 'rgba(2, 132, 199, 0.40)', stroke: '#00e5ff' },
-                { idx: [1, 2, 6, 5], fill: 'rgba(2, 132, 199, 0.40)', stroke: '#00e5ff' }
+                { idx: [3, 2, 6, 7], fill: 'rgba(203, 213, 225, 0.60)', stroke: '#f1f5f9', isCapTop: true },
+                { idx: [4, 5, 6, 7], fill: 'rgba(148, 163, 184, 0.65)', stroke: '#cbd5e1' },
+                { idx: [1, 2, 6, 5], fill: 'rgba(148, 163, 184, 0.65)', stroke: '#cbd5e1' }
             ];
 
             topFaces.forEach(function(f) {
@@ -2351,7 +2608,7 @@
             var p3 = project3D(1.2, 0.9, 0, cx, cy);
             var p4 = project3D(-1.2, 0.9, 0, cx, cy);
 
-            drawPolygon3D(ctx, [p1, p2, p3, p4], 'rgba(0, 229, 255, 0.35)', '#00e5ff', 2);
+            drawPolygon3D(ctx, [p1, p2, p3, p4], '#cbd5e1', '#f1f5f9', 2);
         }
 
                 function render3DCanvasEscalera() {
@@ -2415,11 +2672,11 @@
                     var pS = rawS.map(function(v) { return project3D(v[0], v[1], v[2], cx, cy); });
 
                     var sFaces = [
-                        { idx: [0, 1, 2, 3], fill: '#0284c7', stroke: '#38bdf8' },
-                        { idx: [4, 5, 6, 7], fill: '#0284c7', stroke: '#38bdf8' },
-                        { idx: [3, 2, 6, 7], fill: '#0369a1', stroke: '#00e5ff' },
-                        { idx: [0, 3, 7, 4], fill: '#0f172a', stroke: '#334155' },
-                        { idx: [1, 2, 6, 5], fill: '#0369a1', stroke: '#38bdf8' }
+                        { idx: [0, 1, 2, 3], fill: '#64748b', stroke: '#94a3b8' },
+                        { idx: [4, 5, 6, 7], fill: '#94a3b8', stroke: '#cbd5e1' },
+                        { idx: [3, 2, 6, 7], fill: '#cbd5e1', stroke: '#f1f5f9' },
+                        { idx: [0, 3, 7, 4], fill: '#475569', stroke: '#64748b' },
+                        { idx: [1, 2, 6, 5], fill: '#94a3b8', stroke: '#cbd5e1' }
                     ];
                     sFaces.forEach(function(f) {
                         f.avgZ = (pS[f.idx[0]].z + pS[f.idx[1]].z + pS[f.idx[2]].z + pS[f.idx[3]].z) / 4;
@@ -2531,11 +2788,11 @@
                     var pS = rawS.map(function(v) { return project3D(v[0], v[1], v[2], cx, cy); });
 
                     var sFaces = [
-                        { idx: [0, 1, 2, 3], fill: '#1e3a8a', stroke: '#3b82f6' },
-                        { idx: [4, 5, 6, 7], fill: '#2563eb', stroke: '#60a5fa' },
-                        { idx: [3, 2, 6, 7], fill: '#0284c7', stroke: '#00e5ff' },
-                        { idx: [0, 3, 7, 4], fill: '#0f172a', stroke: '#334155' },
-                        { idx: [1, 2, 6, 5], fill: '#1d4ed8', stroke: '#3b82f6' }
+                        { idx: [0, 1, 2, 3], fill: '#64748b', stroke: '#94a3b8' },
+                        { idx: [4, 5, 6, 7], fill: '#94a3b8', stroke: '#cbd5e1' },
+                        { idx: [3, 2, 6, 7], fill: '#cbd5e1', stroke: '#f1f5f9' },
+                        { idx: [0, 3, 7, 4], fill: '#475569', stroke: '#64748b' },
+                        { idx: [1, 2, 6, 5], fill: '#94a3b8', stroke: '#cbd5e1' }
                     ];
                     sFaces.forEach(function(f) {
                         f.avgZ = (pS[f.idx[0]].z + pS[f.idx[1]].z + pS[f.idx[2]].z + pS[f.idx[3]].z) / 4;
@@ -2699,26 +2956,64 @@
         // 1. HYPER-REALISTIC 3D CONCRETE MODEL
                 // 1. HYPER-REALISTIC 3D CONCRETE MODEL (HIGH REALISM & RELIEF)
         function render3DConcrete(svg) {
-            var l = parseFloat(document.getElementById('largo').value) || 5.0;
-            var a = parseFloat(document.getElementById('ancho').value) || 4.0;
-            var e = parseFloat(document.getElementById('espesor').value) || 12;
+            if (!svg) return;
+            var formaEl = document.getElementById('forma_concreto');
+            var forma = formaEl ? formaEl.value : 'losa';
+            var vol = 0, sacos = 0;
+            var pill_tl = document.getElementById('pill_tl');
+            var pill_tr = document.getElementById('pill_tr');
+            var pill_bl = document.getElementById('pill_bl');
+            var pill_br = document.getElementById('pill_br');
 
-            var vol = l * a * (e / 100.0);
-            var sacos = Math.round(vol * 1.05 * 9.73);
+            var wx = 60, wy = 60, hz = 30;
+            var labelAncho = '', labelLargo = '', labelAltura = '';
 
-            var p_pill_tl = document.getElementById('pill_tl'); if (p_pill_tl) p_pill_tl.innerText = '🏗️ CONCRETO ESTRUCTURAL 3D REALISTA';
-            var p_pill_br = document.getElementById('pill_br'); if (p_pill_br) p_pill_br.innerText = '📦 ' + sacos + ' Bolsas Cemento';
-            document.getElementById('pill_tr').innerText = '📦 ' + vol.toFixed(2) + ' m³';
-            var p_pill_bl = document.getElementById('pill_bl'); if (p_pill_bl) p_pill_bl.innerText = '📏 ' + l + 'm × ' + a + 'm × ' + e + 'cm';
-            
+            if (forma === 'columna') {
+                var colH = parseFloat(document.getElementById('col_altura').value) || 3.0;
+                var colL = parseFloat(document.getElementById('col_largo').value) || 30;
+                var colA = parseFloat(document.getElementById('col_ancho').value) || 30;
+                var colN = parseInt(document.getElementById('col_cantidad').value) || 1;
 
-            var wx = Math.min(105, Math.max(40, a * 15));
-            var wy = Math.min(105, Math.max(40, l * 15));
-            var hz = Math.min(45, Math.max(14, e * 1.2));
+                vol = colN * colH * (colL / 100.0) * (colA / 100.0) * 1.05;
+                sacos = vol * 9.73;
+
+                if (pill_tl) pill_tl.innerText = '🏛️ COLUMNA DE CONCRETO 3D';
+                if (pill_tr) pill_tr.innerText = '📦 ' + vol.toFixed(3) + ' m³';
+                if (pill_bl) pill_bl.innerText = '📏 H:' + colH.toFixed(2) + 'm • Sec:' + colL + '×' + colA + 'cm' + (colN > 1 ? ' (' + colN + ' col)' : '');
+                if (pill_br) pill_br.innerText = '📦 ' + sacos.toFixed(2) + ' Bolsas Cemento';
+
+                wx = Math.min(70, Math.max(25, colA * 1.2));
+                wy = Math.min(70, Math.max(25, colL * 1.2));
+                hz = Math.min(120, Math.max(50, colH * 25));
+
+                labelAncho = 'Ancho: ' + colA + ' cm';
+                labelLargo = 'Largo: ' + colL + ' cm';
+                labelAltura = 'Altura: ' + colH.toFixed(2) + ' m';
+            } else {
+                var l = parseFloat(document.getElementById('largo').value) || 5.0;
+                var a = parseFloat(document.getElementById('ancho').value) || 4.0;
+                var e = parseFloat(document.getElementById('espesor').value) || 12;
+
+                vol = l * a * (e / 100.0) * 1.05;
+                sacos = vol * 9.73;
+
+                if (pill_tl) pill_tl.innerText = '🏗️ CONCRETO ESTRUCTURAL 3D';
+                if (pill_tr) pill_tr.innerText = '📦 ' + vol.toFixed(2) + ' m³';
+                if (pill_bl) pill_bl.innerText = '📏 ' + l + 'm × ' + a + 'm × ' + e + 'cm';
+                if (pill_br) pill_br.innerText = '📦 ' + sacos.toFixed(2) + ' Bolsas Cemento';
+
+                wx = Math.min(105, Math.max(40, a * 15));
+                wy = Math.min(105, Math.max(40, l * 15));
+                hz = Math.min(45, Math.max(14, e * 1.2));
+
+                labelAncho = 'Ancho: ' + a.toFixed(2) + ' m';
+                labelLargo = 'Largo: ' + l.toFixed(2) + ' m';
+                labelAltura = 'Espesor: ' + e + ' cm';
+            }
 
             var cos30 = 0.866, sin30 = 0.5;
             var x0 = 180 + (wy - wx) * cos30 * 0.5;
-            var y0 = 75 + hz * 0.5 - (wx - wy) * sin30 * 0.5;
+            var y0 = 100 + hz * 0.5 - (wx - wy) * sin30 * 0.5;
 
             var v0 = [x0, y0];
             var v1 = [x0 + wx * cos30, y0 + wx * sin30];
@@ -2732,46 +3027,56 @@
 
             var p = function(pts) { return pts.map(function(pt) { return pt[0].toFixed(1) + ',' + pt[1].toFixed(1); }).join(' '); };
 
+            var midAnchoX = (v0[0] + v1[0]) / 2;
+            var midAnchoY = (v0[1] + v1[1]) / 2 + 14;
+
+            var midLargoX = (v0[0] + v3[0]) / 2 - 10;
+            var midLargoY = (v0[1] + v3[1]) / 2 + 14;
+
+            var midAltX = (v0[0] + v0_t[0]) / 2 - 20;
+            var midAltY = (v0[1] + v0_t[1]) / 2;
+
             svg.innerHTML = '<defs>' +
-                '<linearGradient id="concTopGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#3b82f6"/><stop offset="100%" stop-color="#1d4ed8"/></linearGradient>' +
-                '<linearGradient id="concLeftGrad" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#1e40af"/><stop offset="100%" stop-color="#0f172a"/></linearGradient>' +
-                '<linearGradient id="concRightGrad" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#2563eb"/><stop offset="100%" stop-color="#1e293b"/></linearGradient>' +
+                '<linearGradient id="concTopGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#e2e8f0"/><stop offset="100%" stop-color="#cbd5e1"/></linearGradient>' +
+                '<linearGradient id="concLeftGrad" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#64748b"/><stop offset="100%" stop-color="#475569"/></linearGradient>' +
+                '<linearGradient id="concRightGrad" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#94a3b8"/><stop offset="100%" stop-color="#64748b"/></linearGradient>' +
             '</defs>' +
             '<polygon points="' + p([[v0[0],v0[1]+12],[v1[0],v1[1]+12],[v2[0],v2[1]+12],[v3[0],v3[1]+12]]) + '" fill="rgba(0,0,0,0.45)" filter="blur(4px)"/>' +
-            '<polygon points="' + p([v0_t, v1_t, v2_t, v3_t]) + '" fill="url(#concTopGrad)" stroke="#93c5fd" stroke-width="1.5"/>' +
-            '<line x1="' + ((v0_t[0]+v3_t[0])/2) + '" y1="' + ((v0_t[1]+v3_t[1])/2) + '" x2="' + ((v1_t[0]+v2_t[0])/2) + '" y2="' + ((v1_t[1]+v2_t[1])/2) + '" stroke="#00e5ff" stroke-width="1.5" stroke-dasharray="3,3"/>' +
-            '<line x1="' + ((v0_t[0]+v1_t[0])/2) + '" y1="' + ((v0_t[1]+v1_t[0])/2) + '" x2="' + ((v3_t[0]+v2_t[0])/2) + '" y2="' + ((v3_t[1]+v2_t[1])/2) + '" stroke="#00e5ff" stroke-width="1.5" stroke-dasharray="3,3"/>' +
-            '<polygon points="' + p([v0, v3, v3_t, v0_t]) + '" fill="url(#concLeftGrad)" stroke="#3b82f6" stroke-width="1.5"/>' +
-            '<polygon points="' + p([v0, v1, v1_t, v0_t]) + '" fill="url(#concRightGrad)" stroke="#60a5fa" stroke-width="1.5"/>' +
-            '<line x1="' + v0_t[0] + '" y1="' + v0_t[1] + '" x2="' + v1_t[0] + '" y2="' + v1_t[1] + '" stroke="#00e5ff" stroke-width="2"/>' +
-            '<line x1="' + v0_t[0] + '" y1="' + v0_t[1] + '" x2="' + v3_t[0] + '" y2="' + v3_t[1] + '" stroke="#00e5ff" stroke-width="2"/>' +
-            '<line x1="' + v0_t[0] + '" y1="' + v0_t[1] + '" x2="' + v0[0] + '" y2="' + v0[1] + '" stroke="#00e5ff" stroke-width="2"/>';
+            '<polygon points="' + p([v0, v1, v1_t, v0_t]) + '" fill="url(#concRightGrad)" stroke="#cbd5e1" stroke-width="1"/>' +
+            '<polygon points="' + p([v0, v3, v3_t, v0_t]) + '" fill="url(#concLeftGrad)" stroke="#94a3b8" stroke-width="1"/>' +
+            '<polygon points="' + p([v0_t, v1_t, v2_t, v3_t]) + '" fill="url(#concTopGrad)" stroke="#f1f5f9" stroke-width="1.5"/>' +
+            '<!-- Cotas SVG -->' +
+            '<line x1="' + v0[0] + '" y1="' + (v0[1]+5) + '" x2="' + v1[0] + '" y2="' + (v1[1]+5) + '" stroke="#00e5ff" stroke-width="1.5" stroke-dasharray="3,3"/>' +
+            '<rect x="' + (midAnchoX-38) + '" y="' + (midAnchoY-10) + '" width="76" height="15" rx="3" fill="rgba(15,23,42,0.85)" stroke="#00e5ff" stroke-width="1"/>' +
+            '<text x="' + midAnchoX + '" y="' + (midAnchoY+1) + '" fill="#00e5ff" font-size="8.5" font-weight="900" text-anchor="middle">' + labelAncho + '</text>' +
+            '<line x1="' + v0[0] + '" y1="' + (v0[1]+5) + '" x2="' + v3[0] + '" y2="' + (v3[1]+5) + '" stroke="#30d158" stroke-width="1.5" stroke-dasharray="3,3"/>' +
+            '<rect x="' + (midLargoX-38) + '" y="' + (midLargoY-10) + '" width="76" height="15" rx="3" fill="rgba(15,23,42,0.85)" stroke="#30d158" stroke-width="1"/>' +
+            '<text x="' + midLargoX + '" y="' + (midLargoY+1) + '" fill="#30d158" font-size="8.5" font-weight="900" text-anchor="middle">' + labelLargo + '</text>' +
+            '<line x1="' + (v0[0]-6) + '" y1="' + v0[1] + '" x2="' + (v0_t[0]-6) + '" y2="' + v0_t[1] + '" stroke="#ff9f0a" stroke-width="1.5" stroke-dasharray="3,3"/>' +
+            '<rect x="' + (midAltX-40) + '" y="' + (midAltY-8) + '" width="80" height="15" rx="3" fill="rgba(15,23,42,0.85)" stroke="#ff9f0a" stroke-width="1"/>' +
+            '<text x="' + midAltX + '" y="' + (midAltY+3) + '" fill="#ff9f0a" font-size="8.5" font-weight="900" text-anchor="middle">' + labelAltura + '</text>';
         }
 
-        // 2. HYPER-REALISTIC 3D MASONRY WALL MODEL
         function render3DWall(svg) {
+            if (!svg) return;
             var l = parseFloat(document.getElementById('muro_largo').value) || 6.0;
             var h = parseFloat(document.getElementById('muro_alto').value) || 2.6;
-            var op = document.getElementById('tipo_ladrillo').value;
+            var mermaPct = parseFloat(document.getElementById('merma_ladrillo') ? document.getElementById('merma_ladrillo').value : 1.05) || 1.05;
+
+            var specs = getBrickSpecs();
 
             var area = l * h;
-            var undM2 = 37.3;
-            var isConcrete = false;
+            var totalU = Math.ceil(area * specs.undM2Neto * mermaPct);
+            var totalMorteroM3 = area * specs.volMorteroM2Neto * 1.10;
+            var sacosWallPill = (totalMorteroM3 * 7.5).toFixed(2);
 
-            if (op === 'kk_cabeza') { undM2 = 65.0; }
-            else if (op === 'bloque_12') { undM2 = 17.1; isConcrete = true; }
-
-            var totalU = Math.ceil(area * undM2 * 1.05);
-
-            var p_pill_tl = document.getElementById('pill_tl'); if (p_pill_tl) p_pill_tl.innerText = '🧱 PAÑO DE MURO 3D REALISTA';
-            var sacosWallPill = Math.ceil(area * 0.027 * 1.10 * 7.5);
-            var p_pill_br = document.getElementById('pill_br'); if (p_pill_br) p_pill_br.innerText = '📦 ' + sacosWallPill + ' Bolsas • ' + totalU + ' Ladrillos';
+            var pill_tl = document.getElementById('pill_tl'); if (pill_tl) pill_tl.innerText = '🧱 PAÑO DE MURO 3D REALISTA (' + specs.name + ')';
+            var pill_br = document.getElementById('pill_br'); if (pill_br) pill_br.innerText = '📦 ' + sacosWallPill + ' Bolsas • ' + totalU + ' Ladrillos';
             document.getElementById('pill_tr').innerText = '📐 ' + area.toFixed(2) + ' m²';
-            var p_pill_bl = document.getElementById('pill_bl'); if (p_pill_bl) p_pill_bl.innerText = '📏 ' + l + 'm Largo × ' + h + 'm Alto';
-            
+            var pill_bl = document.getElementById('pill_bl'); if (pill_bl) pill_bl.innerText = '📏 ' + l + 'm Largo × ' + h + 'm Alto (Esp: ' + (specs.Esp * 100).toFixed(1) + 'cm • Junta: ' + specs.juntaCm + 'cm)';
 
             var wx = Math.min(105, Math.max(40, l * 15));
-            var wy = (op === 'kk_cabeza') ? 32 : (isConcrete ? 22 : 18);
+            var wy = Math.min(40, Math.max(15, specs.Esp * 150));
             var hz = Math.min(80, Math.max(30, h * 20));
 
             var cos30 = 0.866, sin30 = 0.5;
@@ -2790,9 +3095,9 @@
 
             var p = function(pts) { return pts.map(function(pt) { return pt[0].toFixed(1) + ',' + pt[1].toFixed(1); }).join(' '); };
 
-            var baseColor = isConcrete ? '#475569' : '#c0392b';
-            var strokeColor = isConcrete ? '#94a3b8' : '#e74c3c';
-            var topColor = isConcrete ? '#64748b' : '#e74c3c';
+            var baseColor = specs.isConcreteBlock ? '#475569' : '#c0392b';
+            var strokeColor = specs.isConcreteBlock ? '#94a3b8' : '#e74c3c';
+            var topColor = specs.isConcreteBlock ? '#64748b' : '#e74c3c';
 
             var coursesLines = '';
             var numCourses = 8;
@@ -2801,8 +3106,8 @@
                 var y_line0 = v0[1] - hz * frac;
                 var y_line1 = v1[1] - hz * frac;
                 coursesLines += '<line x1="' + v0[0] + '" y1="' + y_line0 + '" x2="' + v1[0] + '" y2="' + y_line1 + '" stroke="#d5dbdb" stroke-width="1.8" opacity="0.85" />';
-                var numBricks = 5;
-                var shift = (i % 2 === 0) ? 0.1 : 0.0;
+                var numBricks = 6;
+                var shift = (i % 2 === 0) ? 0.08 : 0.0;
                 for (var j = 1; j < numBricks; j++) {
                     var bFrac = (j / numBricks) + shift;
                     if (bFrac > 0 && bFrac < 1) {
@@ -2819,14 +3124,11 @@
             '</defs>' +
             '<polygon points="' + p([[v0[0],v0[1]+12],[v1[0],v1[1]+12],[v2[0],v2[1]+12],[v3[0],v3[1]+12]]) + '" fill="rgba(0,0,0,0.45)" filter="blur(4px)" />' +
             '<polygon points="' + p([v0_t, v1_t, v2_t, v3_t]) + '" fill="' + topColor + '" stroke="' + strokeColor + '" stroke-width="1.5" />' +
-            '<polygon points="' + p([v0, v3, v3_t, v0_t]) + '" fill="#7b241c" opacity="0.9" stroke="' + strokeColor + '" stroke-width="1.5" />' +
-            '<polygon points="' + p([v0, v1, v1_t, v0_t]) + '" fill="url(#brickFrontGrad)" stroke="' + strokeColor + '" stroke-width="1.5" />' +
-            coursesLines +
-            '<line x1="' + v0_t[0] + '" y1="' + v0_t[1] + '" x2="' + v1_t[0] + '" y2="' + v1_t[1] + '" stroke="#ff9f0a" stroke-width="2.5" />' +
-            '<line x1="' + v0_t[0] + '" y1="' + v0_t[1] + '" x2="' + v0[0] + '" y2="' + v0[1] + '" stroke="#ff9f0a" stroke-width="2.5" />';
+            '<polygon points="' + p([v0, v3, v3_t, v0_t]) + '" fill="#7b241c" stroke="' + strokeColor + '" stroke-width="1.2" />' +
+            '<polygon points="' + p([v0, v1, v1_t, v0_t]) + '" fill="url(#brickFrontGrad)" stroke="' + strokeColor + '" stroke-width="1.2" />' +
+            coursesLines;
         }
 
-        // 3. HYPER-REALISTIC 3D TECNOPOR SLAB MODEL
         function render3DTecnopor(svg) {
             var l1 = parseFloat(document.getElementById('tec_largo').value) || 5.0;
             var l2 = parseFloat(document.getElementById('tec_ancho').value) || 4.0;
@@ -2882,8 +3184,8 @@
                         var midX = (pA_front[0] + pB_back[0]) / 2; var midY = (pA_front[1] + pB_back[1]) / 2;
                         bandsHtml += '<text x="' + midX + '" y="' + midY + '" fill="#64748b" font-size="8" font-weight="900" text-anchor="middle">EPS</text>';
                     } else {
-                        bandsHtml += '<polygon points="' + p([pA_front, pB_front, pB_back, pA_back]) + '" fill="#0284c7" stroke="#38bdf8" stroke-width="1.5" />';
-                        bandsHtml += '<polygon points="' + p([pA_bot, pB_bot, pB_front, pA_front]) + '" fill="#0369a1" stroke="#38bdf8" stroke-width="1.5" />';
+                        bandsHtml += '<polygon points="' + p([pA_front, pB_front, pB_back, pA_back]) + '" fill="#cbd5e1" stroke="#f1f5f9" stroke-width="1.5" />';
+                        bandsHtml += '<polygon points="' + p([pA_bot, pB_bot, pB_front, pA_front]) + '" fill="#94a3b8" stroke="#cbd5e1" stroke-width="1.5" />';
                         var rebarX1 = (pA_front[0] + pB_front[0])/2; var rebarY1 = (pA_front[1] + pB_front[1])/2;
                         var rebarX2 = (pA_back[0] + pB_back[0])/2; var rebarY2 = (pA_back[1] + pB_back[1])/2;
                         bandsHtml += '<line x1="' + rebarX1 + '" y1="' + rebarY1 + '" x2="' + rebarX2 + '" y2="' + rebarY2 + '" stroke="#ff3b30" stroke-width="2.5" />';
@@ -2906,8 +3208,8 @@
                         var midX = (pA_left[0] + pB_right[0]) / 2; var midY = (pA_left[1] + pB_right[1]) / 2;
                         bandsHtml += '<text x="' + midX + '" y="' + midY + '" fill="#64748b" font-size="8" font-weight="900" text-anchor="middle">EPS</text>';
                     } else {
-                        bandsHtml += '<polygon points="' + p([pA_left, pA_right, pB_right, pB_left]) + '" fill="#d97706" stroke="#f59e0b" stroke-width="1.5" />';
-                        bandsHtml += '<polygon points="' + p([pA_bot, pB_bot, pB_left, pA_left]) + '" fill="#b45309" stroke="#f59e0b" stroke-width="1.5" />';
+                        bandsHtml += '<polygon points="' + p([pA_left, pA_right, pB_right, pB_left]) + '" fill="#cbd5e1" stroke="#f1f5f9" stroke-width="1.5" />';
+                        bandsHtml += '<polygon points="' + p([pA_bot, pB_bot, pB_left, pA_left]) + '" fill="#94a3b8" stroke="#cbd5e1" stroke-width="1.5" />';
                         var rebarX1 = (pA_left[0] + pB_left[0])/2; var rebarY1 = (pA_left[1] + pB_left[1])/2;
                         var rebarX2 = (pA_right[0] + pB_right[0])/2; var rebarY2 = (pA_right[1] + pB_right[1])/2;
                         bandsHtml += '<line x1="' + rebarX1 + '" y1="' + rebarY1 + '" x2="' + rebarX2 + '" y2="' + rebarY2 + '" stroke="#ff3b30" stroke-width="2.5" />';
@@ -2929,7 +3231,7 @@
             }
 
             svg.innerHTML = '<defs>' +
-                '<linearGradient id="translucentSlab" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#38bdf8" stop-opacity="0.35"/><stop offset="100%" stop-color="#0284c7" stop-opacity="0.25"/></linearGradient>' +
+                '<linearGradient id="translucentSlab" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#e2e8f0" stop-opacity="0.55"/><stop offset="100%" stop-color="#cbd5e1" stop-opacity="0.40"/></linearGradient>' +
             '</defs>' +
             '<polygon points="' + p([[v0[0],v0[1]+12],[v1[0],v1[1]+12],[v2[0],v2[1]+12],[v3[0],v3[1]+12]]) + '" fill="rgba(0,0,0,0.45)" filter="blur(4px)" />' +
             '<polygon points="' + p([v0, v3, v3_t, v0_t]) + '" fill="#0f172a" opacity="0.9" stroke="#334155" stroke-width="1.5" />' +
@@ -3034,7 +3336,7 @@
                     planHtml += '<text x="' + (xLeft + 5) + '" y="' + (sy + stepH - 2) + '" fill="#93c5fd" font-size="7" font-weight="800">P' + (i + 1) + '</text>';
                 }
 
-                planHtml += '<rect x="' + xLeft + '" y="' + (yTop + 90) + '" width="' + flightW + '" height="12" fill="#d97706" stroke="#f59e0b" stroke-width="1.5" />' +
+                planHtml += '<rect x="' + xLeft + '" y="' + (yTop + 90) + '" width="' + flightW + '" height="12" fill="#cbd5e1" stroke="#f1f5f9" stroke-width="1.5" />' +
                     '<text x="' + cx + '" y="' + (yTop + 99) + '" fill="#ffffff" font-size="7" font-weight="900" text-anchor="middle">VIGA LLEGADA</text>';
 
                 planHtml += '<line x1="' + cx + '" y1="' + yTop + '" x2="' + cx + '" y2="' + (yTop + 75) + '" stroke="#00e5ff" stroke-width="2.5" stroke-dasharray="4,2" />' +
@@ -3165,11 +3467,32 @@
         }
 
         function calcularConcreto() {
-            var l = parseFloat(document.getElementById('largo').value) || 0;
-            var a = parseFloat(document.getElementById('ancho').value) || 0;
-            var e = parseFloat(document.getElementById('espesor').value) || 0;
-            var vol = l * a * (e / 100.0);
-            vol = vol * 1.05; // 5% waste
+            var formaEl = document.getElementById('forma_concreto');
+            var forma = formaEl ? formaEl.value : 'losa';
+            var volNeto = 0;
+            var areaEncofrado = 0;
+            var descEstructura = '';
+
+            if (forma === 'columna') {
+                var colH = parseFloat(document.getElementById('col_altura').value) || 0;
+                var colL = parseFloat(document.getElementById('col_largo').value) || 0;
+                var colA = parseFloat(document.getElementById('col_ancho').value) || 0;
+                var colN = parseInt(document.getElementById('col_cantidad').value) || 1;
+
+                volNeto = colN * colH * (colL / 100.0) * (colA / 100.0);
+                areaEncofrado = colN * 2.0 * ((colL / 100.0) + (colA / 100.0)) * colH;
+                descEstructura = 'Vaciado de Columna (' + colN + ' ud: ' + colH + 'm alt × ' + colL + 'cm × ' + colA + 'cm)';
+            } else {
+                var l = parseFloat(document.getElementById('largo').value) || 0;
+                var a = parseFloat(document.getElementById('ancho').value) || 0;
+                var e = parseFloat(document.getElementById('espesor').value) || 0;
+
+                volNeto = l * a * (e / 100.0);
+                areaEncofrado = 2.0 * (l + a) * (e / 100.0) + (l * a);
+                descEstructura = 'Losa / Pavimento (' + l + 'm × ' + a + 'm × ' + e + 'cm)';
+            }
+
+            var vol = volNeto * 1.05; // 5% desperdicio
 
             var opcion = document.getElementById('tipo_vaciado').value;
             var sacosM3 = 9.73, bArena = 3.1, bPiedra = 3.1, bAgua = 1.1, propStr = "1 : 2 : 2 (f&#39;c 210)";
@@ -3195,75 +3518,39 @@
                 propStr = "Personalizada en Campo (1 Bolsa Cemento + " + bArena + " Baldes Arena + " + bPiedra + " Baldes Piedra)";
             }
 
-            var sacosCemento = Math.ceil(vol * sacosM3);
-            var baldesArena = Math.round(sacosCemento * bArena);
-            var baldesPiedra = Math.round(sacosCemento * bPiedra);
+            // Cemento exacto con decimales (SIN redondeo automático al entero)
+            var sacosCementoExact = vol * sacosM3;
+            var sacosCementoStr = sacosCementoExact.toFixed(2);
+
+            var baldesArena = Math.round(sacosCementoExact * bArena);
+            var baldesPiedra = Math.round(sacosCementoExact * bPiedra);
             var m3Arena = (baldesArena * 0.018).toFixed(2);
             var m3Piedra = (baldesPiedra * 0.018).toFixed(2);
             var carretillasArena = (baldesArena / 3.125).toFixed(1);
             var carretillasPiedra = (baldesPiedra / 3.125).toFixed(1);
             var carretillasVolTotal = (vol * 17.65).toFixed(1);
             var baldes18LVolTotal = Math.round(vol * 55.5);
-            var litrosAgua = Math.round(sacosCemento * (bAgua * 18));
-            var areaEncofrado = 2 * (l + a) * (e / 100.0) + (l * a);
+            var litrosAgua = Math.round(sacosCementoExact * (bAgua * 18));
 
             currentCalcData = {
                 elemId: 'calc_concreto',
-                elemName: 'Concreto Estructural (' + propStr + ')',
+                elemName: 'Concreto (' + descEstructura + ')',
                 volM3: vol,
                 volP3: vol * 35.315,
-                sacosCemento: sacosCemento,
-                bArenaPerBag: (baldesArena / sacosCemento) || 3.5,
-                bPiedraPerBag: (baldesPiedra / sacosCemento) || 3.5,
-                aguaLPerBag: (litrosAgua / sacosCemento) || 22.0,
-                recipeStr: '1 Bolsa Cemento + ' + ((baldesArena / sacosCemento) || 3.5).toFixed(1) + ' Baldes Arena + ' + ((baldesPiedra / sacosCemento) || 3.5).toFixed(1) + ' Baldes Piedra + ' + Math.round((litrosAgua / sacosCemento) || 22) + 'L Agua'
-            };
-            updateModoObra();
-
-            currentCalcData = {
-                elemId: 'calc_concreto',
-                elemName: 'Concreto Estructural (' + propStr + ')',
-                volM3: vol,
-                volP3: vol * 35.315,
-                sacosCemento: sacosCemento,
-                bArenaPerBag: (baldesArena / sacosCemento) || 3.5,
-                bPiedraPerBag: (baldesPiedra / sacosCemento) || 3.5,
-                aguaLPerBag: (litrosAgua / sacosCemento) || 22.0,
-                recipeStr: '1 Bolsa Cemento + ' + ((baldesArena / sacosCemento) || 3.5).toFixed(1) + ' Baldes Arena + ' + ((baldesPiedra / sacosCemento) || 3.5).toFixed(1) + ' Baldes Piedra + ' + Math.round((litrosAgua / sacosCemento) || 22) + 'L Agua'
-            };
-            updateModoObra();
-
-            currentCalcData = {
-                elemId: 'calc_concreto',
-                elemName: 'Concreto Estructural',
-                volM3: vol,
-                volP3: vol * 35.315,
-                sacosCemento: sacosCemento,
-                bArenaPerBag: (baldesArena / sacosCemento) || 3.5,
-                bPiedraPerBag: (baldesPiedra / sacosCemento) || 3.5,
-                aguaLPerBag: (litrosAgua / sacosCemento) || 22.0,
-                recipeStr: '1 Bolsa Cemento + ' + ((baldesArena / sacosCemento) || 3.5).toFixed(1) + ' Baldes Arena + ' + ((baldesPiedra / sacosCemento) || 3.5).toFixed(1) + ' Baldes Piedra + ' + Math.round((litrosAgua / sacosCemento) || 22) + 'L Agua'
-            };
-            updateModoObra();
-
-            currentCalcData = {
-                elemId: 'calc_concreto',
-                elemName: 'Concreto Estructural',
-                volM3: vol,
-                volP3: vol * 35.315,
-                sacosCemento: sacosCemento,
-                bArenaPerBag: (baldesArena / sacosCemento) || 3.5,
-                bPiedraPerBag: (baldesPiedra / sacosCemento) || 3.5,
-                aguaLPerBag: (litrosAgua / sacosCemento) || 22.0,
-                recipeStr: '1 Bolsa Cemento + ' + ((baldesArena / sacosCemento) || 3.5).toFixed(1) + ' Baldes Arena + ' + ((baldesPiedra / sacosCemento) || 3.5).toFixed(1) + ' Baldes Piedra + ' + Math.round((litrosAgua / sacosCemento) || 22) + 'L Agua'
+                sacosCemento: parseFloat(sacosCementoStr),
+                bArenaPerBag: (baldesArena / sacosCementoExact) || 3.5,
+                bPiedraPerBag: (baldesPiedra / sacosCementoExact) || 3.5,
+                aguaLPerBag: (litrosAgua / sacosCementoExact) || 22.0,
+                recipeStr: '1 Bolsa Cemento + ' + ((baldesArena / sacosCementoExact) || 3.5).toFixed(1) + ' Baldes Arena + ' + ((baldesPiedra / sacosCementoExact) || 3.5).toFixed(1) + ' Baldes Piedra + ' + Math.round((litrosAgua / sacosCementoExact) || 22) + 'L Agua'
             };
             updateModoObra();
 
             var res = document.getElementById('res_concreto');
             if (res) {
-                res.innerHTML = '<div style="font-weight:900; font-size:14px; color:var(--primary-cyan); margin-bottom:8px;">📊 DOSIFICACIÓN DE CONCRETO: ' + propStr + '</div>' +
-                    '<div class="result-row"><span>Volumen Estructural (+5% desperdicio):</span><span class="val-bold">' + vol.toFixed(2) + ' m³ <span style="color:var(--primary-cyan); font-weight:700;">(~' + carretillasVolTotal + ' Carretillas • ' + baldes18LVolTotal + ' Baldes 18L)</span></span></div>' +
-                    '<div class="result-row"><span>Cemento Portland I:</span><span class="val-bold">' + sacosCemento + ' Bolsas (42.5 kg / 1 p³)</span></div>' +
+                res.innerHTML = '<div style="font-weight:900; font-size:14px; color:var(--primary-cyan); margin-bottom:4px;">📊 DOSIFICACIÓN DE CONCRETO</div>' +
+                    '<div style="font-size:12px; font-weight:800; color:#ffffff; margin-bottom:8px;">Estructura: ' + descEstructura + ' • ' + propStr + '</div>' +
+                    '<div class="result-row"><span>Volumen Estructural (+5% desp.):</span><span class="val-bold">' + vol.toFixed(3) + ' m³ <span style="color:var(--primary-cyan); font-weight:700;">(~' + carretillasVolTotal + ' Carretillas • ' + baldes18LVolTotal + ' Baldes 18L)</span></span></div>' +
+                    '<div class="result-row"><span>Cemento Portland I (Exacto):</span><span class="val-bold" style="color:#00e5ff; font-size:16px;">' + sacosCementoStr + ' Bolsas <span style="font-size:12px; color:var(--text-muted);">(42.5 kg c/u)</span></span></div>' +
                     '<div class="result-row"><span>Arena Gruesa:</span><span class="val-bold">' + m3Arena + ' m³ <span style="color:var(--primary-cyan); font-weight:700;">(~' + carretillasArena + ' Carretillas • ' + baldesArena + ' Baldes 18L)</span></span></div>' +
                     '<div class="result-row"><span>Piedra Chancada 1/2":</span><span class="val-bold">' + m3Piedra + ' m³ <span style="color:var(--primary-cyan); font-weight:700;">(~' + carretillasPiedra + ' Carretillas • ' + baldesPiedra + ' Baldes 18L)</span></span></div>' +
                     '<div class="result-row"><span>Agua Potable:</span><span class="val-bold">' + litrosAgua + ' Litros (~' + Math.round(litrosAgua/18) + ' Baldes 18L)</span></div>' +
@@ -3274,21 +3561,18 @@
         function calcularMuros() {
             var l = parseFloat(document.getElementById('muro_largo').value) || 0;
             var h = parseFloat(document.getElementById('muro_alto').value) || 0;
-            var op = document.getElementById('tipo_ladrillo').value;
+            var mermaPct = parseFloat(document.getElementById('merma_ladrillo') ? document.getElementById('merma_ladrillo').value : 1.05) || 1.05;
             var baldesArenaXBolsa = parseFloat(document.getElementById('mortero_baldes_arena').value) || 4.0;
 
+            var specs = getBrickSpecs();
             var area = l * h;
-            var undM2 = 37.3;
-            var morteroM2 = 0.027;
 
-            if (op === 'kk_cabeza') { undM2 = 65.0; morteroM2 = 0.050; }
-            else if (op === 'bloque_12') { undM2 = 17.1; morteroM2 = 0.020; }
+            var totalLadrillos = Math.ceil(area * specs.undM2Neto * mermaPct);
+            var totalMorteroM3 = area * specs.volMorteroM2Neto * 1.10;
 
-            var totalLadrillos = Math.ceil(area * undM2 * 1.05); // 5% waste
-            var totalMorteroM3 = area * morteroM2 * 1.10; // 10% waste
-
-            var sacosCemento = Math.ceil(totalMorteroM3 * 7.5);
-            var baldesArena = Math.round(sacosCemento * baldesArenaXBolsa);
+            var sacosCementoExact = totalMorteroM3 * 7.5;
+            var sacosCemento = Math.ceil(sacosCementoExact);
+            var baldesArena = Math.round(sacosCementoExact * baldesArenaXBolsa);
             var m3Arena = (baldesArena * 0.018).toFixed(2);
             var carretillasMortero = (totalMorteroM3 * 17.65).toFixed(1);
             var baldes18LMortero = Math.round(totalMorteroM3 * 55.5);
@@ -3296,49 +3580,10 @@
 
             currentCalcData = {
                 elemId: 'calc_muros',
-                elemName: 'Muro de Albañilería & Mortero',
+                elemName: 'Muro de Albañilería (' + specs.name + ')',
                 volM3: totalMorteroM3,
                 volP3: totalMorteroM3 * 35.315,
-                sacosCemento: sacosCemento,
-                bArenaPerBag: baldesArenaXBolsa,
-                bPiedraPerBag: 0,
-                aguaLPerBag: 22.0,
-                recipeStr: '1 Bolsa Cemento + ' + baldesArenaXBolsa.toFixed(1) + ' Baldes Arena Gruesa + 22L Agua (Mortero)'
-            };
-            updateModoObra();
-
-            currentCalcData = {
-                elemId: 'calc_muros',
-                elemName: 'Muro de Albañilería & Mortero',
-                volM3: totalMorteroM3,
-                volP3: totalMorteroM3 * 35.315,
-                sacosCemento: sacosCemento,
-                bArenaPerBag: baldesArenaXBolsa,
-                bPiedraPerBag: 0,
-                aguaLPerBag: 22.0,
-                recipeStr: '1 Bolsa Cemento + ' + baldesArenaXBolsa.toFixed(1) + ' Baldes Arena Gruesa + 22L Agua (Mortero)'
-            };
-            updateModoObra();
-
-            currentCalcData = {
-                elemId: 'calc_muros',
-                elemName: 'Muro de Albañilería & Mortero',
-                volM3: totalMorteroM3,
-                volP3: totalMorteroM3 * 35.315,
-                sacosCemento: sacosCemento,
-                bArenaPerBag: baldesArenaXBolsa,
-                bPiedraPerBag: 0,
-                aguaLPerBag: 22.0,
-                recipeStr: '1 Bolsa Cemento + ' + baldesArenaXBolsa.toFixed(1) + ' Baldes Arena Gruesa + 22L Agua (Mortero)'
-            };
-            updateModoObra();
-
-            currentCalcData = {
-                elemId: 'calc_muros',
-                elemName: 'Muro de Albañilería & Mortero',
-                volM3: totalMorteroM3,
-                volP3: totalMorteroM3 * 35.315,
-                sacosCemento: sacosCemento,
+                sacosCemento: sacosCementoExact,
                 bArenaPerBag: baldesArenaXBolsa,
                 bPiedraPerBag: 0,
                 aguaLPerBag: 22.0,
@@ -3348,11 +3593,12 @@
 
             var res = document.getElementById('res_muros');
             if (res) {
-                res.innerHTML = '<div style="font-weight:900; font-size:14px; color:var(--primary-cyan); margin-bottom:8px;">🧱 MATERIALES DE ALBAÑILERÍA & MURO</div>' +
-                    '<div class="result-row"><span>Área Bruta de Muro:</span><span class="val-bold">' + area.toFixed(2) + ' m²</span></div>' +
-                    '<div class="result-row"><span>Unidades de Albañilería (+5% m):</span><span class="val-bold">' + totalLadrillos + ' Unidades</span></div>' +
-                    '<div class="result-row"><span>Volumen Mortero Cemento:Arena:</span><span class="val-bold">' + totalMorteroM3.toFixed(2) + ' m³ <span style="color:var(--primary-cyan); font-weight:700;">(~' + carretillasMortero + ' Carretillas • ' + baldes18LMortero + ' Baldes 18L)</span></span></div>' +
-                    '<div class="result-row"><span>Cemento para Mortero:</span><span class="val-bold">' + sacosCemento + ' Bolsas (42.5 kg)</span></div>' +
+                res.innerHTML = '<div style="font-weight:900; font-size:14px; color:var(--primary-cyan); margin-bottom:8px;">🧱 MATERIALES DE ALBAÑILERÍA: ' + specs.name + '</div>' +
+                    '<div class="result-row"><span>Área Bruta de Muro:</span><span class="val-bold">' + area.toFixed(2) + ' m² <span style="color:var(--primary-cyan); font-weight:700;">(Espesor: ' + (specs.Esp * 100).toFixed(1) + ' cm • Junta: ' + specs.juntaCm.toFixed(1) + ' cm)</span></span></div>' +
+                    '<div class="result-row"><span>Rendimiento Teórico Ladrillo:</span><span class="val-bold">' + specs.undM2Neto.toFixed(1) + ' und/m² <span style="color:var(--primary-cyan); font-weight:700;">(+ ' + Math.round((mermaPct - 1.0)*100) + '% merma)</span></span></div>' +
+                    '<div class="result-row"><span>Unidades Totales Ladrillo:</span><span class="val-bold" style="color:#00e5ff;">' + totalLadrillos + ' Unidades</span></div>' +
+                    '<div class="result-row"><span>Volumen Mortero Cemento:Arena (1:4):</span><span class="val-bold">' + totalMorteroM3.toFixed(3) + ' m³ <span style="color:var(--primary-cyan); font-weight:700;">(~' + carretillasMortero + ' Carretillas • ' + baldes18LMortero + ' Baldes 18L)</span></span></div>' +
+                    '<div class="result-row"><span>Cemento para Mortero:</span><span class="val-bold">' + sacosCementoExact.toFixed(2) + ' Bolsas (42.5 kg)</span></div>' +
                     '<div class="result-row"><span>Arena Gruesa Mortero:</span><span class="val-bold">' + m3Arena + ' m³ <span style="color:var(--primary-cyan); font-weight:700;">(~' + carretillasArenaMortero + ' Carretillas • ' + baldesArena + ' Baldes 18L)</span></span></div>';
             }
         }
@@ -3924,12 +4170,23 @@ function calcularPresupuesto() {
             var slices = [];
 
             if (activeElem === 'calc_concreto' || activeElem === 'calc_tecnopor' || activeElem === 'calc_escalera') {
-                var l = parseFloat(document.getElementById('largo') ? document.getElementById('largo').value : 5) || 5;
-                var a = parseFloat(document.getElementById('ancho') ? document.getElementById('ancho').value : 4) || 4;
-                var e = parseFloat(document.getElementById('espesor') ? document.getElementById('espesor').value : 12) || 12;
-                var vol = l * a * (e / 100.0) * 1.05;
+                var vol = 0;
+                var formaEl = document.getElementById('forma_concreto');
+                var forma = formaEl ? formaEl.value : 'losa';
+                if (activeElem === 'calc_concreto' && forma === 'columna') {
+                    var colH = parseFloat(document.getElementById('col_altura') ? document.getElementById('col_altura').value : 3) || 3;
+                    var colL = parseFloat(document.getElementById('col_largo') ? document.getElementById('col_largo').value : 30) || 30;
+                    var colA = parseFloat(document.getElementById('col_ancho') ? document.getElementById('col_ancho').value : 30) || 30;
+                    var colN = parseInt(document.getElementById('col_cantidad') ? document.getElementById('col_cantidad').value : 1) || 1;
+                    vol = colN * colH * (colL / 100.0) * (colA / 100.0) * 1.05;
+                } else {
+                    var l = parseFloat(document.getElementById('largo') ? document.getElementById('largo').value : 5) || 5;
+                    var a = parseFloat(document.getElementById('ancho') ? document.getElementById('ancho').value : 4) || 4;
+                    var e = parseFloat(document.getElementById('espesor') ? document.getElementById('espesor').value : 12) || 12;
+                    vol = l * a * (e / 100.0) * 1.05;
+                }
 
-                var cBolsas = Math.ceil(vol * 9.73);
+                var cBolsas = vol * 9.73;
                 var m3Arena = (cBolsas * 3.1 * 0.018);
                 var m3Piedra = (cBolsas * 3.1 * 0.018);
 
@@ -3939,7 +4196,7 @@ function calcularPresupuesto() {
                 totalPresupuesto = costCem + costAre + costPie;
 
                 detailHTML = '<div class="result-row"><span>Elemento Seleccionado:</span><span class="val-bold" style="color:var(--primary-cyan);">Concreto Estructural (f&#39;c 210)</span></div>' +
-                    '<div class="result-row"><span>Cemento Portland I (' + cBolsas + ' Bolsas @ S/ ' + pCem.toFixed(2) + '):</span><span class="val-bold">S/ ' + costCem.toFixed(2) + '</span></div>' +
+                    '<div class="result-row"><span>Cemento Portland I (' + cBolsas.toFixed(2) + ' Bolsas @ S/ ' + pCem.toFixed(2) + '):</span><span class="val-bold">S/ ' + costCem.toFixed(2) + '</span></div>' +
                     '<div class="result-row"><span>Arena Gruesa (' + m3Arena.toFixed(2) + ' m³ @ S/ ' + pAre.toFixed(2) + '):</span><span class="val-bold">S/ ' + costAre.toFixed(2) + '</span></div>' +
                     '<div class="result-row"><span>Piedra Chancada 1/2" (' + m3Piedra.toFixed(2) + ' m³ @ S/ ' + pPie.toFixed(2) + '):</span><span class="val-bold">S/ ' + costPie.toFixed(2) + '</span></div>';
 
@@ -4006,15 +4263,236 @@ function calcularPresupuesto() {
             }
         }
 
-        function addNote() {
-            var txt = document.getElementById('note_text').value;
-            if (!txt) return;
-            var list = document.getElementById('notes_list');
-            var time = new Date().toLocaleTimeString('es-PE', { hour12: false });
-            list.innerHTML = '<div style="padding:6px; background:rgba(255,255,255,0.05); border-radius:6px; margin-bottom:4px; font-size:11px;">' +
-                '<span style="color:var(--primary-cyan); font-weight:800;">[' + time + ']</span> ' + txt +
-            '</div>' + list.innerHTML;
-            document.getElementById('note_text').value = '';
+        // --- 📸 BITÁCORA DIGITAL CON FOTO AUTOMATIZADA JS ENGINE ---
+        var bitacoraNotes = [];
+        var currentCompressedPhotoBase64 = '';
+
+        function initBitacora() {
+            try {
+                var stored = safeStorage.getItem('construye_bitacora_notes_v1');
+                if (stored) {
+                    bitacoraNotes = JSON.parse(stored);
+                }
+            } catch(e) {
+                bitacoraNotes = [];
+            }
+            renderBitacora();
+        }
+
+        function previewSelectedNotePhoto(input) {
+            var statusEl = document.getElementById('photo_filename_status');
+            var box = document.getElementById('photo_preview_box');
+            var img = document.getElementById('img_preview_thumb');
+
+            if (input.files && input.files[0]) {
+                var file = input.files[0];
+                if (statusEl) statusEl.innerText = '📷 ' + file.name + ' (' + (file.size / 1024).toFixed(0) + ' KB)';
+                
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    compressPhotoDataUrl(e.target.result, 600, 0.7, function(compressedBase64) {
+                        currentCompressedPhotoBase64 = compressedBase64;
+                        if (img) img.src = compressedBase64;
+                        if (box) box.style.display = 'block';
+                    });
+                };
+                reader.readAsDataURL(file);
+            } else {
+                clearSelectedNotePhoto();
+            }
+        }
+
+        function compressPhotoDataUrl(dataUrl, maxWidth, quality, callback) {
+            var img = new Image();
+            img.onload = function() {
+                var cvs = document.createElement('canvas');
+                var w = img.width;
+                var h = img.height;
+                if (w > maxWidth) {
+                    h = Math.round((h * maxWidth) / w);
+                    w = maxWidth;
+                }
+                cvs.width = w;
+                cvs.height = h;
+                var ctx = cvs.getContext('2d');
+                ctx.drawImage(img, 0, 0, w, h);
+                var compressed = cvs.toDataURL('image/jpeg', quality);
+                callback(compressed);
+            };
+            img.onerror = function() {
+                callback(dataUrl);
+            };
+            img.src = dataUrl;
+        }
+
+        function clearSelectedNotePhoto() {
+            currentCompressedPhotoBase64 = '';
+            var input = document.getElementById('note_file');
+            if (input) input.value = '';
+            var statusEl = document.getElementById('photo_filename_status');
+            if (statusEl) statusEl.innerText = 'Sin foto adjunta';
+            var box = document.getElementById('photo_preview_box');
+            if (box) box.style.display = 'none';
+        }
+
+        function addBitacoraNote() {
+            var textEl = document.getElementById('note_text');
+            var catEl = document.getElementById('note_category');
+            var authorEl = document.getElementById('note_author');
+
+            var text = textEl ? textEl.value.trim() : '';
+            var category = catEl ? catEl.value : '📌 General';
+            var author = authorEl ? (authorEl.value.trim() || 'Residente de Obra') : 'Residente';
+
+            if (!text && !currentCompressedPhotoBase64) {
+                showToast('⚠️ Escribe una observación o adjunta una foto para registrar en Bitácora.');
+                return;
+            }
+
+            var now = new Date();
+            var dateStr = now.toLocaleDateString('es-PE', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            var timeStr = now.toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+
+            var newEntry = {
+                id: Date.now(),
+                date: dateStr,
+                time: timeStr,
+                category: category,
+                author: author,
+                text: text || 'Registro fotográfico de avance de obra.',
+                photo: currentCompressedPhotoBase64 || null
+            };
+
+            bitacoraNotes.unshift(newEntry);
+            saveBitacora();
+            renderBitacora();
+
+            if (textEl) textEl.value = '';
+            clearSelectedNotePhoto();
+            showToast('✅ REGISTRO GUARDADO EN BITÁCORA DIGITAL');
+        }
+
+        function autoLogHito(tipo) {
+            var now = new Date();
+            var dateStr = now.toLocaleDateString('es-PE', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            var timeStr = now.toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+
+            var cat = '📌 General';
+            var text = '';
+
+            if (tipo === 'vaciado') {
+                cat = '🏗️ Vaciado Concreto';
+                var volStr = (typeof currentCalcData !== 'undefined' && currentCalcData && currentCalcData.volM3) ? currentCalcData.volM3.toFixed(2) + ' m³ (' + currentCalcData.sacosCemento + ' bolsas cemento)' : 'Vaciado estructural registrado';
+                var elemStr = (typeof currentCalcData !== 'undefined' && currentCalcData && currentCalcData.elemName) ? currentCalcData.elemName : 'Concreto Estructural';
+                text = 'AUTO-REGISTRO DE VACIADO: Inicios de llenado para ' + elemStr + '. Vol. Total: ' + volStr + '. Mezcla según dosificación de diseño RNE.';
+            } else if (tipo === 'asistencia') {
+                cat = '👷 Personal & Cuadrilla';
+                var totalPlanillaStr = document.getElementById('total_planilla') ? document.getElementById('total_planilla').innerText : 'S/ 0.00';
+                text = 'AUTO-REGISTRO DE ASISTENCIA: Control de cuadrilla registrado en obra. Total acumulado de jornales semanales: ' + totalPlanillaStr + '.';
+            } else if (tipo === 'avance') {
+                cat = '🧱 Avance Estructura';
+                text = 'AUTO-REGISTRO DE AVANCE: Verificación de alineamiento, niveles, encofrado y acero habilitado previa autorización de llenado.';
+            } else if (tipo === 'seguridad') {
+                cat = '⚠️ Incidencia / Clima';
+                text = 'ALERTA DE SEGURIDAD / CHARLA DE 5 MIN: Charla diaria de EPP e inspección de andamios y arneses completada sin novedades.';
+            }
+
+            var newEntry = {
+                id: Date.now(),
+                date: dateStr,
+                time: timeStr,
+                category: cat,
+                author: 'Sistema Automático CONSTRUYE.PRO',
+                text: text,
+                photo: null
+            };
+
+            bitacoraNotes.unshift(newEntry);
+            saveBitacora();
+            renderBitacora();
+            showToast('⚡ AUTO-REGISTRO GENERADO CON ÉXITO');
+        }
+
+        function saveBitacora() {
+            try {
+                safeStorage.setItem('construye_bitacora_notes_v1', JSON.stringify(bitacoraNotes));
+            } catch(e) {}
+        }
+
+        function renderBitacora() {
+            var container = document.getElementById('notes_container');
+            var badge = document.getElementById('badge_total_notas');
+
+            if (badge) badge.innerText = bitacoraNotes.length + ' NOTAS';
+            if (!container) return;
+
+            if (bitacoraNotes.length === 0) {
+                container.innerHTML = '<div style="text-align:center; padding:15px; color:var(--text-muted); font-size:11px; font-style:italic;">No hay notas guardadas en la bitácora aún. Agrega una observación o toma una foto.</div>';
+                return;
+            }
+
+            var html = '';
+            bitacoraNotes.forEach(function(item, idx) {
+                var photoHtml = '';
+                if (item.photo) {
+                    photoHtml = '<div style="margin-top:6px;"><img src="' + item.photo + '" onclick="openPhotoModalByIndex(' + idx + ')" style="max-height:90px; border-radius:6px; border:1px solid var(--primary-cyan); cursor:pointer; object-fit:cover;" title="Toca para ampliar"></div>';
+                }
+
+                html += '<div style="padding:10px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:8px; margin-bottom:6px; font-size:11px;">' +
+                    '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">' +
+                        '<span style="font-weight:900; color:var(--primary-cyan);">' + escapeHtml(item.category) + '</span>' +
+                        '<span style="font-size:10px; color:var(--text-muted);">' + item.date + ' • ' + item.time + '</span>' +
+                    '</div>' +
+                    '<div style="color:var(--text-main); font-size:11px; line-height:1.4;">' + escapeHtml(item.text) + '</div>' +
+                    photoHtml +
+                    '<div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px; padding-top:4px; border-top:1px solid rgba(255,255,255,0.05); font-size:9.5px; color:var(--text-muted);">' +
+                        '<span>👤 ' + escapeHtml(item.author) + '</span>' +
+                        '<button style="background:none; border:none; color:var(--primary-red); cursor:pointer; font-weight:700;" onclick="deleteBitacoraNote(' + item.id + ')">🗑️ Eliminar</button>' +
+                    '</div>' +
+                '</div>';
+            });
+
+            container.innerHTML = html;
+        }
+
+        function openPhotoModalByIndex(index) {
+            var item = bitacoraNotes[index];
+            if (item && item.photo) {
+                openPhotoModal(item.photo, item.text);
+            }
+        }
+
+        function deleteBitacoraNote(id) {
+            bitacoraNotes = bitacoraNotes.filter(function(n) { return n.id !== id; });
+            saveBitacora();
+            renderBitacora();
+            showToast('🗑️ NOTA ELIMINADA DE BITÁCORA');
+        }
+
+        function clearAllBitacora() {
+            if (confirm('¿Deseas borrar todo el historial de la Bitácora Digital?')) {
+                bitacoraNotes = [];
+                saveBitacora();
+                renderBitacora();
+                showToast('🗑️ BITÁCORA LIMPIADA');
+            }
+        }
+
+        function openPhotoModal(src, caption) {
+            var modal = document.getElementById('modal_bitacora_photo');
+            var img = document.getElementById('modal_img_full');
+            var cap = document.getElementById('modal_img_caption');
+
+            if (modal && img) {
+                img.src = src;
+                if (cap) cap.innerText = caption || 'Fotografía de Bitácora';
+                modal.style.display = 'flex';
+            }
+        }
+
+        function closePhotoModal() {
+            var modal = document.getElementById('modal_bitacora_photo');
+            if (modal) modal.style.display = 'none';
         }
 
         function drawPieChartWithSlices(data) {
@@ -4195,6 +4673,7 @@ function calcularPresupuesto() {
             window._appBooted = true;
 
             try { initSplashIntro(); } catch(e) {}
+            try { initBitacora(); } catch(e) {}
             try { setupAntiRefreshGuards(); } catch(e) {}
 
             try { updateRendimientoConcreto(); } catch(e) {}
