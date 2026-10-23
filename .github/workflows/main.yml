@@ -26,6 +26,7 @@ jobs:
 
       - name: 4. Empaquetar APK C.PRO Obra con icono-estructuras.png
         run: |
+          sudo apt-get update && sudo apt-get install -y imagemagick
           npm install -g cordova
           
           cordova create app_build com.construyepro.obra "C.PRO Obra"
@@ -35,9 +36,9 @@ jobs:
           cp ../index.html www/
           if [ -f ../manifest.json ]; then cp ../manifest.json www/; fi
           
-          # Usar exactamente tu archivo icono-estructuras.png subido al repositorio
-          cp ../icono-estructuras.png icon.png
-          cp ../icono-estructuras.png www/icono-estructuras.png
+          # Sanitizar tu archivo icono-estructuras.png a formato PNG32 nativo de Android (sin alterar su diseño)
+          convert ../icono-estructuras.png -resize 512x512! -strip PNG32:icon.png
+          cp icon.png www/icono-estructuras.png
 
           printf '<?xml version="1.0" encoding="utf-8"?>\n' > config.xml
           printf '<widget id="com.construyepro.obra" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">\n' >> config.xml
