@@ -34,18 +34,20 @@ jobs:
           rm -rf www/*
           
           cp ../index.html www/
-          if [ -f ../manifest.json ]; then cp ../manifest.json www/; fi
-          if [ -f ../sw.js ]; then cp ../sw.js www/; fi
           
-          # Creando Ícono Verde Esmeralda para Costos/Obra
-          convert -size 512x512 xc:#0b0e14 -fill "#30d158" -gravity center -pointsize 280 -annotate 0 "Y" PNG32:icon.png
-          cp icon.png www/icono-costos.png
+          # Dibujar Ícono Premium: Fondo oscuro + Silueta 3 Edificios + Círculo y Sello Y
+          convert -size 512x512 xc:"#0b0e14" \
+            -fill "#0f172a" -stroke "#3b82f6" -strokewidth 6 -draw "rectangle 75,190 175,450" \
+            -fill "#1e293b" -stroke "#3b82f6" -strokewidth 6 -draw "rectangle 337,170 437,450" \
+            -fill "#1d4ed8" -stroke "#00e5ff" -strokewidth 8 -draw "rectangle 175,100 337,450" \
+            -fill "#0b0e14" -stroke "#30d158" -strokewidth 12 -draw "circle 256,280 256,165" \
+            -stroke none -fill "#ffd700" -gravity center -pointsize 175 -font DejaVu-Sans-Bold -annotate +0+25 "Y" \
+            PNG32:icon.png
 
-          # Configuración estricta de colores para evitar el crash de Android 13
           printf '<?xml version="1.0" encoding="utf-8"?>\n' > config.xml
           printf '<widget id="com.construyepro.obra" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">\n' >> config.xml
           printf '    <name>C.PRO Obra</name>\n' >> config.xml
-          printf '    <description>Gestión y Costos</description>\n' >> config.xml
+          printf '    <description>Gestión, Costos y Logística de Obra</description>\n' >> config.xml
           printf '    <content src="index.html" />\n' >> config.xml
           printf '    <access origin="*" />\n' >> config.xml
           printf '    <preference name="Orientation" value="portrait" />\n' >> config.xml
@@ -58,9 +60,8 @@ jobs:
           printf '</widget>\n' >> config.xml
 
           cordova platform add android@13.0.0
-          keytool -genkey -v -keystore cpro.keystore -alias cpro -keyalg RSA -keysize 2048 -validity 10000 -storepass 123456 -keypass 123456 -dname "CN=ConstruyePro, OU=Ingenieria, O=ConstruyePro, C=PE"
+          keytool -genkey -v -keystore cpro.keystore -alias cpro -keyalg RSA -keysize 2048 -validity 10,000 -storepass 123456 -keypass 123456 -dname "CN=ConstruyePro, OU=Ingenieria, O=ConstruyePro, C=PE"
           
-          # Compilación forzada a formato APK
           cordova build android --release -- --packageType=apk --keystore=cpro.keystore --storePassword=123456 --password=123456 --alias=cpro
           
           find platforms/android/app/build/outputs -name "*.apk" -exec cp {} ../CPRO-Obra.apk \;
