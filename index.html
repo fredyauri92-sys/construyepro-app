@@ -1,66 +1,488 @@
-name: Compilar APK Costos
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>C.PRO Obra</title>
+    <style>
+        :root {
+            --bg-color: #0b0e14;
+            --card-bg: #151a23;
+            --card-border: #232d3f;
+            --text-main: #f0f4f8;
+            --text-muted: #94a3b8;
+            --primary-orange: #ff9f0a;
+            --primary-green: #30d158;
+            --primary-cyan: #00e5ff;
+            --primary-red: #ff453a;
+            --input-bg: #1c2331;
+        }
 
-on:
-  push:
-    branches: [ "main", "master" ]
-  workflow_dispatch:
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, sans-serif; -webkit-tap-highlight-color: transparent; }
+        html, body { width: 100%; height: 100%; background-color: var(--bg-color); color: var(--text-main); overflow: hidden; position: fixed; }
+        
+        input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { -webkit-appearance:none !important; margin:0 !important; display:none !important; }
+        input[type=number] { -moz-appearance:textfield !important; }
 
-jobs:
-  build-apk:
-    runs-on: ubuntu-latest
+        #app-container { position: absolute; top: 0; left: 0; right: 0; bottom: 0; width: 100%; max-width: 520px; height: 100%; margin: 0 auto; display: flex; flex-direction: column; background-color: var(--bg-color); overflow: hidden; }
+        header { flex: 0 0 auto; background-color: var(--card-bg); padding: 10px 14px; border-bottom: 1px solid var(--card-border); display: flex; justify-content: space-between; align-items: center; z-index: 100; }
+        
+        .rotating-circle { position:absolute; top:0; left:0; width:30px; height:30px; border:2px dashed var(--primary-green); border-radius:50%; animation:spinSlow 6s linear infinite; }
+        @keyframes spinSlow { 0%{transform:rotate(0deg);} 100%{transform:rotate(360deg);} }
 
-    steps:
-      - name: 1. Descargar archivos
-        uses: actions/checkout@v4
+        .main-viewport { flex: 1 1 auto; overflow-y: auto; padding: 14px; padding-bottom: 85px; }
+        .tab-pane { display: none; }
+        .tab-pane.active { display: block; }
 
-      - name: 2. Configurar Java JDK 17
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: '17'
+        .bottom-nav { flex: 0 0 auto; width: 100%; max-width: 520px; background-color: var(--card-bg); border-top: 1px solid var(--card-border); display: flex; height: 62px; }
+        .nav-item { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; background: none; border: none; color: var(--text-muted); font-size: 10px; font-weight: 700; cursor: pointer; gap: 3px; }
+        .nav-item.active { color: var(--primary-green); background-color: rgba(48, 209, 88, 0.08); }
 
-      - name: 3. Configurar Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
+        .segmented-control { display: flex; background-color: var(--input-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 3px; margin-bottom: 14px; gap: 3px; overflow-x: auto; scrollbar-width: none; }
+        .segment-btn { flex: 1 0 auto; padding: 10px 8px; background: none; border: none; color: var(--text-muted); font-size: 11px; font-weight: 700; border-radius: 6px; cursor: pointer; text-align: center; }
+        .segment-btn.active { background-color: var(--primary-green); color: #000; font-weight: 900; }
 
-      - name: 4. Empaquetar APK C.PRO Obra
-        run: |
-          sudo apt-get update && sudo apt-get install -y imagemagick
-          npm install -g cordova
-          
-          cordova create app_build com.construyepro.obra "C.PRO Obra"
-          cd app_build
-          rm -rf www/*
-          
-          cp ../index.html www/
-          
-          # Creando Ícono Verde Esmeralda
-          convert -size 512x512 xc:#0b0e14 -fill "#30d158" -gravity center -pointsize 280 -annotate 0 "Y" PNG32:icon.png
-          cp icon.png www/icono-costos.png
+        .form-group { margin-bottom: 12px; }
+        label { display: block; font-size: 10px; font-weight: 800; color: var(--text-muted); margin-bottom: 5px; text-transform: uppercase; }
+        select, input { width: 100%; padding: 12px; background-color: var(--input-bg); border: 1px solid var(--card-border); border-radius: 8px; color: var(--text-main); font-size: 14px; font-weight: 700; outline: none; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
 
-          printf '<?xml version="1.0" encoding="utf-8"?>\n' > config.xml
-          printf '<widget id="com.construyepro.obra" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">\n' >> config.xml
-          printf '    <name>C.PRO Obra</name>\n' >> config.xml
-          printf '    <description>Gestión y Costos</description>\n' >> config.xml
-          printf '    <content src="index.html" />\n' >> config.xml
-          printf '    <access origin="*" />\n' >> config.xml
-          printf '    <preference name="Orientation" value="portrait" />\n' >> config.xml
-          printf '    <preference name="BackgroundColor" value="0xff0b0e14" />\n' >> config.xml
-          printf '    <platform name="android">\n' >> config.xml
-          printf '        <icon src="icon.png" />\n' >> config.xml
-          printf '    </platform>\n' >> config.xml
-          printf '</widget>\n' >> config.xml
+        .result-card { background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 10px; padding: 14px; margin-bottom: 14px; }
+        .result-header { font-size: 12px; font-weight: 900; color: var(--primary-cyan); border-bottom: 1px solid var(--card-border); padding-bottom: 6px; margin-bottom: 10px; text-transform: uppercase; }
+        .res-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+        .res-table td { padding: 8px 4px; border-bottom: 1px dashed rgba(255,255,255,0.06); }
+        .val-bold { font-weight: 900; color: #fff; }
 
-          cordova platform add android@13.0.0
-          keytool -genkey -v -keystore cpro.keystore -alias cpro -keyalg RSA -keysize 2048 -validity 10000 -storepass 123456 -keypass 123456 -dname "CN=ConstruyePro, OU=Ingenieria, O=ConstruyePro, C=PE"
-          
-          cordova build android --release -- --packageType=apk --keystore=cpro.keystore --storePassword=123456 --password=123456 --alias=cpro
-          
-          find platforms/android/app/build/outputs -name "*.apk" -exec cp {} ../CPRO-Obra.apk \;
+        .btn-primary { width: 100%; padding: 14px; background: var(--primary-green); border: none; border-radius: 8px; color: #000; font-size: 14px; font-weight: 900; cursor: pointer; margin-bottom: 14px; text-transform: uppercase; }
+        .badge-green { background: rgba(48,209,88,0.15); color: var(--primary-green); border: 1px solid rgba(48,209,88,0.3); padding: 4px 8px; border-radius: 12px; font-size: 10px; font-weight: 800; }
 
-      - name: 5. Subir APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: Instalador-CPRO-Obra
-          path: CPRO-Obra.apk
+        /* Splash Screen */
+        #splash-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: #05080e; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 99999; transition: opacity 0.5s ease; }
+        .anim-scale { animation: scaleUp 0.8s forwards; }
+        @keyframes scaleUp { 0%{opacity:0;transform:scale(0.8);} 100%{opacity:1;transform:scale(1);} }
+    </style>
+</head>
+<body>
+
+<!-- PANTALLA DE BLOQUEO DE LICENCIA (APP COSTOS/OBRA) -->
+<div id="licencia-screen" style="position:fixed;top:0;left:0;width:100vw;height:100vh;background-color:#0b0e14;z-index:9999999;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:20px;text-align:center;transition:opacity 0.3s ease;">
+    <div style="position:relative;width:70px;height:70px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;">
+        <div style="position:absolute;width:70px;height:70px;border:2.5px dashed var(--primary-green);border-radius:50%;animation:spinSlow 8s linear infinite;"></div>
+        <div style="font-size:38px;font-weight:900;color:var(--primary-green);">Y</div>
+    </div>
+    <h2 style="color:var(--primary-green);margin-bottom:8px;font-weight:900;letter-spacing:1px;">🔒 ACTIVAR C.PRO OBRA</h2>
+    <p style="color:var(--text-muted);font-size:12px;margin-bottom:16px;">Tu código único de equipo es:</p>
+    <div id="lic_device_id" style="font-size:26px;font-weight:900;color:var(--primary-green);letter-spacing:4px;background:rgba(48,209,88,0.1);border:1px solid rgba(48,209,88,0.3);padding:12px 24px;border-radius:8px;margin-bottom:18px;">------</div>
+    <p style="color:var(--text-muted);font-size:11px;margin-bottom:14px;line-height:1.5;">Envía este código por WhatsApp al desarrollador<br>para obtener tu PIN de acceso de 4 dígitos.</p>
+    <input type="number" id="lic_pin_input" placeholder="0000" style="width:150px;text-align:center;font-size:22px;font-weight:900;letter-spacing:4px;padding:12px;margin-bottom:18px;background:#151a23;border:2px solid #232d3f;color:#fff;border-radius:8px;outline:none;">
+    <button onclick="validarLicencia()" style="background:var(--primary-green);color:#000;border:none;padding:14px 28px;border-radius:8px;font-weight:900;font-size:14px;cursor:pointer;">ACTIVAR APLICACIÓN</button>
+</div>
+
+<!-- Splash Screen -->
+<div id="splash-screen" onclick="this.style.opacity='0'; setTimeout(()=>{this.style.display='none';},500);">
+    <div class="anim-scale" style="display:flex; flex-direction:column; align-items:center;">
+        <div style="position:relative; width:220px; height:220px; margin-bottom:16px;">
+            <svg viewBox="0 0 120 120" style="width:100%; height:100%; filter:drop-shadow(0 0 25px rgba(48,209,88,0.4));">
+                <path d="M20,105 L20,45 L42,45 L42,105 Z" fill="#0f172a" stroke="#30d158" stroke-width="1.5" />
+                <path d="M78,105 L78,40 L100,40 L100,105 Z" fill="#1e293b" stroke="#30d158" stroke-width="1.5" />
+                <path d="M42,105 L42,28 L45,28 L45,22 L75,22 L75,28 L78,28 L78,105 Z" fill="#0f172a" stroke="#30d158" stroke-width="1.8" />
+                <circle cx="60" cy="60" r="28" fill="rgba(15, 23, 42, 0.85)" stroke="#30d158" stroke-width="2.5" />
+                <path d="M44,48 L60,66 L76,48 M60,66 L60,88" stroke="#30d158" stroke-width="6" stroke-linecap="round" fill="none" />
+            </svg>
+        </div>
+        <div style="font-size:28px; font-weight:900; letter-spacing:3px; color:#fff;">C.PRO OBRA</div>
+        <div style="font-size:11px; font-weight:800; color:var(--primary-green); margin-top:8px; letter-spacing:2px;">GESTIÓN, COSTOS Y LOGÍSTICA</div>
+    </div>
+</div>
+
+<div id="app-container">
+    <header>
+        <div style="display:flex; align-items:center; gap:8px;">
+            <div style="position:relative; width:30px; height:30px; display:flex; align-items:center; justify-content:center;">
+                <div class="rotating-circle"></div>
+                <span style="font-size:15px; font-weight:900; color:var(--primary-green); z-index:2;">Y</span>
+            </div>
+            <div class="brand-title">C.PRO OBRA</div>
+            <span class="badge-green">PREMIUM</span>
+        </div>
+    </header>
+
+    <div class="main-viewport" id="main_viewport">
+
+        <!-- TAB 1: METRADOS Y MATERIALES -->
+        <div id="tab1" class="tab-pane active">
+            <div class="segmented-control" style="grid-template-columns: repeat(4, 1fr);">
+                <button class="segment-btn active" onclick="switchCalc('calc_concreto', this)">🏗️ Concreto</button>
+                <button class="segment-btn" onclick="switchCalc('calc_muros', this)">🧱 Muros</button>
+                <button class="segment-btn" onclick="switchCalc('calc_tecnopor', this)">🧇 Losa</button>
+                <button class="segment-btn" onclick="switchCalc('calc_acero', this)">⛓️ Acero</button>
+            </div>
+
+            <div id="calc_concreto" class="calc-subpane">
+                <div class="form-group grid-2">
+                    <div><label>Elemento (Largo m):</label><input type="number" id="c_l" value="5.0" step="0.1"></div>
+                    <div><label>Ancho (m):</label><input type="number" id="c_a" value="4.0" step="0.1"></div>
+                    <div><label>Espesor (m):</label><input type="number" id="c_e" value="0.2" step="0.05"></div>
+                    <div><label>f'c (kg/cm²):</label>
+                        <select id="c_fc">
+                            <option value="175">175 (Zapatas/Vigas)</option>
+                            <option value="210" selected>210 (Estructural)</option>
+                        </select>
+                    </div>
+                </div>
+                <button class="btn-primary" onclick="calcularMateriales()">🧮 Calcular Concreto</button>
+            </div>
+
+            <div id="calc_muros" class="calc-subpane" style="display:none;">
+                <div class="form-group grid-2">
+                    <div><label>Largo Muro (m):</label><input type="number" id="m_l" value="6.0" step="0.1"></div>
+                    <div><label>Alto Muro (m):</label><input type="number" id="m_a" value="2.6" step="0.1"></div>
+                    <div style="grid-column: span 2;"><label>Ladrillo:</label>
+                        <select id="m_tipo">
+                            <option value="36">King Kong Soga (36 u/m²)</option>
+                            <option value="15">Blocker 12x20x30 (15 u/m²)</option>
+                        </select>
+                    </div>
+                </div>
+                <button class="btn-primary" onclick="calcularMateriales()">🧮 Calcular Muros</button>
+            </div>
+
+            <div id="calc_tecnopor" class="calc-subpane" style="display:none;">
+                <div class="form-group grid-2">
+                    <div><label>Largo Losa (m):</label><input type="number" id="t_l" value="5.0" step="0.1"></div>
+                    <div><label>Ancho Losa (m):</label><input type="number" id="t_a" value="4.0" step="0.1"></div>
+                    <div><label>Peralte Losa:</label>
+                        <select id="t_h"><option value="0.20">20 cm</option><option value="0.25">25 cm</option></select>
+                    </div>
+                </div>
+                <button class="btn-primary" onclick="calcularMateriales()">🧮 Calcular Losa EPS</button>
+            </div>
+
+            <!-- LOGÍSTICA DE ACERO (CONVERSOR) -->
+            <div id="calc_acero" class="calc-subpane" style="display:none;">
+                <div style="background:rgba(0,229,255,0.05); padding:10px; border-radius:8px; border:1px solid rgba(0,229,255,0.2); margin-bottom:12px;">
+                    <span style="font-size:10px; font-weight:800; color:var(--primary-cyan);">CONVERSOR DE KILOS A VARILLAS (9 METROS) + 5% DESPERDICIO</span>
+                </div>
+                <div class="form-group grid-2">
+                    <div><label>Acero Ø 3/8" (kg):</label><input type="number" id="kg_38" value="150"></div>
+                    <div><label>Varillas Ø 3/8":</label><input type="text" id="v_38" disabled style="color:var(--primary-green);"></div>
+                    
+                    <div><label>Acero Ø 1/2" (kg):</label><input type="number" id="kg_12" value="200"></div>
+                    <div><label>Varillas Ø 1/2":</label><input type="text" id="v_12" disabled style="color:var(--primary-green);"></div>
+                    
+                    <div><label>Acero Ø 5/8" (kg):</label><input type="number" id="kg_58" value="350"></div>
+                    <div><label>Varillas Ø 5/8":</label><input type="text" id="v_58" disabled style="color:var(--primary-green);"></div>
+                </div>
+                <button class="btn-primary" onclick="calcularAcero()">🔄 Convertir a Varillas</button>
+            </div>
+
+            <div class="result-card" id="res_materiales">
+                <div class="result-header">📊 RESULTADOS DE MATERIALES</div>
+                <div id="mat_output" style="color:var(--text-muted); font-size:12px; text-align:center;">Selecciona un módulo y calcula.</div>
+            </div>
+        </div>
+
+        <!-- TAB 2: MODO OBRA & TROMPO -->
+        <div id="tab2" class="tab-pane">
+            <div class="result-card">
+                <div class="result-header">🔊 ASISTENTE DE TROMPO</div>
+                <div class="grid-3" style="text-align:center; gap:10px; margin-bottom:14px;">
+                    <div style="background:var(--input-bg); padding:10px; border-radius:8px;">
+                        <span style="font-size:24px; font-weight:900; color:var(--primary-cyan);" id="cnt_arena">0</span><br><span style="font-size:10px; font-weight:800;">ARENA (b)</span>
+                    </div>
+                    <div style="background:var(--input-bg); padding:10px; border-radius:8px;">
+                        <span style="font-size:24px; font-weight:900; color:var(--primary-orange);" id="cnt_piedra">0</span><br><span style="font-size:10px; font-weight:800;">PIEDRA (b)</span>
+                    </div>
+                    <div style="background:var(--input-bg); padding:10px; border-radius:8px;">
+                        <span style="font-size:24px; font-weight:900; color:var(--primary-green);" id="cnt_agua">0</span><br><span style="font-size:10px; font-weight:800;">AGUA (L)</span>
+                    </div>
+                </div>
+                <div class="grid-3">
+                    <button style="padding:12px; background:#1e293b; color:#fff; border:1px solid #3b82f6; border-radius:8px; font-weight:900;" onclick="addTrompo('arena')">+ ARENA</button>
+                    <button style="padding:12px; background:#1e293b; color:#fff; border:1px solid #ff9f0a; border-radius:8px; font-weight:900;" onclick="addTrompo('piedra')">+ PIEDRA</button>
+                    <button style="padding:12px; background:#1e293b; color:#fff; border:1px solid #30d158; border-radius:8px; font-weight:900;" onclick="addTrompo('agua')">+ AGUA</button>
+                </div>
+                <button class="btn-primary" style="margin-top:14px;" onclick="registrarTanda()">📋 REGISTRAR TANDA (1 BOLSA)</button>
+            </div>
+            
+            <div class="result-card">
+                <div class="result-header">📝 BITÁCORA DIARIA</div>
+                <textarea id="nota_diaria" rows="3" placeholder="Ej: Vaciado de losa aligerada nivel 2. Clima soleado." style="width:100%; font-size:12px; padding:10px; background:var(--input-bg); color:#fff; border:1px solid var(--card-border); border-radius:8px; margin-bottom:10px;"></textarea>
+                <div id="log_tandas" style="font-size:11px; color:var(--primary-green); font-weight:800; margin-bottom:10px;">Bolsas hoy: 0</div>
+            </div>
+        </div>
+
+        <!-- TAB 3: PRESUPUESTO & CURVA S -->
+        <div id="tab3" class="tab-pane">
+            <!-- CURVA S -->
+            <div class="result-card">
+                <div class="result-header">📈 CURVA S: AVANCE FÍSICO VS FINANCIERO</div>
+                <div class="form-group grid-2">
+                    <div><label>% Avance Físico (Obra):</label><input type="number" id="pct_fisico" value="45" oninput="updateCurvaS()"></div>
+                    <div><label>% Avance Financiero (Gasto):</label><input type="number" id="pct_financiero" value="52" oninput="updateCurvaS()"></div>
+                </div>
+                <div style="background:#0b0e14; height:12px; border-radius:6px; margin-bottom:8px; overflow:hidden; border:1px solid #232d3f;">
+                    <div id="bar_fisico" style="height:100%; width:45%; background:var(--primary-green);"></div>
+                </div>
+                <div style="background:#0b0e14; height:12px; border-radius:6px; overflow:hidden; border:1px solid #232d3f; margin-bottom:10px;">
+                    <div id="bar_financiero" style="height:100%; width:52%; background:var(--primary-red);"></div>
+                </div>
+                <div id="alert_curvas" style="font-size:10px; font-weight:800; color:var(--primary-red); display:none; background:rgba(255,69,58,0.1); padding:6px; border-radius:6px;">⚠️ ALERTA: Gasto financiero supera el avance físico en más del 5%.</div>
+            </div>
+
+            <!-- APU CAPECO -->
+            <div class="result-card">
+                <div class="result-header">💰 ANÁLISIS DE PRECIOS UNITARIOS (APU)</div>
+                <div class="form-group grid-3">
+                    <div><label>S/ Bolsa Cem:</label><input type="number" id="p_cem" value="28.5" oninput="calcularAPU()"></div>
+                    <div><label>S/ m³ Arena:</label><input type="number" id="p_are" value="55" oninput="calcularAPU()"></div>
+                    <div><label>S/ m³ Piedra:</label><input type="number" id="p_pie" value="65" oninput="calcularAPU()"></div>
+                </div>
+                <table class="res-table" style="margin-top:10px;">
+                    <tr><td>Costo Directo Materiales:</td><td class="val-bold" id="apu_mat">S/ 0.00</td></tr>
+                    <tr><td>Mano de Obra (Est. 40% Mat):</td><td class="val-bold" id="apu_mo" style="color:var(--primary-cyan);">S/ 0.00</td></tr>
+                    <tr><td>Herramientas/Equipos (5% MO):</td><td class="val-bold" id="apu_eq" style="color:var(--primary-orange);">S/ 0.00</td></tr>
+                    <tr style="border-top:1px solid var(--primary-green);"><td><b>PRESUPUESTO DIRECTO:</b></td><td class="val-bold" id="apu_total" style="color:var(--primary-green); font-size:14px;">S/ 0.00</td></tr>
+                </table>
+            </div>
+            <button class="btn-primary" onclick="exportarParteDiario()" style="background:#0a84ff; color:#fff;">📲 ENVIAR PARTE DIARIO A WHATSAPP</button>
+        </div>
+
+        <!-- TAB 4: HERRAMIENTAS -->
+        <div id="tab4" class="tab-pane">
+            <div class="result-card">
+                <div class="result-header">🧰 CONTROL DE ALMACÉN</div>
+                <div class="form-group grid-2">
+                    <div><label>Herramienta:</label><input type="text" id="h_name" placeholder="Ej: Amoladora"></div>
+                    <div><label>Trabajador:</label><input type="text" id="h_worker" placeholder="Ej: Maestro Juan"></div>
+                </div>
+                <button class="btn-primary" style="padding:10px; font-size:12px;" onclick="prestarHerramienta()">➕ Prestar Equipo</button>
+                <div id="lista_herramientas" style="margin-top:10px;"></div>
+            </div>
+        </div>
+
+        <!-- TAB 5: PERSONAL Y PLANILLA -->
+        <div id="tab5" class="tab-pane">
+            <div class="result-card">
+                <div class="result-header">👥 PLANILLA Y BONOS EXTRAS</div>
+                <div class="form-group grid-3">
+                    <div style="grid-column:span 2;"><label>Nombre (Cargo):</label><input type="text" id="w_name" placeholder="Ej: Carlos (Oficial)"></div>
+                    <div><label>Jornal (S/):</label><input type="number" id="w_jornal" value="85"></div>
+                </div>
+                <button class="btn-primary" style="padding:10px; font-size:12px;" onclick="addWorker()">➕ Agregar a Planilla</button>
+                
+                <table class="res-table" style="margin-top:10px; text-align:center;">
+                    <thead>
+                        <tr style="color:var(--primary-cyan); font-weight:800; font-size:10px;">
+                            <th style="text-align:left;">Personal</th><th>Días</th><th>Bono S/</th><th>Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody id="worker_table"></tbody>
+                </table>
+                <div style="text-align:right; margin-top:10px; font-size:14px; font-weight:900;">TOTAL PAGO: <span id="total_planilla" style="color:var(--primary-green);">S/ 0.00</span></div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="bottom-nav">
+        <button class="nav-item active" onclick="switchTab('tab1', this)"><span>📏</span><span>Metrados</span></button>
+        <button class="nav-item" onclick="switchTab('tab2', this)"><span>📢</span><span>Obra</span></button>
+        <button class="nav-item" onclick="switchTab('tab3', this)"><span>💰</span><span>APU/Curva</span></button>
+        <button class="nav-item" onclick="switchTab('tab4', this)"><span>🧰</span><span>Almacén</span></button>
+        <button class="nav-item" onclick="switchTab('tab5', this)"><span>👥</span><span>Planilla</span></button>
+    </div>
+</div>
+
+<script>
+// --- SEGURIDAD LOCALSTORAGE ---
+var DEVICE_ID = localStorage.getItem('cpro_costos_device_id');
+if(!DEVICE_ID){
+    DEVICE_ID = Math.random().toString(36).substr(2, 6).toUpperCase();
+    localStorage.setItem('cpro_costos_device_id', DEVICE_ID);
+}
+document.getElementById('lic_device_id').innerText = DEVICE_ID;
+
+function generarPinInterno(codigo) {
+    var num = 0;
+    for(var i = 0; i < codigo.length; i++) { num += codigo.charCodeAt(i) * Math.pow(3, i); }
+    return ((num * 5127) % 8999) + 1000; 
+}
+
+if(localStorage.getItem('cpro_costos_licencia_activa') === 'SI'){
+    document.getElementById('licencia-screen').style.display = 'none';
+}
+
+function validarLicencia(){
+    var pinIngresado = parseInt(document.getElementById('lic_pin_input').value);
+    if(pinIngresado === generarPinInterno(DEVICE_ID)){
+        localStorage.setItem('cpro_costos_licencia_activa', 'SI');
+        document.getElementById('licencia-screen').style.opacity = '0';
+        setTimeout(function(){ document.getElementById('licencia-screen').style.display = 'none'; }, 300);
+    } else {
+        alert("❌ PIN incorrecto.");
+    }
+}
+
+// --- NAVEGACIÓN ---
+function switchTab(tabId, btn){
+    document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
+    btn.classList.add('active');
+}
+
+var currentMod = 'calc_concreto';
+function switchCalc(id, btn){
+    currentMod = id;
+    document.querySelectorAll('.calc-subpane').forEach(el => el.style.display = 'none');
+    document.querySelectorAll('.segment-btn').forEach(el => el.classList.remove('active'));
+    document.getElementById(id).style.display = 'block';
+    btn.classList.add('active');
+}
+
+// --- LOGÍSTICA DE ACERO ---
+function calcularAcero() {
+    var k38 = parseFloat(document.getElementById('kg_38').value) || 0;
+    var k12 = parseFloat(document.getElementById('kg_12').value) || 0;
+    var k58 = parseFloat(document.getElementById('kg_58').value) || 0;
+    
+    // Peso varilla 9m = peso/m * 9
+    document.getElementById('v_38').value = Math.ceil((k38 * 1.05) / (0.56 * 9)) + ' und';
+    document.getElementById('v_12').value = Math.ceil((k12 * 1.05) / (0.994 * 9)) + ' und';
+    document.getElementById('v_58').value = Math.ceil((k58 * 1.05) / (1.552 * 9)) + ' und';
+}
+
+// --- CÁLCULO DE MATERIALES Y APU ---
+var costMateriales = 0;
+function calcularMateriales() {
+    var html = '';
+    var pCem = parseFloat(document.getElementById('p_cem').value) || 28.5;
+    var pAre = parseFloat(document.getElementById('p_are').value) || 55;
+    var pPie = parseFloat(document.getElementById('p_pie').value) || 65;
+
+    if(currentMod === 'calc_concreto'){
+        var vol = (parseFloat(document.getElementById('c_l').value)*parseFloat(document.getElementById('c_a').value)*parseFloat(document.getElementById('c_e').value))*1.05;
+        var f = document.getElementById('c_fc').value === '210' ? 9.73 : 8.43;
+        var cem = vol * f; var are = vol * 0.52; var pie = vol * 0.53;
+        html = 'Concreto ' + vol.toFixed(2) + 'm³<br>Cemento: ' + Math.ceil(cem) + ' bls<br>Arena: ' + are.toFixed(2) + ' m³<br>Piedra: ' + pie.toFixed(2) + ' m³';
+        costMateriales = (cem*pCem) + (are*pAre) + (pie*pPie);
+    } else if (currentMod === 'calc_muros') {
+        var area = (parseFloat(document.getElementById('m_l').value)*parseFloat(document.getElementById('m_a').value));
+        var lad = area * parseFloat(document.getElementById('m_tipo').value) * 1.05;
+        var volM = area * 0.027 * 1.1;
+        html = 'Muro ' + area.toFixed(2) + 'm²<br>Ladrillos: ' + Math.ceil(lad) + ' und<br>Cemento: ' + Math.ceil(volM*7.5) + ' bls<br>Arena: ' + (volM*1.05).toFixed(2) + ' m³';
+        costMateriales = (Math.ceil(volM*7.5)*pCem) + ((volM*1.05)*pAre) + (lad*1.2);
+    } else if (currentMod === 'calc_tecnopor') {
+        var area = (parseFloat(document.getElementById('t_l').value)*parseFloat(document.getElementById('t_a').value));
+        var blq = Math.ceil((area/0.48)*1.05);
+        var volC = area * 0.087 * 1.05;
+        html = 'Losa ' + area.toFixed(2) + 'm²<br>Tecnopor: ' + blq + ' und<br>Cemento: ' + Math.ceil(volC*9.73) + ' bls';
+        costMateriales = (Math.ceil(volC*9.73)*pCem) + (volC*0.5*pAre) + (volC*0.5*pPie) + (blq*4.5);
+    }
+    document.getElementById('mat_output').innerHTML = html;
+    calcularAPU();
+}
+
+// --- APU CAPECO Y CURVA S ---
+function calcularAPU() {
+    var mo = costMateriales * 0.40; // Estándar 40%
+    var eq = mo * 0.05; // 5% herramientas manuales
+    var tot = costMateriales + mo + eq;
+    
+    document.getElementById('apu_mat').innerText = 'S/ ' + costMateriales.toFixed(2);
+    document.getElementById('apu_mo').innerText = 'S/ ' + mo.toFixed(2);
+    document.getElementById('apu_eq').innerText = 'S/ ' + eq.toFixed(2);
+    document.getElementById('apu_total').innerText = 'S/ ' + tot.toFixed(2);
+}
+
+function updateCurvaS() {
+    var fis = parseFloat(document.getElementById('pct_fisico').value) || 0;
+    var fin = parseFloat(document.getElementById('pct_financiero').value) || 0;
+    document.getElementById('bar_fisico').style.width = fis + '%';
+    document.getElementById('bar_financiero').style.width = fin + '%';
+    document.getElementById('alert_curvas').style.display = (fin > fis + 5) ? 'block' : 'none';
+}
+
+// --- TROMPO Y PARTE DIARIO ---
+var tCem=0, tAre=0, tPie=0, tAgu=0, tandas=0;
+function addTrompo(mat){
+    if(mat==='arena'){ tAre++; document.getElementById('cnt_arena').innerText=tAre; }
+    if(mat==='piedra'){ tPie++; document.getElementById('cnt_piedra').innerText=tPie; }
+    if(mat==='agua'){ tAgu+=20; document.getElementById('cnt_agua').innerText=tAgu; }
+}
+function registrarTanda(){
+    tandas++; tCem++; tAre=0; tPie=0; tAgu=0;
+    document.getElementById('cnt_arena').innerText='0';
+    document.getElementById('cnt_piedra').innerText='0';
+    document.getElementById('cnt_agua').innerText='0';
+    document.getElementById('log_tandas').innerText = 'Bolsas hoy: ' + tCem;
+}
+
+// --- ALMACÉN ---
+var herramientas = [];
+function prestarHerramienta() {
+    var h = document.getElementById('h_name').value;
+    var w = document.getElementById('h_worker').value;
+    if(!h || !w) return;
+    herramientas.push({h: h, w: w});
+    renderHerramientas();
+}
+function renderHerramientas() {
+    var html = '';
+    herramientas.forEach((item, i) => {
+        html += '<div style="font-size:12px; padding:6px; border-bottom:1px solid #232d3f; display:flex; justify-content:space-between;"><span>' + item.h + ' (' + item.w + ')</span><button onclick="herramientas.splice('+i+',1);renderHerramientas()" style="background:var(--primary-red);color:#fff;border:none;border-radius:4px;padding:2px 6px;">✕</button></div>';
+    });
+    document.getElementById('lista_herramientas').innerHTML = html;
+}
+
+// --- PLANILLA Y BONOS ---
+var workers = [];
+function addWorker() {
+    var n = document.getElementById('w_name').value;
+    var j = parseFloat(document.getElementById('w_jornal').value) || 85;
+    if(!n) return;
+    workers.push({name: n, jornal: j, dias: 6, bono: 0});
+    renderPlanilla();
+}
+function updateWorkerField(idx, field, val) {
+    workers[idx][field] = parseFloat(val) || 0;
+    renderPlanilla();
+}
+function renderPlanilla() {
+    var html = ''; var total = 0;
+    workers.forEach((w, i) => {
+        var sub = (w.jornal * w.dias) + w.bono;
+        total += sub;
+        html += '<tr><td style="text-align:left;">' + w.name + '</td>' +
+                '<td><input type="number" value="'+w.dias+'" onchange="updateWorkerField('+i+',\'dias\',this.value)" style="width:40px;padding:4px;"></td>' +
+                '<td><input type="number" value="'+w.bono+'" onchange="updateWorkerField('+i+',\'bono\',this.value)" style="width:50px;padding:4px;"></td>' +
+                '<td style="color:var(--primary-cyan);font-weight:900;">S/ ' + sub.toFixed(2) + '</td></tr>';
+    });
+    document.getElementById('worker_table').innerHTML = html;
+    document.getElementById('total_planilla').innerText = 'S/ ' + total.toFixed(2);
+}
+
+// --- EXPORTAR PARTE DIARIO ---
+function exportarParteDiario() {
+    var nota = document.getElementById('nota_diaria').value || 'Sin observaciones.';
+    var totP = document.getElementById('total_planilla').innerText;
+    var hHtml = herramientas.map(x => '- ' + x.h + ' (' + x.w + ')').join('\n');
+    
+    var txt = "📋 *PARTE DIARIO DE OBRA - C.PRO*\n" +
+              "--------------------------------\n" +
+              "👷 *Avance y Notas:*\n" + nota + "\n\n" +
+              "🏗️ *Concreto Vaciado Hoy:*\n- Cemento usado: " + tCem + " bolsas\n\n" +
+              "🧰 *Equipos Prestados:*\n" + (hHtml || '- Ninguno') + "\n\n" +
+              "👥 *Resumen Planilla:*\n- Total a pagar: " + totP + "\n\n" +
+              "Generado desde C.PRO Obra";
+              
+    window.location.href = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(txt);
+}
+
+// Iniciar app
+updateCurvaS();
+</script>
+</body>
+</html>
