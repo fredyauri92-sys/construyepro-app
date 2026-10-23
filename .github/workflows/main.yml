@@ -24,9 +24,8 @@ jobs:
         with:
           node-version: '20'
 
-      - name: 4. Empaquetar APK C.PRO Obra
+      - name: 4. Empaquetar APK C.PRO Obra con icono-estructuras.png
         run: |
-          sudo apt-get update && sudo apt-get install -y imagemagick
           npm install -g cordova
           
           cordova create app_build com.construyepro.obra "C.PRO Obra"
@@ -36,14 +35,9 @@ jobs:
           cp ../index.html www/
           if [ -f ../manifest.json ]; then cp ../manifest.json www/; fi
           
-          # Dibujar Ícono Premium: Fondo oscuro + Silueta 3 Edificios + Círculo y Sello Y
-          convert -size 512x512 xc:"#0b0e14" \
-            -fill "#0f172a" -stroke "#3b82f6" -strokewidth 6 -draw "rectangle 75,190 175,450" \
-            -fill "#1e293b" -stroke "#3b82f6" -strokewidth 6 -draw "rectangle 337,170 437,450" \
-            -fill "#1d4ed8" -stroke "#00e5ff" -strokewidth 8 -draw "rectangle 175,100 337,450" \
-            -fill "#0b0e14" -stroke "#30d158" -strokewidth 12 -draw "circle 256,280 256,165" \
-            -stroke none -fill "#ffd700" -gravity center -pointsize 175 -annotate +0+25 "Y" \
-            PNG32:icon.png
+          # Usar exactamente tu archivo icono-estructuras.png subido al repositorio
+          cp ../icono-estructuras.png icon.png
+          cp ../icono-estructuras.png www/icono-estructuras.png
 
           printf '<?xml version="1.0" encoding="utf-8"?>\n' > config.xml
           printf '<widget id="com.construyepro.obra" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">\n' >> config.xml
