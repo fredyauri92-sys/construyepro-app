@@ -1,0 +1,66 @@
+name: Compilar APK Costos
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  workflow_dispatch:
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 1. Descargar archivos
+        uses: actions/checkout@v4
+
+      - name: 2. Configurar Java JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: 3. Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 4. Empaquetar APK C.PRO Obra
+        run: |
+          sudo apt-get update && sudo apt-get install -y imagemagick
+          npm install -g cordova
+          
+          cordova create app_build com.construyepro.obra "C.PRO Obra"
+          cd app_build
+          rm -rf www/*
+          
+          cp ../index.html www/
+          
+          # Creando Ícono Verde Esmeralda
+          convert -size 512x512 xc:#0b0e14 -fill "#30d158" -gravity center -pointsize 280 -annotate 0 "Y" PNG32:icon.png
+          cp icon.png www/icono-costos.png
+
+          printf '<?xml version="1.0" encoding="utf-8"?>\n' > config.xml
+          printf '<widget id="com.construyepro.obra" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">\n' >> config.xml
+          printf '    <name>C.PRO Obra</name>\n' >> config.xml
+          printf '    <description>Gestión y Costos</description>\n' >> config.xml
+          printf '    <content src="index.html" />\n' >> config.xml
+          printf '    <access origin="*" />\n' >> config.xml
+          printf '    <preference name="Orientation" value="portrait" />\n' >> config.xml
+          printf '    <preference name="BackgroundColor" value="0xff0b0e14" />\n' >> config.xml
+          printf '    <platform name="android">\n' >> config.xml
+          printf '        <icon src="icon.png" />\n' >> config.xml
+          printf '    </platform>\n' >> config.xml
+          printf '</widget>\n' >> config.xml
+
+          cordova platform add android@13.0.0
+          keytool -genkey -v -keystore cpro.keystore -alias cpro -keyalg RSA -keysize 2048 -validity 10000 -storepass 123456 -keypass 123456 -dname "CN=ConstruyePro, OU=Ingenieria, O=ConstruyePro, C=PE"
+          
+          cordova build android --release -- --packageType=apk --keystore=cpro.keystore --storePassword=123456 --password=123456 --alias=cpro
+          
+          find platforms/android/app/build/outputs -name "*.apk" -exec cp {} ../CPRO-Obra.apk \;
+
+      - name: 5. Subir APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Instalador-CPRO-Obra
+          path: CPRO-Obra.apk
