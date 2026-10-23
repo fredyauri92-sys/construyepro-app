@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <title>CONSTRUYE.PRO - C.PRO Obra</title>
+    <link rel="apple-touch-icon" href="icono-estructuras.png">
+    <link rel="icon" type="image/png" href="icono-estructuras.png">
+    <title>C.PRO Obra</title>
     <style>
         :root {
             --bg-color: #0b0e14;
@@ -70,7 +72,6 @@
             touch-action: none !important;
         }
 
-        /* Splash Screen - Silueta de Edificios Iluminados y Sello Dorado Y */
         #splash-screen {
             position: fixed;
             top: 0;
@@ -281,14 +282,6 @@
             text-align: center;
             overflow: hidden;
             box-shadow: 0 4px 15px rgba(0,0,0,0.25);
-        }
-
-        .svg-3d-canvas {
-            width: 100%;
-            max-height: 195px;
-            background-color: #080b10;
-            border-radius: 8px;
-            border: 1px solid #1a2332;
         }
 
         .pill-badge {
@@ -514,10 +507,10 @@
     <!-- ==================== PANTALLA DE BLOQUEO DE LICENCIA (FÓRMULA 5127) ==================== -->
     <div id="licencia-screen" style="position:fixed;top:0;left:0;width:100vw;height:100vh;background-color:#05080e;z-index:9999999;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:20px;text-align:center;transition:opacity 0.3s ease;">
         <div style="position:relative;width:86px;height:86px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;">
-            <svg viewBox="0 0 100 100" style="width:86px;height:86px;filter:drop-shadow(0 0 15px rgba(0,229,255,0.5));">
-                <circle cx="50" cy="50" r="42" fill="rgba(15,23,42,0.95)" stroke="#00e5ff" stroke-width="2.5" />
-                <path d="M32 30 L50 52 L68 30 M50 52 L50 72" stroke="#ffd700" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" fill="none" />
-                <circle cx="50" cy="50" r="47" fill="none" stroke="#30d158" stroke-width="2" stroke-dasharray="6 3" class="rotating-ring" />
+            <svg viewBox="0 0 100 100" style="width:86px;height:86px;filter:drop-shadow(0 0 15px rgba(255,159,10,0.5));">
+                <circle cx="50" cy="50" r="42" fill="rgba(15,23,42,0.95)" stroke="#ff9f0a" stroke-width="2.5" />
+                <path d="M32 30 L50 52 L68 30 M50 52 L50 72" stroke="#ff9f0a" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+                <circle cx="50" cy="50" r="47" fill="none" stroke="#ff9f0a" stroke-width="2" stroke-dasharray="6 3" class="rotating-ring" />
             </svg>
         </div>
         <h2 style="color:var(--primary-cyan);margin-bottom:6px;font-weight:900;letter-spacing:1px;">🔒 ACTIVAR C.PRO OBRA</h2>
@@ -528,7 +521,7 @@
         <button onclick="validarLicencia()" style="background:linear-gradient(135deg,#30d158,#16a34a);color:#fff;border:none;padding:14px 28px;border-radius:8px;font-weight:900;font-size:14px;cursor:pointer;box-shadow:0 4px 15px rgba(48,209,88,0.35);">ACTIVAR APLICACIÓN</button>
     </div>
 
-    <!-- ==================== SPLASH SCREEN ORIGINAL CON SILUETA DE EDIFICIOS Y LETRA Y ==================== -->
+    <!-- ==================== SPLASH SCREEN CON SILUETA DE EDIFICIOS Y LETRA Y ==================== -->
     <div id="splash-screen" onclick="dismissSplashNow()" ontouchstart="dismissSplashNow()">
         <div id="splash-bg-elements" style="position:relative; width:220px; height:220px; margin-bottom:16px; transition: filter 0.7s ease, opacity 0.7s ease;">
             <svg viewBox="0 0 120 120" style="width:220px; height:220px; filter:drop-shadow(0 0 25px rgba(0,229,255,0.65));">
@@ -582,7 +575,6 @@
             </svg>
         </div>
 
-        <!-- Emblema Dorado 'Y' Aislado que hace Zoom en Fase 2 -->
         <div id="splash-y-isolated" style="position:absolute; top:calc(50% - 110px); left:calc(50% - 40px); width:80px; height:80px; z-index:10; opacity:0; transform:scale(0.8); transition: all 0.7s cubic-bezier(0.34, 1.56, 0.64, 1); pointer-events:none;">
             <svg viewBox="0 0 80 80" style="width:80px; height:80px; filter:drop-shadow(0 0 32px rgba(255,215,0,1.0));">
                 <defs>
@@ -629,7 +621,7 @@
                     <svg viewBox="0 0 100 100" style="width:38px; height:38px;">
                         <circle cx="50" cy="50" r="42" fill="rgba(15,23,42,0.9)" stroke="#00e5ff" stroke-width="2.5" />
                         <path d="M32 30 L50 52 L68 30 M50 52 L50 72" stroke="#ffd700" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round" fill="none" />
-                        <circle cx="50" cy="50" r="47" fill="none" stroke="#00e5ff" stroke-width="1.5" stroke-dasharray="6 3" class="rotating-ring" />
+                        <circle cx="50" cy="50" r="47" fill="none" stroke="#ff9f0a" stroke-width="2" stroke-dasharray="6 3" class="rotating-ring" />
                     </svg>
                 </div>
                 <div>
@@ -670,8 +662,7 @@
                         <div class="pill-badge" id="pill_tr" style="position:static; margin:0; background:rgba(15,23,42,0.88); color:#00e5ff; border:1px solid rgba(0,229,255,0.4);">📦 2.52 m³</div>
                     </div>
 
-                    <canvas id="canvas_3d_viewport" width="360" height="205" style="width:100%; height:205px; display:block; cursor:grab; border-radius:10px;"></canvas>
-                    <svg id="svg_3d_viewport" class="svg-3d-canvas" viewBox="0 0 360 205" preserveAspectRatio="xMidYMid meet" style="display:none;"></svg>
+                    <canvas id="canvas_3d_viewport" width="360" height="220" style="width:100%; height:220px; display:block; cursor:grab; border-radius:10px;"></canvas>
                 </div>
 
                 <div class="segmented-control">
@@ -740,7 +731,7 @@
                         <div class="grid-3">
                             <div><label>Largo (m):</label><input type="number" id="largo" value="5.0" step="0.1" min="0" oninput="calcularConcreto(); renderSchematic();"></div>
                             <div><label>Ancho (m):</label><input type="number" id="ancho" value="4.0" step="0.1" min="0" oninput="calcularConcreto(); renderSchematic();"></div>
-                            <div><label>Espesor (cm):</label><input type="number" id="espesor" value="12" step="1" min="0" oninput="calcularConcreto(); renderSchematic();"></div>
+                            <div><label>Espesor (cm):</label><input type="number" id="espesor" value="15" step="1" min="0" oninput="calcularConcreto(); renderSchematic();"></div>
                         </div>
                     </div>
 
@@ -758,11 +749,10 @@
                     </div>
 
                     <button class="btn-primary btn-green" onclick="calcularConcreto(); renderSchematic(); showToast('✅ CÓMPUTO Y DOSIFICACIÓN RECALCULADOS');">🧮 CALCULAR CÓMPUTO Y DOSIFICACIÓN</button>
-
                     <div class="result-card" id="res_concreto"></div>
                 </div>
 
-                <!-- SUB-CALC 2: MUROS (INCLUYE LADRILLO BLOCKER) -->
+                <!-- SUB-CALC 2: MUROS -->
                 <div id="calc_muros" class="calc-subpane" style="display:none;">
                     <div class="form-group">
                         <label>1. Tipo de Ladrillo / Bloque Estructural (RNE E.070):</label>
@@ -998,7 +988,7 @@
                         </div>
                         <div>
                             <label>Kg Acero Ø 3/4" (2.235 kg/m):</label>
-                            <input type="number" id="ac_kg_34" value="0" step="10" oninput="calcularLogisticaAcero(); renderSchematic();">
+                            <input type="number" id="ac_kg_34" value="180" step="10" oninput="calcularLogisticaAcero(); renderSchematic();">
                         </div>
                     </div>
                     <div class="form-group">
@@ -1066,7 +1056,6 @@
 
             <!-- TAB 3: PRECIOS, APU CAPECO & CURVA S -->
             <div id="tab3" class="tab-pane">
-                <!-- CURVA S: AVANCE FÍSICO VS FINANCIERO -->
                 <div class="result-card">
                     <div class="result-header">
                         <span>📈 CURVA S: AVANCE FÍSICO VS FINANCIERO</span>
@@ -1093,7 +1082,6 @@
                     <div id="overcost_alert" style="display:none; margin-top:10px; padding:8px; background:rgba(255,69,58,0.15); border:1px solid var(--primary-red); border-radius:8px; color:var(--primary-red); font-size:11px; font-weight:800;"></div>
                 </div>
 
-                <!-- PRECIOS UNITARIOS DE INSUMOS -->
                 <div class="result-card">
                     <div class="result-header">
                         <span>💵 INSUMOS Y PARÁMETROS APU CAPECO</span>
@@ -1557,8 +1545,8 @@
             renderSchematic();
         }
 
-        // ==================== MOTOR 3D ORBITAL 360° ====================
-        var camRotX = 0.45, camRotY = -0.65, camZoom = 1.0, isDragging3D = false, lastTouchX = 0, lastTouchY = 0;
+        // ==================== MOTOR 3D ORBITAL 360° REALISTA ====================
+        var camRotX = 0.45, camRotY = -0.62, camZoom = 1.0, isDragging3D = false, lastTouchX = 0, lastTouchY = 0;
 
         function init3DOrbitalControls() {
             var canvas = document.getElementById('canvas_3d_viewport');
@@ -1570,7 +1558,7 @@
             window.addEventListener('mousemove', function(e) {
                 if (!isDragging3D) return;
                 camRotY += (e.clientX - lastTouchX) * 0.012;
-                camRotX = Math.max(-1.3, Math.min(1.3, camRotX + (e.clientY - lastTouchY) * 0.012));
+                camRotX = Math.max(-1.25, Math.min(1.25, camRotX + (e.clientY - lastTouchY) * 0.012));
                 lastTouchX = e.clientX; lastTouchY = e.clientY;
                 renderSchematic();
             });
@@ -1584,15 +1572,21 @@
             canvas.addEventListener('touchmove', function(e) {
                 if (!isDragging3D || !e.touches || e.touches.length !== 1) return;
                 camRotY += (e.touches[0].clientX - lastTouchX) * 0.015;
-                camRotX = Math.max(-1.3, Math.min(1.3, camRotX + (e.touches[0].clientY - lastTouchY) * 0.015));
+                camRotX = Math.max(-1.25, Math.min(1.25, camRotX + (e.touches[0].clientY - lastTouchY) * 0.015));
                 lastTouchX = e.touches[0].clientX; lastTouchY = e.touches[0].clientY;
                 renderSchematic();
             }, { passive: true });
             canvas.addEventListener('touchend', function() { isDragging3D = false; });
+
+            canvas.addEventListener('wheel', function(e) {
+                if (e && e.cancelable) e.preventDefault();
+                camZoom = Math.max(0.55, Math.min(2.2, camZoom * (e.deltaY > 0 ? 0.92 : 1.08)));
+                renderSchematic();
+            }, { passive: false });
         }
 
         function reset3DCamera() {
-            camRotX = 0.45; camRotY = -0.65; camZoom = 1.0;
+            camRotX = 0.45; camRotY = -0.62; camZoom = 1.0;
             renderSchematic();
         }
 
@@ -1603,7 +1597,7 @@
             var cosX = Math.cos(camRotX), sinX = Math.sin(camRotX);
             var y2 = y * cosX - z1 * sinX;
             var z2 = y * sinX + z1 * cosX;
-            var scale = 108 * camZoom;
+            var scale = 104 * camZoom;
             return { x: cx + x1 * scale, y: cy - y2 * scale, z: z2 };
         }
 
@@ -1626,37 +1620,45 @@
         }
 
         function drawGridFloor3D(ctx, cx, cy) {
-            ctx.strokeStyle = 'rgba(51, 65, 85, 0.4)';
+            ctx.strokeStyle = 'rgba(51, 65, 85, 0.38)';
             ctx.lineWidth = 1;
-            var gridSize = 1.4, step = 0.28;
+            var gridSize = 1.5, step = 0.30;
             for (var i = -gridSize; i <= gridSize; i += step) {
-                var p1 = project3D(i, -0.6, -gridSize, cx, cy), p2 = project3D(i, -0.6, gridSize, cx, cy);
+                var p1 = project3D(i, -0.62, -gridSize, cx, cy), p2 = project3D(i, -0.62, gridSize, cx, cy);
                 ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y); ctx.stroke();
-                var p3 = project3D(-gridSize, -0.6, i, cx, cy), p4 = project3D(gridSize, -0.6, i, cx, cy);
+                var p3 = project3D(-gridSize, -0.62, i, cx, cy), p4 = project3D(gridSize, -0.62, i, cx, cy);
                 ctx.beginPath(); ctx.moveTo(p3.x, p3.y); ctx.lineTo(p4.x, p4.y); ctx.stroke();
             }
         }
 
+        // COTAS 3D LIMPIAS SIN RECTÁNGULO (ESTILO C.PRO ESTRUC CON SOMBRA)
         function drawDimensionLine3D(ctx, p1, p2, labelColor, textStr) {
             if (!p1 || !p2) return;
             ctx.save();
             ctx.strokeStyle = labelColor || '#00e5ff';
-            ctx.lineWidth = 1.8;
+            ctx.lineWidth = 1.6;
             ctx.setLineDash([4, 3]);
-            ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y); ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(p1.x, p1.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.stroke();
             ctx.setLineDash([]);
-            ctx.fillStyle = labelColor || '#00e5ff';
-            ctx.beginPath(); ctx.arc(p1.x, p1.y, 3, 0, Math.PI * 2); ctx.fill();
-            ctx.beginPath(); ctx.arc(p2.x, p2.y, 3, 0, Math.PI * 2); ctx.fill();
 
-            var midX = (p1.x + p2.x) / 2, midY = (p1.y + p2.y) / 2;
-            ctx.font = 'bold 10px sans-serif';
-            var tw = ctx.measureText(textStr).width + 8, th = 14;
-            ctx.fillStyle = 'rgba(15, 23, 42, 0.9)';
-            ctx.fillRect(midX - tw/2, midY - th/2, tw, th);
-            ctx.strokeRect(midX - tw/2, midY - th/2, tw, th);
             ctx.fillStyle = labelColor || '#00e5ff';
-            ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+            ctx.beginPath(); ctx.arc(p1.x, p1.y, 2.5, 0, Math.PI * 2); ctx.fill();
+            ctx.beginPath(); ctx.arc(p2.x, p2.y, 2.5, 0, Math.PI * 2); ctx.fill();
+
+            var midX = (p1.x + p2.x) / 2;
+            var midY = (p1.y + p2.y) / 2;
+
+            ctx.font = 'bold 12.5px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.shadowColor = '#000000';
+            ctx.shadowBlur = 5;
+            ctx.shadowOffsetX = 1.5;
+            ctx.shadowOffsetY = 1.5;
+            ctx.fillStyle = labelColor || '#00e5ff';
             ctx.fillText(textStr, midX, midY);
             ctx.restore();
         }
@@ -1676,11 +1678,13 @@
             else if (currentElement === 'calc_acero') render3DCanvasAcero();
         }
 
+        // 1. MODELO 3D DE CONCRETO CON MEDIDAS NUMÉRICAS REALES
         function render3DCanvasConcrete() {
             var canvas = document.getElementById('canvas_3d_viewport'); if (!canvas) return;
             var ctx = canvas.getContext('2d'); clear3DCanvas(ctx, canvas);
             var forma = document.getElementById('forma_concreto').value;
             var sx = 0.5, sy = 0.5, sz = 0.5, vol = 0;
+            var cotaX = '', cotaY = '', cotaZ = '';
 
             if (forma === 'columna') {
                 var colH = parseFloat(document.getElementById('col_altura').value) || 3.0;
@@ -1688,64 +1692,71 @@
                 var colA = parseFloat(document.getElementById('col_ancho').value) || 30;
                 var colN = parseInt(document.getElementById('col_cantidad').value) || 1;
                 vol = colN * colH * (colL / 100.0) * (colA / 100.0) * 1.05;
-                setPills('🏛️ COLUMNA 3D 360°', '📦 ' + vol.toFixed(2) + ' m³', '📏 H:' + colH + 'm • ' + colL + '×' + colA + 'cm');
-                sx = Math.min(0.5, Math.max(0.2, (colA / 100.0) * 0.9));
+                setPills('🏛️ COLUMNA 3D 360°', '📦 ' + vol.toFixed(2) + ' m³', '📏 H=' + colH.toFixed(2) + 'm • ' + colL + '×' + colA + 'cm');
+                sx = Math.min(0.48, Math.max(0.22, (colA / 100.0) * 0.9));
                 sy = Math.min(0.85, Math.max(0.45, colH * 0.22));
-                sz = Math.min(0.5, Math.max(0.2, (colL / 100.0) * 0.9));
+                sz = Math.min(0.48, Math.max(0.22, (colL / 100.0) * 0.9));
+                cotaX = 'A=' + colA + 'cm';
+                cotaY = 'H=' + colH.toFixed(2) + 'm';
+                cotaZ = 'L=' + colL + 'cm';
             } else {
                 var l = parseFloat(document.getElementById('largo').value) || 5.0;
                 var a = parseFloat(document.getElementById('ancho').value) || 4.0;
-                var e = parseFloat(document.getElementById('espesor').value) || 12;
+                var e = parseFloat(document.getElementById('espesor').value) || 15;
                 vol = l * a * (e / 100.0) * 1.05;
-                setPills('🏗️ CONCRETO 3D 360°', '📦 ' + vol.toFixed(2) + ' m³', '📏 ' + l + 'm × ' + a + 'm × ' + e + 'cm');
-                sx = Math.min(1.0, Math.max(0.4, a * 0.16));
-                sy = Math.min(0.45, Math.max(0.12, (e / 100.0) * 1.3));
-                sz = Math.min(1.0, Math.max(0.4, l * 0.16));
+                setPills('🏗️ CONCRETO 3D 360°', '📦 ' + vol.toFixed(2) + ' m³', '📏 ' + l.toFixed(1) + 'm × ' + a.toFixed(1) + 'm × ' + e + 'cm');
+                sx = Math.min(0.95, Math.max(0.42, a * 0.16));
+                sy = Math.min(0.42, Math.max(0.14, (e / 100.0) * 1.25));
+                sz = Math.min(0.95, Math.max(0.42, l * 0.16));
+                cotaX = 'A=' + a.toFixed(2) + 'm';
+                cotaY = 'e=' + e + 'cm';
+                cotaZ = 'L=' + l.toFixed(2) + 'm';
             }
 
-            var cx = canvas.width / 2, cy = canvas.height / 2 + 8;
+            var cx = canvas.width / 2, cy = canvas.height / 2 + 10;
             drawGridFloor3D(ctx, cx, cy);
 
             var rawV = [[-sx,-sy,-sz],[sx,-sy,-sz],[sx,sy,-sz],[-sx,sy,-sz],[-sx,-sy,sz],[sx,-sy,sz],[sx,sy,sz],[-sx,sy,sz]];
             var proj = rawV.map(function(v) { return project3D(v[0], v[1], v[2], cx, cy); });
             var faces = [
-                { idx: [0,1,2,3], fill: '#475569', stroke: '#64748b' },
-                { idx: [4,5,6,7], fill: '#94a3b8', stroke: '#cbd5e1' },
-                { idx: [0,1,5,4], fill: '#334155', stroke: '#475569' },
-                { idx: [3,2,6,7], fill: '#cbd5e1', stroke: '#f1f5f9' },
-                { idx: [0,3,7,4], fill: '#64748b', stroke: '#94a3b8' },
-                { idx: [1,2,6,5], fill: '#64748b', stroke: '#94a3b8' }
+                { idx: [0,1,2,3], fill: '#475569', stroke: '#94a3b8' },
+                { idx: [4,5,6,7], fill: '#94a3b8', stroke: '#e2e8f0' },
+                { idx: [0,1,5,4], fill: '#334155', stroke: '#64748b' },
+                { idx: [3,2,6,7], fill: '#cbd5e1', stroke: '#f8fafc' },
+                { idx: [0,3,7,4], fill: '#64748b', stroke: '#cbd5e1' },
+                { idx: [1,2,6,5], fill: '#64748b', stroke: '#cbd5e1' }
             ];
             faces.forEach(function(f) { f.avgZ = (proj[f.idx[0]].z + proj[f.idx[1]].z + proj[f.idx[2]].z + proj[f.idx[3]].z) / 4; });
             faces.sort(function(m, n) { return m.avgZ - n.avgZ; });
             faces.forEach(function(f) { drawPolygon3D(ctx, f.idx.map(function(i) { return proj[i]; }), f.fill, f.stroke, 1.2); });
 
-            drawDimensionLine3D(ctx, project3D(-sx,-sy,sz,cx,cy), project3D(sx,-sy,sz,cx,cy), '#00e5ff', forma==='columna' ? 'B' : 'Ancho');
-            drawDimensionLine3D(ctx, project3D(sx,-sy,sz,cx,cy), project3D(sx,sy,sz,cx,cy), '#ff9f0a', forma==='columna' ? 'H' : 'Esp.');
-            drawDimensionLine3D(ctx, project3D(sx,-sy,sz,cx,cy), project3D(sx,-sy,-sz,cx,cy), '#30d158', 'Largo');
+            drawDimensionLine3D(ctx, project3D(-sx, -sy - 0.06, sz, cx, cy), project3D(sx, -sy - 0.06, sz, cx, cy), '#00e5ff', cotaX);
+            drawDimensionLine3D(ctx, project3D(sx + 0.08, -sy, sz, cx, cy), project3D(sx + 0.08, sy, sz, cx, cy), '#ff9f0a', cotaY);
+            drawDimensionLine3D(ctx, project3D(sx + 0.06, -sy, sz, cx, cy), project3D(sx + 0.06, -sy, -sz, cx, cy), '#30d158', cotaZ);
         }
 
         function getBrickSpecs() {
             var op = document.getElementById('tipo_ladrillo').value;
             var juntaCm = parseFloat(document.getElementById('mortero_junta').value) || 1.5;
-            var L_cm = 24.0, A_cm = 12.0, H_cm = 9.0, asentado = 'soga', name = 'King Kong 18H (Soga)', isConcreteBlock = false;
+            var L_cm = 24.0, A_cm = 12.0, H_cm = 9.0, asentado = 'soga', name = 'King Kong 18H (Soga)', texType = 'kk';
 
             if (op === 'kk_cabeza') {
-                L_cm = 24.0; A_cm = 12.0; H_cm = 9.0; asentado = 'cabeza'; name = 'King Kong 18H (Cabeza)';
+                L_cm = 24.0; A_cm = 12.0; H_cm = 9.0; asentado = 'cabeza'; name = 'King Kong 18H (Cabeza)'; texType = 'kk';
             } else if (op === 'blocker_12') {
-                L_cm = 30.0; A_cm = 12.0; H_cm = 20.0; asentado = 'soga'; name = 'Ladrillo Blocker 12×20×30 cm (5.15 kg)';
+                L_cm = 30.0; A_cm = 12.0; H_cm = 20.0; asentado = 'soga'; name = 'Ladrillo Blocker 12×20×30 cm'; texType = 'blocker';
             } else if (op === 'blocker_10') {
-                L_cm = 30.0; A_cm = 10.0; H_cm = 20.0; asentado = 'soga'; name = 'Ladrillo Blocker 10×20×30 cm (4.50 kg)';
+                L_cm = 30.0; A_cm = 10.0; H_cm = 20.0; asentado = 'soga'; name = 'Ladrillo Blocker 10×20×30 cm'; texType = 'blocker';
             } else if (op === 'pandereta') {
-                L_cm = 23.0; A_cm = 11.0; H_cm = 9.0; asentado = 'soga'; name = 'Pandereta Soga (23×11×9 cm)';
+                L_cm = 23.0; A_cm = 11.0; H_cm = 9.0; asentado = 'soga'; name = 'Pandereta Soga (23×11×9 cm)'; texType = 'pandereta';
             } else if (op === 'bloque_12') {
-                L_cm = 28.5; A_cm = 12.0; H_cm = 18.0; asentado = 'soga'; name = 'Bloque Concreto (12×18×28.5 cm)'; isConcreteBlock = true;
+                L_cm = 28.5; A_cm = 12.0; H_cm = 18.0; asentado = 'soga'; name = 'Bloque Concreto (28.5×12×18 cm)'; texType = 'concreto';
             } else if (op === 'custom') {
                 L_cm = parseFloat(document.getElementById('lad_largo').value) || 24.0;
                 A_cm = parseFloat(document.getElementById('lad_ancho').value) || 12.0;
                 H_cm = parseFloat(document.getElementById('lad_alto').value) || 9.0;
                 asentado = document.getElementById('lad_asentado').value;
                 name = 'Personalizado (' + L_cm + '×' + A_cm + '×' + H_cm + ' cm)';
+                texType = 'kk';
             }
 
             var L = L_cm / 100.0, A = A_cm / 100.0, H = H_cm / 100.0, j = juntaCm / 100.0;
@@ -1756,9 +1767,10 @@
             var undM2Neto = 1.0 / ((Lv + j) * (Hv + j));
             var volMorteroM2Neto = Math.max(0.001, Esp - (undM2Neto * (L * A * H)));
 
-            return { op: op, name: name, L_cm: L_cm, A_cm: A_cm, H_cm: H_cm, juntaCm: juntaCm, j: j, Lv: Lv, Hv: Hv, Esp: Esp, undM2Neto: undM2Neto, volMorteroM2Neto: volMorteroM2Neto, isConcreteBlock: isConcreteBlock };
+            return { op: op, name: name, L_cm: L_cm, A_cm: A_cm, H_cm: H_cm, juntaCm: juntaCm, j: j, Lv: Lv, Hv: Hv, Esp: Esp, undM2Neto: undM2Neto, volMorteroM2Neto: volMorteroM2Neto, texType: texType };
         }
 
+        // 2. MODELO 3D DE MUROS CON TEXTURA CAMBIANTE SEGÚN LADRILLO/BLOQUE SELECCIONADO
         function render3DCanvasWall() {
             var canvas = document.getElementById('canvas_3d_viewport'); if (!canvas) return;
             var ctx = canvas.getContext('2d'); clear3DCanvas(ctx, canvas);
@@ -1771,17 +1783,35 @@
 
             setPills('🧱 ' + specs.name, '🧱 ' + totalLadrillos + ' Unid.', '📏 ' + l.toFixed(1) + 'm × ' + h.toFixed(1) + 'm (' + specs.undM2Neto.toFixed(1) + ' u/m²)');
 
-            var cx = canvas.width / 2, cy = canvas.height / 2 + 8;
+            var cx = canvas.width / 2, cy = canvas.height / 2 + 10;
             drawGridFloor3D(ctx, cx, cy);
 
-            var wallW = Math.min(1.0, Math.max(0.4, l * 0.15));
-            var wallH = Math.min(0.75, Math.max(0.3, h * 0.22));
-            var wallD = Math.min(0.32, Math.max(0.08, specs.Esp * 0.9));
+            var wallW = Math.min(0.95, Math.max(0.45, l * 0.14));
+            var wallH = Math.min(0.72, Math.max(0.35, h * 0.22));
+            var wallD = (specs.Esp >= 0.20) ? 0.28 : 0.14;
 
+            // Paleta de textura y geometría según tipo seleccionado
+            var pal = { front: '#c0392b', back: '#7b241c', top: '#d9534f', side: '#922b21', stroke: '#f1948a', hole: '#2c0b09' };
             var numCourses = 6, numCols = 5;
-            var brickH = (wallH * 2) / numCourses, brickW = (wallW * 2) / numCols, mortarGap = 0.012;
-            var brickFill = specs.isConcreteBlock ? '#475569' : '#c0392b';
-            var brickStroke = specs.isConcreteBlock ? '#94a3b8' : '#e74c3c';
+
+            if (specs.texType === 'concreto') {
+                // Bloque de Concreto Vibrado: 100% Gris Concreto en TODAS las caras
+                pal = { front: '#64748b', back: '#334155', top: '#94a3b8', side: '#475569', stroke: '#cbd5e1', hole: '#1e293b' };
+                numCourses = 5; numCols = 4;
+            } else if (specs.texType === 'blocker') {
+                // Ladrillo Blocker: Arcilla naranja mecanizada y formato más alto
+                pal = { front: '#d35400', back: '#873600', top: '#e67e22', side: '#a04000', stroke: '#f5b041', hole: '#4a1d00' };
+                numCourses = 4; numCols = 4;
+            } else if (specs.texType === 'pandereta') {
+                // Ladrillo Pandereta: Terracota claro rayado
+                pal = { front: '#e74c3c', back: '#922b21', top: '#ec7063', side: '#b03a2e', stroke: '#fadbd8', hole: '#4a120e' };
+                numCourses = 6; numCols = 5;
+            } else if (specs.op === 'kk_cabeza') {
+                numCourses = 6; numCols = 8;
+            }
+
+            var brickH = (wallH * 2) / numCourses, brickW = (wallW * 2) / numCols;
+            var mortarGap = Math.min(0.018, Math.max(0.006, (specs.juntaCm / 15.0) * brickH));
             var allBricks3D = [];
 
             for (var r = 0; r < numCourses; r++) {
@@ -1790,14 +1820,15 @@
                 for (var c = 0; c < numCols; c++) {
                     var xL = Math.max(-wallW, -wallW + c * brickW + (isStag ? brickW * 0.5 : 0) + mortarGap);
                     var xR = Math.min(wallW, xL + brickW - mortarGap);
-                    if (xR <= xL) continue;
+                    if (xR - xL < 0.05) continue;
                     var rawB = [[xL,yBot,-wallD],[xR,yBot,-wallD],[xR,yTop,-wallD],[xL,yTop,-wallD],[xL,yBot,wallD],[xR,yBot,wallD],[xR,yTop,wallD],[xL,yTop,wallD]];
                     var projB = rawB.map(function(v) { return project3D(v[0], v[1], v[2], cx, cy); });
                     var bFaces = [
-                        { idx: [0,1,2,3], fill: '#7b241c', stroke: brickStroke },
-                        { idx: [4,5,6,7], fill: brickFill, stroke: brickStroke },
-                        { idx: [3,2,6,7], fill: '#d9534f', stroke: '#f1948a' },
-                        { idx: [1,2,6,5], fill: '#922b21', stroke: brickStroke }
+                        { idx: [0,1,2,3], fill: pal.back, stroke: pal.stroke },
+                        { idx: [4,5,6,7], fill: pal.front, stroke: pal.stroke, isFront: true, xL: xL, xR: xR, yB: yBot, yT: yTop },
+                        { idx: [0,3,7,4], fill: pal.side, stroke: pal.stroke },
+                        { idx: [1,2,6,5], fill: pal.side, stroke: pal.stroke },
+                        { idx: [3,2,6,7], fill: pal.top, stroke: pal.stroke, isTopCourse: (r === numCourses - 1), xL: xL, xR: xR, yT: yTop }
                     ];
                     bFaces.forEach(function(f) {
                         f.avgZ = (projB[f.idx[0]].z + projB[f.idx[1]].z + projB[f.idx[2]].z + projB[f.idx[3]].z) / 4;
@@ -1807,101 +1838,412 @@
                 }
             }
             allBricks3D.sort(function(m, n) { return m.avgZ - n.avgZ; });
-            allBricks3D.forEach(function(f) { drawPolygon3D(ctx, f.idx.map(function(i) { return f.proj[i]; }), f.fill, f.stroke, 1.0); });
 
-            drawDimensionLine3D(ctx, project3D(-wallW,-wallH,wallD,cx,cy), project3D(wallW,-wallH,wallD,cx,cy), '#00e5ff', 'L=' + l.toFixed(1) + 'm');
-            drawDimensionLine3D(ctx, project3D(wallW,-wallH,wallD,cx,cy), project3D(wallW,wallH,wallD,cx,cy), '#ff9f0a', 'H=' + h.toFixed(1) + 'm');
+            allBricks3D.forEach(function(f) {
+                var pts = f.idx.map(function(i) { return f.proj[i]; });
+                drawPolygon3D(ctx, pts, f.fill, f.stroke, 1.0);
+
+                // Dibujar alvéolos / huecos reales en la cara superior de la última hilada
+                if (f.isTopCourse) {
+                    var nHoles = (specs.texType === 'concreto') ? 2 : 3;
+                    for (var hIdx = 0; hIdx < nHoles; hIdx++) {
+                        var hx1 = f.xL + ((f.xR - f.xL) * (hIdx + 0.18)) / nHoles;
+                        var hx2 = f.xL + ((f.xR - f.xL) * (hIdx + 0.82)) / nHoles;
+                        var hz1 = -wallD * 0.55, hz2 = wallD * 0.55;
+                        var hp = [
+                            project3D(hx1, f.yT, hz1, cx, cy),
+                            project3D(hx2, f.yT, hz1, cx, cy),
+                            project3D(hx2, f.yT, hz2, cx, cy),
+                            project3D(hx1, f.yT, hz2, cx, cy)
+                        ];
+                        drawPolygon3D(ctx, hp, pal.hole, null, 0);
+                    }
+                }
+            });
+
+            drawDimensionLine3D(ctx, project3D(-wallW, -wallH - 0.08, wallD, cx, cy), project3D(wallW, -wallH - 0.08, wallD, cx, cy), '#00e5ff', 'L=' + l.toFixed(2) + 'm');
+            drawDimensionLine3D(ctx, project3D(wallW + 0.10, -wallH, wallD, cx, cy), project3D(wallW + 0.10, wallH, wallD, cx, cy), '#ff9f0a', 'H=' + h.toFixed(2) + 'm');
+            drawDimensionLine3D(ctx, project3D(wallW + 0.06, -wallH, wallD, cx, cy), project3D(wallW + 0.06, -wallH, -wallD, cx, cy), '#30d158', 'e=' + (specs.Esp * 100).toFixed(0) + 'cm');
         }
 
+        // 3. LOSA DE TECNOPOR BLANCO + VIGUETAS DE CONCRETO CON 2 ACEROS INTERNOS
         function render3DCanvasTecnopor() {
             var canvas = document.getElementById('canvas_3d_viewport'); if (!canvas) return;
             var ctx = canvas.getContext('2d'); clear3DCanvas(ctx, canvas);
             var l1 = parseFloat(document.getElementById('tec_largo').value) || 5.0;
             var l2 = parseFloat(document.getElementById('tec_ancho').value) || 4.0;
+            var dir = document.getElementById('tec_dir').value;
             var peralte = parseInt(document.getElementById('tec_peralte').value) || 20;
             var area = l1 * l2;
-            setPills('🧇 LOSA TECNOPOR EPS 3D', '📐 ' + area.toFixed(1) + ' m²', '📏 Peralte H = ' + peralte + ' cm');
 
-            var sx = 0.85, sy = 0.22, sz = 0.85;
-            var cx = canvas.width / 2, cy = canvas.height / 2 + 8;
+            setPills('🧇 LOSA TECNOPOR EPS 3D', '📐 ' + area.toFixed(2) + ' m²', '📏 L1=' + l1.toFixed(1) + 'm × L2=' + l2.toFixed(1) + 'm (H=' + peralte + 'cm)');
+
+            var sx = Math.min(0.95, Math.max(0.50, l2 * 0.16));
+            var sy = 0.24;
+            var sz = Math.min(0.95, Math.max(0.50, l1 * 0.16));
+            var cx = canvas.width / 2, cy = canvas.height / 2 + 10;
             drawGridFloor3D(ctx, cx, cy);
 
-            var numBands = 5, allRibs = [];
+            var yRibMin = -sy * 0.85, yRibMax = sy * 0.55;
+            var numBands = 7; // 4 Bloques EPS blancos + 3 Viguetas de Concreto con 2 aceros c/u
+            var allRibs = [];
+
             for (var b = 0; b < numBands; b++) {
-                var tA = (b / numBands) * 2 - 1, tB = ((b + 1) / numBands) * 2 - 1;
+                var tA = (b / numBands) * 2 - 1;
+                var tB = ((b + 1) / numBands) * 2 - 1;
                 var isEPS = (b % 2 === 0);
-                var rawBox = [[-sx,-sy,tA*sz],[sx,-sy,tA*sz],[sx,sy,tA*sz],[-sx,sy,tA*sz],[-sx,-sy,tB*sz],[sx,-sy,tB*sz],[sx,sy,tB*sz],[-sx,sy,tB*sz]];
+
+                // Colores contrastantes: Blanco puro brillante para Tecnopor vs Gris Concreto para Viguetas
+                var fTop = isEPS ? '#ffffff' : '#94a3b8';
+                var fFront = isEPS ? '#f8fafc' : '#64748b';
+                var fSide = isEPS ? '#e2e8f0' : '#475569';
+                var fBack = isEPS ? '#cbd5e1' : '#334155';
+                var stCol = isEPS ? '#cbd5e1' : '#cbd5e1';
+
+                var rawBox;
+                if (dir === 'h') {
+                    rawBox = [
+                        [-sx, yRibMin, tA*sz], [sx, yRibMin, tA*sz], [sx, yRibMax, tA*sz], [-sx, yRibMax, tA*sz],
+                        [-sx, yRibMin, tB*sz], [sx, yRibMin, tB*sz], [sx, yRibMax, tB*sz], [-sx, yRibMax, tB*sz]
+                    ];
+                } else {
+                    rawBox = [
+                        [tA*sx, yRibMin, -sz], [tB*sx, yRibMin, -sz], [tB*sx, yRibMax, -sz], [tA*sx, yRibMax, -sz],
+                        [tA*sx, yRibMin,  sz], [tB*sx, yRibMin,  sz], [tB*sx, yRibMax,  sz], [tA*sx, yRibMax,  sz]
+                    ];
+                }
+
                 var pBox = rawBox.map(function(v) { return project3D(v[0], v[1], v[2], cx, cy); });
+                var midT = (tA + tB) / 2;
+
                 var faces = [
-                    { idx: [4,5,6,7], fill: isEPS ? '#e2e8f0' : '#94a3b8', stroke: '#cbd5e1' },
-                    { idx: [1,2,6,5], fill: isEPS ? '#f8fafc' : '#64748b', stroke: '#cbd5e1' },
-                    { idx: [3,2,6,7], fill: isEPS ? '#ffffff' : '#cbd5e1', stroke: '#94a3b8' }
+                    { idx: [0,1,2,3], fill: fBack, stroke: stCol },
+                    { idx: [4,5,6,7], fill: fFront, stroke: stCol },
+                    { idx: [0,3,7,4], fill: fSide, stroke: stCol },
+                    { idx: [1,2,6,5], fill: fSide, stroke: stCol },
+                    { idx: [3,2,6,7], fill: fTop, stroke: stCol, isTop: true, isEps: isEPS, midT: midT }
                 ];
+
                 faces.forEach(function(f) {
                     f.avgZ = (pBox[f.idx[0]].z + pBox[f.idx[1]].z + pBox[f.idx[2]].z + pBox[f.idx[3]].z) / 4;
-                    allRibs.push({ pts: f.idx.map(function(i) { return pBox[i]; }), fill: f.fill, stroke: f.stroke, avgZ: f.avgZ });
+                    allRibs.push({ pts: f.idx.map(function(i) { return pBox[i]; }), fill: f.fill, stroke: f.stroke, avgZ: f.avgZ, isTop: f.isTop, isEps: f.isEps, midT: f.midT });
                 });
             }
+
             allRibs.sort(function(m, n) { return m.avgZ - n.avgZ; });
-            allRibs.forEach(function(f) { drawPolygon3D(ctx, f.pts, f.fill, f.stroke, 1.2); });
+
+            allRibs.forEach(function(f) {
+                drawPolygon3D(ctx, f.pts, f.fill, f.stroke, 1.1);
+
+                // Si es Vigueta de Concreto: dibujar las 2 varillas de acero internas (superior e inferior) recorriendo y saliendo de la vigueta
+                if (f.isTop && !f.isEps) {
+                    var yBarInf = yRibMin + (yRibMax - yRibMin) * 0.25;
+                    var yBarSup = yRibMin + (yRibMax - yRibMin) * 0.78;
+                    var rA1, rA2, rB1, rB2;
+                    if (dir === 'h') {
+                        rA1 = project3D(-sx - 0.08, yBarInf, f.midT * sz, cx, cy);
+                        rA2 = project3D(sx + 0.08, yBarInf, f.midT * sz, cx, cy);
+                        rB1 = project3D(-sx - 0.08, yBarSup, f.midT * sz, cx, cy);
+                        rB2 = project3D(sx + 0.08, yBarSup, f.midT * sz, cx, cy);
+                    } else {
+                        rA1 = project3D(f.midT * sx, yBarInf, -sz - 0.08, cx, cy);
+                        rA2 = project3D(f.midT * sx, yBarInf, sz + 0.08, cx, cy);
+                        rB1 = project3D(f.midT * sx, yBarSup, -sz - 0.08, cx, cy);
+                        rB2 = project3D(f.midT * sx, yBarSup, sz + 0.08, cx, cy);
+                    }
+                    // Acero inferior positivo (Azul/Acero)
+                    ctx.strokeStyle = '#1e293b'; ctx.lineWidth = 3.6;
+                    ctx.beginPath(); ctx.moveTo(rA1.x, rA1.y); ctx.lineTo(rA2.x, rA2.y); ctx.stroke();
+                    ctx.strokeStyle = '#ff9f0a'; ctx.lineWidth = 2.0;
+                    ctx.beginPath(); ctx.moveTo(rA1.x, rA1.y); ctx.lineTo(rA2.x, rA2.y); ctx.stroke();
+
+                    // Acero superior negativo (Rojo/Acero)
+                    ctx.strokeStyle = '#1e293b'; ctx.lineWidth = 3.6;
+                    ctx.beginPath(); ctx.moveTo(rB1.x, rB1.y); ctx.lineTo(rB2.x, rB2.y); ctx.stroke();
+                    ctx.strokeStyle = '#ff3b30'; ctx.lineWidth = 2.0;
+                    ctx.beginPath(); ctx.moveTo(rB1.x, rB1.y); ctx.lineTo(rB2.x, rB2.y); ctx.stroke();
+
+                    // Puntas de las 2 varillas de acero en el frente de la vigueta
+                    ctx.fillStyle = '#ff9f0a'; ctx.beginPath(); ctx.arc(rA2.x, rA2.y, 3.2, 0, Math.PI*2); ctx.fill();
+                    ctx.fillStyle = '#ff3b30'; ctx.beginPath(); ctx.arc(rB2.x, rB2.y, 3.2, 0, Math.PI*2); ctx.fill();
+                }
+            });
+
+            // Losa superior de compresión (5cm) translúcida para dejar ver el tecnopor blanco y las viguetas
+            var yTopMin = yRibMax, yTopMax = sy;
+            var rawCap = [[-sx,yTopMin,-sz],[sx,yTopMin,-sz],[sx,yTopMax,-sz],[-sx,yTopMax,-sz],[-sx,yTopMin,sz],[sx,yTopMin,sz],[sx,yTopMax,sz],[-sx,yTopMax,sz]];
+            var pCap = rawCap.map(function(v) { return project3D(v[0], v[1], v[2], cx, cy); });
+            drawPolygon3D(ctx, [pCap[3], pCap[2], pCap[6], pCap[7]], 'rgba(148, 163, 184, 0.35)', '#00e5ff', 1.4);
+
+            drawDimensionLine3D(ctx, project3D(-sx, -sy - 0.06, sz, cx, cy), project3D(sx, -sy - 0.06, sz, cx, cy), '#00e5ff', 'L2=' + l2.toFixed(2) + 'm');
+            drawDimensionLine3D(ctx, project3D(sx + 0.08, -sy, sz, cx, cy), project3D(sx + 0.08, sy, sz, cx, cy), '#ff9f0a', 'H=' + peralte + 'cm');
+            drawDimensionLine3D(ctx, project3D(sx + 0.06, -sy, sz, cx, cy), project3D(sx + 0.06, -sy, -sz, cx, cy), '#30d158', 'L1=' + l1.toFixed(2) + 'm');
         }
 
+        // 4. ESCALERA 3D CON DOS MODELOS INTERACTIVOS COMPLETOS (EN U CON DESCANSO Y TRAMO RECTO)
         function render3DCanvasEscalera() {
             var canvas = document.getElementById('canvas_3d_viewport'); if (!canvas) return;
             var ctx = canvas.getContext('2d'); clear3DCanvas(ctx, canvas);
+
+            var tipo = document.getElementById('esc_tipo').value;
+            var B = parseFloat(document.getElementById('esc_ancho').value) || 1.00;
             var numCP = parseInt(document.getElementById('esc_num_cp').value) || 16;
             var h = parseFloat(document.getElementById('esc_h').value) || 17.5;
             var pVal = parseFloat(document.getElementById('esc_p').value) || 25.0;
-            setPills('🪜 ESCALERA 3D INTERACTIVA', '📐 ' + numCP + ' Contrapasos', '📏 h=' + h + 'cm × p=' + pVal + 'cm');
+            var lDescanso = parseFloat(document.getElementById('esc_desc_largo').value) || 1.00;
+            var wDescanso = parseFloat(document.getElementById('esc_desc_ancho').value) || 2.10;
 
-            var cx = canvas.width / 2, cy = canvas.height / 2 + 12;
+            setPills('🪜 ESCALERA 3D (' + (tipo === 'descanso' ? 'EN U' : 'RECTA') + ')', '📐 ' + numCP + ' CP (' + h + '×' + pVal + 'cm)', '📏 Ancho B=' + B.toFixed(2) + 'm');
+
+            var cx = canvas.width / 2, cy = canvas.height / 2 + 10;
             drawGridFloor3D(ctx, cx, cy);
+            var allStairFaces = [];
 
-            var numSteps = 7, stepW = 0.55, stepD = 0.16, stepH = 0.10;
-            var currX = -stepW / 2, currY = -0.45, currZ = -(numSteps * stepD) / 2;
-            var allFaces = [];
-
-            for (var s = 0; s < numSteps; s++) {
-                var rawS = [[currX,currY,currZ],[currX+stepW,currY,currZ],[currX+stepW,currY+stepH,currZ],[currX,currY+stepH,currZ],[currX,currY,currZ+stepD],[currX+stepW,currY,currZ+stepD],[currX+stepW,currY+stepH,currZ+stepD],[currX,currY+stepH,currZ+stepD]];
-                var pS = rawS.map(function(v) { return project3D(v[0], v[1], v[2], cx, cy); });
-                var sF = [
-                    { idx: [4,5,6,7], fill: '#94a3b8', stroke: '#cbd5e1' },
-                    { idx: [3,2,6,7], fill: '#cbd5e1', stroke: '#f1f5f9' },
-                    { idx: [1,2,6,5], fill: '#64748b', stroke: '#94a3b8' }
+            function addBoxFaces(rawPts, fBack, fFront, fTop, fSide, st) {
+                var pB = rawPts.map(function(v) { return project3D(v[0], v[1], v[2], cx, cy); });
+                var faces = [
+                    { idx: [0,1,2,3], fill: fBack, stroke: st },
+                    { idx: [4,5,6,7], fill: fFront, stroke: st },
+                    { idx: [3,2,6,7], fill: fTop, stroke: st },
+                    { idx: [0,3,7,4], fill: fSide, stroke: st },
+                    { idx: [1,2,6,5], fill: fSide, stroke: st }
                 ];
-                sF.forEach(function(f) { f.avgZ = (pS[f.idx[0]].z + pS[f.idx[1]].z + pS[f.idx[2]].z + pS[f.idx[3]].z) / 4; f.proj = pS; });
-                allFaces.push.apply(allFaces, sF);
-                currY += stepH; currZ += stepD;
+                faces.forEach(function(f) {
+                    f.avgZ = (pB[f.idx[0]].z + pB[f.idx[1]].z + pB[f.idx[2]].z + pB[f.idx[3]].z) / 4;
+                    f.proj = pB;
+                    allStairFaces.push(f);
+                });
             }
-            allFaces.sort(function(m, n) { return m.avgZ - n.avgZ; });
-            allFaces.forEach(function(f) { drawPolygon3D(ctx, f.idx.map(function(i) { return f.proj[i]; }), f.fill, f.stroke, 1.2); });
+
+            if (tipo === 'descanso') {
+                // MODELO 1: ESCALERA EN FORMA DE U CON 2 TRAMOS Y DESCANSO INTERMEDIO
+                var n1 = Math.min(8, Math.max(4, Math.floor(numCP / 2)));
+                var n2 = n1;
+                var stepW = 0.42, stepD = 0.14, stepH = 0.08, throatT = 0.08;
+                var landW = stepW * 2 + 0.10, landD = 0.36;
+                var initX = -landW / 2, initY = -0.52, initZ = -((n1 * stepD) + landD) / 2;
+
+                // Garganta sólida inclinada Tramo 1
+                var g1 = [
+                    [initX, initY - throatT, initZ], [initX + stepW, initY - throatT, initZ], [initX + stepW, initY, initZ], [initX, initY, initZ],
+                    [initX, initY + n1*stepH - throatT, initZ + n1*stepD], [initX + stepW, initY + n1*stepH - throatT, initZ + n1*stepD], [initX + stepW, initY + n1*stepH, initZ + n1*stepD], [initX, initY + n1*stepH, initZ + n1*stepD]
+                ];
+                addBoxFaces(g1, '#475569', '#64748b', '#94a3b8', '#475569', '#94a3b8');
+
+                var x1 = initX, y1 = initY, z1 = initZ;
+                for (var s = 0; s < n1; s++) {
+                    var rawS = [[x1,y1,z1],[x1+stepW,y1,z1],[x1+stepW,y1+stepH,z1],[x1,y1+stepH,z1],[x1,y1,z1+stepD],[x1+stepW,y1,z1+stepD],[x1+stepW,y1+stepH,z1+stepD],[x1,y1+stepH,z1+stepD]];
+                    addBoxFaces(rawS, '#64748b', '#94a3b8', '#cbd5e1', '#475569', '#e2e8f0');
+                    y1 += stepH; z1 += stepD;
+                }
+
+                // Descanso Intermedio en U
+                var rawLand = [[initX,y1-throatT,z1],[initX+landW,y1-throatT,z1],[initX+landW,y1+stepH,z1],[initX,y1+stepH,z1],[initX,y1-throatT,z1+landD],[initX+landW,y1-throatT,z1+landD],[initX+landW,y1+stepH,z1+landD],[initX,y1+stepH,z1+landD]];
+                addBoxFaces(rawLand, '#b45309', '#d97706', '#f59e0b', '#b45309', '#fde68a');
+
+                // Garganta sólida inclinada Tramo 2 (regreso en U)
+                var x2 = initX + landW - stepW, y2 = y1 + stepH, z2 = z1;
+                var g2 = [
+                    [x2, y2 - throatT, z2], [x2 + stepW, y2 - throatT, z2], [x2 + stepW, y2, z2], [x2, y2, z2],
+                    [x2, y2 + n2*stepH - throatT, z2 - n2*stepD], [x2 + stepW, y2 + n2*stepH - throatT, z2 - n2*stepD], [x2 + stepW, y2 + n2*stepH, z2 - n2*stepD], [x2, y2 + n2*stepH, z2 - n2*stepD]
+                ];
+                addBoxFaces(g2, '#1e3a8a', '#2563eb', '#60a5fa', '#1d4ed8', '#93c5fd');
+
+                var z2Step = z1 - stepD;
+                for (var s2 = 0; s2 < n2; s2++) {
+                    var rawS2 = [[x2,y2,z2Step],[x2+stepW,y2,z2Step],[x2+stepW,y2+stepH,z2Step],[x2,y2+stepH,z2Step],[x2,y2,z2Step+stepD],[x2+stepW,y2,z2Step+stepD],[x2+stepW,y2+stepH,z2Step+stepD],[x2,y2+stepH,z2Step+stepD]];
+                    addBoxFaces(rawS2, '#1e40af', '#3b82f6', '#93c5fd', '#1d4ed8', '#dbeafe');
+                    y2 += stepH; z2Step -= stepD;
+                }
+
+                allStairFaces.sort(function(m, n) { return m.avgZ - n.avgZ; });
+                allStairFaces.forEach(function(f) { drawPolygon3D(ctx, f.idx.map(function(i) { return f.proj[i]; }), f.fill, f.stroke, 1.0); });
+
+                drawDimensionLine3D(ctx, project3D(initX, initY - 0.10, initZ, cx, cy), project3D(initX + stepW, initY - 0.10, initZ, cx, cy), '#00e5ff', 'B=' + B.toFixed(2) + 'm');
+                drawDimensionLine3D(ctx, project3D(initX, y1 + stepH + 0.06, z1 + landD, cx, cy), project3D(initX + landW, y1 + stepH + 0.06, z1 + landD, cx, cy), '#ffd700', 'Desc=' + wDescanso.toFixed(2) + 'm');
+                drawDimensionLine3D(ctx, project3D(initX - 0.08, initY, initZ, cx, cy), project3D(initX - 0.08, y1, z1, cx, cy), '#ff9f0a', 'h=' + h + 'cm');
+            } else {
+                // MODELO 2: ESCALERA DE TRAMO RECTO SIMPLE CON GARGANTA SÓLIDA Y VIGAS
+                var numSteps = 8;
+                var stepW = 0.62, stepD = 0.16, stepH = 0.095, throatT = 0.11;
+                var initX = -stepW / 2, initY = -0.50, initZ = -(numSteps * stepD) / 2;
+
+                // Garganta sólida inclinada debajo de los pasos
+                var rawGarg = [
+                    [initX, initY - throatT, initZ], [initX + stepW, initY - throatT, initZ], [initX + stepW, initY, initZ], [initX, initY, initZ],
+                    [initX, initY + numSteps*stepH - throatT, initZ + numSteps*stepD], [initX + stepW, initY + numSteps*stepH - throatT, initZ + numSteps*stepD], [initX + stepW, initY + numSteps*stepH, initZ + numSteps*stepD], [initX, initY + numSteps*stepH, initZ + numSteps*stepD]
+                ];
+                addBoxFaces(rawGarg, '#334155', '#64748b', '#94a3b8', '#475569', '#94a3b8');
+
+                var currY = initY, currZ = initZ;
+                for (var st = 0; st < numSteps; st++) {
+                    var rawStep = [
+                        [initX, currY, currZ], [initX + stepW, currY, currZ], [initX + stepW, currY + stepH, currZ], [initX, currY + stepH, currZ],
+                        [initX, currY, currZ + stepD], [initX + stepW, currY, currZ + stepD], [initX + stepW, currY + stepH, currZ + stepD], [initX, currY + stepH, currZ + stepD]
+                    ];
+                    addBoxFaces(rawStep, '#64748b', '#94a3b8', '#cbd5e1', '#475569', '#f1f5f9');
+                    currY += stepH; currZ += stepD;
+                }
+
+                allStairFaces.sort(function(m, n) { return m.avgZ - n.avgZ; });
+                allStairFaces.forEach(function(f) { drawPolygon3D(ctx, f.idx.map(function(i) { return f.proj[i]; }), f.fill, f.stroke, 1.1); });
+
+                drawDimensionLine3D(ctx, project3D(initX, initY - 0.12, initZ, cx, cy), project3D(initX + stepW, initY - 0.12, initZ, cx, cy), '#00e5ff', 'B=' + B.toFixed(2) + 'm');
+                drawDimensionLine3D(ctx, project3D(initX + stepW + 0.08, initY, initZ, cx, cy), project3D(initX + stepW + 0.08, currY, currZ, cx, cy), '#30d158', 'h=' + h + 'cm | p=' + pVal + 'cm');
+            }
         }
 
+        // 5. TARRAJEO 3D COMO CAPA DE MORTERO APLICADA SOBRE MURO DE LADRILLO
         function render3DCanvasTarrajeo() {
             var canvas = document.getElementById('canvas_3d_viewport'); if (!canvas) return;
             var ctx = canvas.getContext('2d'); clear3DCanvas(ctx, canvas);
             var area = parseFloat(document.getElementById('tar_area').value) || 25.0;
-            setPills('🖌️ TARRAJEO Y ACABADOS 3D', '📐 ' + area.toFixed(1) + ' m²', '📏 Paño de Mortero Cernido');
+            var tipo = document.getElementById('tar_tipo').value;
+            var espCm = (tipo === 'cielorraso') ? 1.0 : 1.5;
+            var ladoL = Math.sqrt(area * 1.4), ladoH = area / ladoL;
+
+            setPills('🖌️ CAPA TARRAJEO SOBRE MURO 3D', '📐 ' + area.toFixed(1) + ' m²', '📏 Mortero e = ' + espCm.toFixed(1) + ' cm');
+
             var cx = canvas.width / 2, cy = canvas.height / 2 + 10;
             drawGridFloor3D(ctx, cx, cy);
-            var p1 = project3D(-1.0, -0.5, 0, cx, cy), p2 = project3D(1.0, -0.5, 0, cx, cy), p3 = project3D(1.0, 0.7, 0, cx, cy), p4 = project3D(-1.0, 0.7, 0, cx, cy);
-            drawPolygon3D(ctx, [p1, p2, p3, p4], '#cbd5e1', '#00e5ff', 2);
+
+            var wallW = 0.88, wallH = 0.65, wallD = 0.12;
+            var numR = 6, numC = 5;
+            var bH = (wallH * 2) / numR, bW = (wallW * 2) / numC, gap = 0.012;
+            var allFaces = [];
+
+            // 1. Muro base de ladrillo de arcilla en 3D
+            for (var r = 0; r < numR; r++) {
+                var yB = -wallH + r * bH + gap, yT = yB + bH - gap;
+                var stag = (r % 2 === 1);
+                for (var c = 0; c < numC; c++) {
+                    var xL = Math.max(-wallW, -wallW + c * bW + (stag ? bW * 0.5 : 0) + gap);
+                    var xR = Math.min(wallW, xL + bW - gap);
+                    if (xR - xL < 0.04) continue;
+                    var rawB = [[xL,yB,-wallD],[xR,yB,-wallD],[xR,yT,-wallD],[xL,yT,-wallD],[xL,yB,wallD],[xR,yB,wallD],[xR,yT,wallD],[xL,yT,wallD]];
+                    var pB = rawB.map(function(v) { return project3D(v[0], v[1], v[2], cx, cy); });
+                    var fs = [
+                        { idx: [0,1,2,3], fill: '#7b241c', stroke: '#e74c3c' },
+                        { idx: [4,5,6,7], fill: '#c0392b', stroke: '#f1948a' },
+                        { idx: [3,2,6,7], fill: '#d9534f', stroke: '#f1948a' },
+                        { idx: [1,2,6,5], fill: '#922b21', stroke: '#e74c3c' }
+                    ];
+                    fs.forEach(function(f) { f.avgZ = (pB[f.idx[0]].z + pB[f.idx[1]].z + pB[f.idx[2]].z + pB[f.idx[3]].z) / 4; f.proj = pB; allFaces.push(f); });
+                }
+            }
+
+            // 2. Capa de Mortero de Tarrajeo (gris cemento frotachado) aplicada sobre el frente del muro (dejando esquina superior derecha descubierta para ver el ladrillo base)
+            var zTar0 = wallD + 0.005, zTar1 = wallD + 0.055;
+            var xTarR = wallW * 0.52; // Corte escalonado que deja ver el ladrillo debajo
+            var rawMortar = [
+                [-wallW, -wallH, zTar0], [xTarR, -wallH, zTar0], [xTarR, wallH * 0.72, zTar0], [-wallW, wallH * 0.72, zTar0],
+                [-wallW, -wallH, zTar1], [xTarR, -wallH, zTar1], [xTarR, wallH * 0.72, zTar1], [-wallW, wallH * 0.72, zTar1]
+            ];
+            var pM = rawMortar.map(function(v) { return project3D(v[0], v[1], v[2], cx, cy); });
+            var mFaces = [
+                { idx: [4,5,6,7], fill: '#cbd5e1', stroke: '#00e5ff' },
+                { idx: [3,2,6,7], fill: '#e2e8f0', stroke: '#00e5ff' },
+                { idx: [1,2,6,5], fill: '#94a3b8', stroke: '#00e5ff' },
+                { idx: [0,3,7,4], fill: '#94a3b8', stroke: '#00e5ff' }
+            ];
+            mFaces.forEach(function(f) { f.avgZ = (pM[f.idx[0]].z + pM[f.idx[1]].z + pM[f.idx[2]].z + pM[f.idx[3]].z) / 4 + 0.25; f.proj = pM; allFaces.push(f); });
+
+            allFaces.sort(function(m, n) { return m.avgZ - n.avgZ; });
+            allFaces.forEach(function(f) { drawPolygon3D(ctx, f.idx.map(function(i) { return f.proj[i]; }), f.fill, f.stroke, 1.2); });
+
+            drawDimensionLine3D(ctx, project3D(-wallW, -wallH - 0.08, zTar1, cx, cy), project3D(wallW, -wallH - 0.08, zTar1, cx, cy), '#00e5ff', 'L=' + ladoL.toFixed(1) + 'm (' + area.toFixed(0) + 'm²)');
+            drawDimensionLine3D(ctx, project3D(wallW + 0.08, -wallH, wallD, cx, cy), project3D(wallW + 0.08, wallH, wallD, cx, cy), '#ff9f0a', 'H=' + ladoH.toFixed(1) + 'm');
+            drawDimensionLine3D(ctx, project3D(xTarR, -wallH + 0.2, zTar1, cx, cy), project3D(wallW, -wallH + 0.2, wallD, cx, cy), '#30d158', 'e=' + espCm.toFixed(1) + 'cm');
         }
 
+        // 6. BARRAS DE ACERO CORRUGADO 3D REALISTAS (CILINDROS METÁLICOS CON NERVADURAS ASTM A615)
         function render3DCanvasAcero() {
             var canvas = document.getElementById('canvas_3d_viewport'); if (!canvas) return;
             var ctx = canvas.getContext('2d'); clear3DCanvas(ctx, canvas);
-            setPills('⛓️ PAQUETE DE VARILLAS 9.00m', '🔩 Acero Grado 60', '📏 ASTM A615 / RNE E.060');
+
+            var kg38 = parseFloat(document.getElementById('ac_kg_38').value) || 0;
+            var kg12 = parseFloat(document.getElementById('ac_kg_12').value) || 0;
+            var kg58 = parseFloat(document.getElementById('ac_kg_58').value) || 0;
+            var kg34 = parseFloat(document.getElementById('ac_kg_34').value) || 0;
+            var merma = parseFloat(document.getElementById('ac_merma_pct').value) || 1.05;
+
+            var v38 = Math.ceil((kg38 * merma) / (0.560 * 9.0));
+            var v12 = Math.ceil((kg12 * merma) / (0.994 * 9.0));
+            var v58 = Math.ceil((kg58 * merma) / (1.552 * 9.0));
+            var v34 = Math.ceil((kg34 * merma) / (2.235 * 9.0));
+            var totVar = v38 + v12 + v58 + v34;
+
+            setPills('⛓️ ACERO CORRUGADO ASTM A615', '🔩 ' + totVar + ' Varillas (9.00m)', '📏 Fy = 4200 kg/cm² (Grado 60)');
+
             var cx = canvas.width / 2, cy = canvas.height / 2 + 10;
             drawGridFloor3D(ctx, cx, cy);
-            var colors = ['#00e5ff', '#30d158', '#ff9f0a', '#ff453a', '#ffd700'];
-            for (var i = -2; i <= 2; i++) {
-                var pA = project3D(-1.1, -0.2 + Math.abs(i)*0.08, i * 0.16, cx, cy);
-                var pB = project3D(1.1, -0.2 + Math.abs(i)*0.08, i * 0.16, cx, cy);
-                ctx.strokeStyle = colors[i + 2];
-                ctx.lineWidth = 5;
-                ctx.beginPath(); ctx.moveTo(pA.x, pA.y); ctx.lineTo(pB.x, pB.y); ctx.stroke();
-            }
+
+            var barsSpec = [
+                { z: -0.48, rPx: 5.0, label: 'Ø3/8" (' + v38 + 'v)', tagCol: '#00e5ff' },
+                { z: -0.16, rPx: 6.8, label: 'Ø1/2" (' + v12 + 'v)', tagCol: '#30d158' },
+                { z:  0.16, rPx: 8.5, label: 'Ø5/8" (' + v58 + 'v)', tagCol: '#ff9f0a' },
+                { z:  0.48, rPx: 10.2, label: 'Ø3/4" (' + v34 + 'v)', tagCol: '#ffd700' }
+            ];
+
+            barsSpec.forEach(function(b) {
+                var pStart = project3D(-1.05, -0.15, b.z, cx, cy);
+                var pEnd = project3D(1.05, -0.15, b.z, cx, cy);
+
+                // 1. Sombra inferior proyectada en el piso
+                var s1 = project3D(-1.05, -0.58, b.z, cx, cy), s2 = project3D(1.05, -0.58, b.z, cx, cy);
+                ctx.strokeStyle = 'rgba(0,0,0,0.45)'; ctx.lineWidth = b.rPx * 1.4; ctx.lineCap = 'round';
+                ctx.beginPath(); ctx.moveTo(s1.x, s1.y); ctx.lineTo(s2.x, s2.y); ctx.stroke();
+
+                // 2. Cuerpo base acero oscuro (Gunmetal / Gris Acero Laminado)
+                ctx.strokeStyle = '#334155'; ctx.lineWidth = b.rPx * 2.1; ctx.lineCap = 'butt';
+                ctx.beginPath(); ctx.moveTo(pStart.x, pStart.y); ctx.lineTo(pEnd.x, pEnd.y); ctx.stroke();
+
+                // 3. Núcleo metálico intermedio
+                ctx.strokeStyle = '#64748b'; ctx.lineWidth = b.rPx * 1.4;
+                ctx.beginPath(); ctx.moveTo(pStart.x, pStart.y); ctx.lineTo(pEnd.x, pEnd.y); ctx.stroke();
+
+                // 4. Brillo especular metálico longitudinal
+                ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth = b.rPx * 0.45;
+                ctx.beginPath(); ctx.moveTo(pStart.x, pStart.y - b.rPx * 0.3); ctx.lineTo(pEnd.x, pEnd.y - b.rPx * 0.3); ctx.stroke();
+
+                // 5. Corrugaciones / Nervaduras Transversales Reales (Fierro Corrugado)
+                var numRibs = 22;
+                var dx = pEnd.x - pStart.x, dy = pEnd.y - pStart.y;
+                var len = Math.hypot(dx, dy) || 1;
+                var nx = -dy / len, ny = dx / len;
+
+                ctx.strokeStyle = '#1e293b'; ctx.lineWidth = 2.0;
+                for (var k = 1; k < numRibs; k++) {
+                    var t = k / numRibs;
+                    var rx = pStart.x + dx * t, ry = pStart.y + dy * t;
+                    ctx.beginPath();
+                    ctx.moveTo(rx - nx * b.rPx * 0.95, ry - ny * b.rPx * 0.95);
+                    ctx.lineTo(rx + nx * b.rPx * 0.95 + 2, ry + ny * b.rPx * 0.95);
+                    ctx.stroke();
+
+                    // Relieve brillante junto a cada nervadura
+                    ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 1.0;
+                    ctx.beginPath();
+                    ctx.moveTo(rx - nx * b.rPx * 0.8 + 1.5, ry - ny * b.rPx * 0.8);
+                    ctx.lineTo(rx + nx * b.rPx * 0.8 + 3, ry + ny * b.rPx * 0.8);
+                    ctx.stroke();
+                    ctx.strokeStyle = '#1e293b'; ctx.lineWidth = 2.0;
+                }
+
+                // 6. Sección circular de corte en la punta de la barra
+                ctx.fillStyle = '#94a3b8'; ctx.strokeStyle = b.tagCol; ctx.lineWidth = 1.8;
+                ctx.beginPath(); ctx.arc(pEnd.x, pEnd.y, b.rPx * 0.95, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+
+                // Etiqueta limpia sin caja de cada diámetro
+                ctx.save();
+                ctx.font = 'bold 10.5px sans-serif';
+                ctx.fillStyle = b.tagCol;
+                ctx.shadowColor = '#000'; ctx.shadowBlur = 4;
+                ctx.fillText(b.label, pEnd.x + 12, pEnd.y + 4);
+                ctx.restore();
+            });
+
+            drawDimensionLine3D(ctx, project3D(-1.05, -0.45, 0.65, cx, cy), project3D(1.05, -0.45, 0.65, cx, cy), '#00e5ff', 'Longitud Comercial L = 9.00 m');
         }
 
         // ==================== MOTOR DE CÁLCULOS DE OBRA ====================
@@ -2367,7 +2709,7 @@
             }
 
             var costMO = costMat * pctMO;
-            var costEq = costMO * 0.05; // 5% herramientas manuales CAPECO
+            var costEq = costMO * 0.05;
             var totalDirecto = costMat + costMO + costEq;
             lastAPUTotal = totalDirecto;
 
