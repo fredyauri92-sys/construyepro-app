@@ -399,7 +399,7 @@
         }
 
         .giant-number {
-            font-size: 34px;
+            font-size: 32px;
             font-weight: 900;
             color: var(--primary-orange);
             margin: 5px 0;
@@ -490,6 +490,32 @@
         .badge-green { background: rgba(48,209,88,0.15); color: var(--primary-green); border: 1px solid rgba(48,209,88,0.3); }
         .badge-orange { background: rgba(255,159,10,0.15); color: var(--primary-orange); border: 1px solid rgba(255,159,10,0.3); }
         .badge-red { background: rgba(255,69,58,0.15); color: var(--primary-red); border: 1px solid rgba(255,69,58,0.3); }
+
+        .stepper-control {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .btn-step {
+            width: 32px;
+            height: 36px;
+            border-radius: 6px;
+            border: 1px solid var(--card-border);
+            background: var(--bg-color);
+            color: var(--primary-cyan);
+            font-size: 16px;
+            font-weight: 900;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-step:active {
+            background: var(--primary-cyan);
+            color: #000;
+        }
 
         @keyframes spinGearRing {
             0% { transform: rotate(0deg); }
@@ -597,11 +623,7 @@
         </div>
     </div>
 
-    <!-- TOAST FLOTANTE Y MODAL DE CONFIRMACIÓN -->
-    <div id="app_toast" onclick="hideToast()" style="display:none; position:fixed; bottom:78px; left:50%; transform:translateX(-50%); background:rgba(15,23,42,0.96); color:#fff; border:1.5px solid var(--primary-cyan); border-radius:10px; padding:10px 16px; font-size:12px; font-weight:800; z-index:999999; box-shadow:0 8px 25px rgba(0,0,0,0.6); max-width:90%; text-align:center; white-space:pre-line; transition:opacity 0.3s;">
-        <span id="toast_msg"></span>
-    </div>
-
+    <!-- MODAL DE CONFIRMACIÓN -->
     <div id="app_confirm_modal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.82); z-index:999999; justify-content:center; align-items:center; padding:20px;">
         <div style="background:var(--card-bg); border:1px solid var(--primary-cyan); border-radius:12px; padding:18px; max-width:340px; width:100%; text-align:center;">
             <div id="confirm_modal_title" style="font-size:14px; font-weight:900; color:var(--primary-orange); margin-bottom:8px;">⚠️ CONFIRMACIÓN</div>
@@ -655,11 +677,9 @@
                             🎯 Centrar
                         </button>
                     </div>
-                    <div style="position:absolute; bottom:10px; left:10px; z-index:20;">
-                        <div class="pill-badge" id="pill_bl" style="position:static; margin:0; background:rgba(15,23,42,0.88); color:#30d158; border:1px solid rgba(48,209,88,0.4);">📏 Dimensiones</div>
-                    </div>
+                    <!-- Se eliminó el pill inferior izquierdo de dimensiones para dejar limpio el visor 3D -->
                     <div style="position:absolute; bottom:10px; right:10px; z-index:20;">
-                        <div class="pill-badge" id="pill_tr" style="position:static; margin:0; background:rgba(15,23,42,0.88); color:#00e5ff; border:1px solid rgba(0,229,255,0.4);">📦 2.52 m³</div>
+                        <div class="pill-badge" id="pill_tr" style="position:static; margin:0; background:rgba(15,23,42,0.88); color:#00e5ff; border:1px solid rgba(0,229,255,0.4);">📦 3.15 m³</div>
                     </div>
 
                     <canvas id="canvas_3d_viewport" width="360" height="220" style="width:100%; height:220px; display:block; cursor:grab; border-radius:10px;"></canvas>
@@ -671,14 +691,13 @@
                     <button class="segment-btn" onclick="switchCalc('calc_tecnopor', this)">🧇 Tecnopor</button>
                     <button class="segment-btn" onclick="switchCalc('calc_escalera', this)">🪜 Escalera</button>
                     <button class="segment-btn" onclick="switchCalc('calc_tarrajeo', this)">🖌️ Tarrajeo</button>
-                    <button class="segment-btn" onclick="switchCalc('calc_acero', this)">⛓️ Acero</button>
                 </div>
 
                 <!-- SUB-CALC 1: CONCRETO -->
                 <div id="calc_concreto" class="calc-subpane">
                     <div class="form-group">
                         <label id="lbl_tipo_vaciado">1. Elemento Estructural & Proporción CAPECO:</label>
-                        <select id="tipo_vaciado" onchange="updateInfoBanner(); calcularConcreto();">
+                        <select id="tipo_vaciado" onchange="updateInfoBanner();">
                             <option value="210">Losa / Vigas / Columnas (f'c 210) [1 : 2 : 2]</option>
                             <option value="175_p">Pavimentos / Muros (f'c 175) [1 : 2.5 : 2.5]</option>
                             <option value="175_h">Cimiento Corrido / Sobrecimiento (f'c 175) [1 : 5]</option>
@@ -699,17 +718,17 @@
                             </div>
                             <div>
                                 <label>Arena (Baldes 18L):</label>
-                                <input type="number" id="m_arena_baldes" value="4.0" step="0.5" min="0" oninput="updateRendimientoConcreto(); calcularConcreto(); renderSchematic();">
+                                <input type="number" id="m_arena_baldes" value="4.0" step="0.5" min="0" oninput="updateRendimientoConcreto();">
                             </div>
                             <div>
                                 <label>Piedra (Baldes 18L):</label>
-                                <input type="number" id="m_piedra_baldes" value="3.0" step="0.5" min="0" oninput="updateRendimientoConcreto(); calcularConcreto(); renderSchematic();">
+                                <input type="number" id="m_piedra_baldes" value="3.0" step="0.5" min="0" oninput="updateRendimientoConcreto();">
                             </div>
                         </div>
                         <div class="grid-2">
                             <div>
                                 <label>Agua (Baldes 18L):</label>
-                                <input type="number" id="m_agua_baldes" value="1.2" step="0.1" min="0" oninput="updateRendimientoConcreto(); calcularConcreto(); renderSchematic();">
+                                <input type="number" id="m_agua_baldes" value="1.2" step="0.1" min="0" oninput="updateRendimientoConcreto();">
                             </div>
                             <div>
                                 <label>Rendimiento / Bolsa:</label>
@@ -729,26 +748,26 @@
                     <div id="box_forma_losa" class="form-group">
                         <label>3. Dimensiones de la Estructura:</label>
                         <div class="grid-3">
-                            <div><label>Largo (m):</label><input type="number" id="largo" value="5.0" step="0.1" min="0" oninput="calcularConcreto(); renderSchematic();"></div>
-                            <div><label>Ancho (m):</label><input type="number" id="ancho" value="4.0" step="0.1" min="0" oninput="calcularConcreto(); renderSchematic();"></div>
-                            <div><label>Espesor (cm):</label><input type="number" id="espesor" value="15" step="1" min="0" oninput="calcularConcreto(); renderSchematic();"></div>
+                            <div><label>Largo (m):</label><input type="number" id="largo" value="5.0" step="0.1" min="0"></div>
+                            <div><label>Ancho (m):</label><input type="number" id="ancho" value="4.0" step="0.1" min="0"></div>
+                            <div><label>Espesor (cm):</label><input type="number" id="espesor" value="15" step="1" min="0"></div>
                         </div>
                     </div>
 
                     <div id="box_forma_columna" class="form-group" style="display:none;">
                         <label>3. Dimensiones de la Columna / Viga Rectangular:</label>
                         <div class="grid-3">
-                            <div><label>Altura H (m):</label><input type="number" id="col_altura" value="3.0" step="0.1" min="0.1" oninput="calcularConcreto(); renderSchematic();"></div>
-                            <div><label>Lado A (cm):</label><input type="number" id="col_largo" value="30" step="1" min="5" oninput="calcularConcreto(); renderSchematic();"></div>
-                            <div><label>Lado B (cm):</label><input type="number" id="col_ancho" value="30" step="1" min="5" oninput="calcularConcreto(); renderSchematic();"></div>
+                            <div><label>Altura H (m):</label><input type="number" id="col_altura" value="3.0" step="0.1" min="0.1"></div>
+                            <div><label>Lado A (cm):</label><input type="number" id="col_largo" value="30" step="1" min="5"></div>
+                            <div><label>Lado B (cm):</label><input type="number" id="col_ancho" value="30" step="1" min="5"></div>
                         </div>
                         <div style="margin-top:10px;">
                             <label>Cantidad de Elementos Iguales:</label>
-                            <input type="number" id="col_cantidad" value="1" step="1" min="1" oninput="calcularConcreto(); renderSchematic();">
+                            <input type="number" id="col_cantidad" value="1" step="1" min="1">
                         </div>
                     </div>
 
-                    <button class="btn-primary btn-green" onclick="calcularConcreto(); renderSchematic(); showToast('✅ CÓMPUTO Y DOSIFICACIÓN RECALCULADOS');">🧮 CALCULAR CÓMPUTO Y DOSIFICACIÓN</button>
+                    <button class="btn-primary btn-green" onclick="calcularConcreto(); renderSchematic(); calcularPresupuesto();">🧮 CALCULAR CÓMPUTO Y DOSIFICACIÓN</button>
                     <div class="result-card" id="res_concreto"></div>
                 </div>
 
@@ -772,13 +791,13 @@
                             📐 DIMENSIONES Y DISPOSICIÓN DEL LADRILLO PERSONALIZADO:
                         </div>
                         <div class="grid-3" style="margin-bottom:8px;">
-                            <div><label>Largo (cm):</label><input type="number" id="lad_largo" value="24.0" step="0.5" oninput="calcularMuros(); renderSchematic();"></div>
-                            <div><label>Ancho (cm):</label><input type="number" id="lad_ancho" value="12.0" step="0.5" oninput="calcularMuros(); renderSchematic();"></div>
-                            <div><label>Alto (cm):</label><input type="number" id="lad_alto" value="9.0" step="0.5" oninput="calcularMuros(); renderSchematic();"></div>
+                            <div><label>Largo (cm):</label><input type="number" id="lad_largo" value="24.0" step="0.5"></div>
+                            <div><label>Ancho (cm):</label><input type="number" id="lad_ancho" value="12.0" step="0.5"></div>
+                            <div><label>Alto (cm):</label><input type="number" id="lad_alto" value="9.0" step="0.5"></div>
                         </div>
                         <div>
                             <label>Tipo de Asentado en Muro:</label>
-                            <select id="lad_asentado" onchange="calcularMuros(); renderSchematic();">
+                            <select id="lad_asentado">
                                 <option value="soga" selected>Soga (Vista Largo×Alto • Espesor = Ancho)</option>
                                 <option value="cabeza">Cabeza (Vista Ancho×Alto • Espesor = Largo)</option>
                                 <option value="canto">Canto (Vista Largo×Ancho • Espesor = Alto)</option>
@@ -789,22 +808,22 @@
                     <div class="form-group grid-2">
                         <div>
                             <label>2. Largo Muro (m):</label>
-                            <input type="number" id="muro_largo" value="6.0" step="0.1" min="0.1" oninput="calcularMuros(); renderSchematic();">
+                            <input type="number" id="muro_largo" value="6.0" step="0.1" min="0.1">
                         </div>
                         <div>
                             <label>Alto Muro (m):</label>
-                            <input type="number" id="muro_alto" value="2.6" step="0.1" min="0.1" oninput="calcularMuros(); renderSchematic();">
+                            <input type="number" id="muro_alto" value="2.6" step="0.1" min="0.1">
                         </div>
                     </div>
 
                     <div class="form-group grid-3">
                         <div>
                             <label>3. Junta (cm):</label>
-                            <input type="number" id="mortero_junta" value="1.5" step="0.1" min="0.5" max="4.0" oninput="calcularMuros(); renderSchematic();">
+                            <input type="number" id="mortero_junta" value="1.5" step="0.1" min="0.5" max="4.0">
                         </div>
                         <div>
                             <label>Merma Ladrillo:</label>
-                            <select id="merma_ladrillo" onchange="calcularMuros(); renderSchematic();">
+                            <select id="merma_ladrillo">
                                 <option value="1.05" selected>5% (Estándar)</option>
                                 <option value="1.08">8% (Cortes)</option>
                                 <option value="1.10">10% (Complejo)</option>
@@ -812,11 +831,11 @@
                         </div>
                         <div>
                             <label>Baldes Arena/Bls:</label>
-                            <input type="number" id="mortero_baldes_arena" value="4.0" step="0.5" oninput="calcularMuros(); renderSchematic();">
+                            <input type="number" id="mortero_baldes_arena" value="4.0" step="0.5">
                         </div>
                     </div>
 
-                    <button class="btn-primary btn-green" onclick="calcularMuros(); renderSchematic(); showToast('✅ CÓMPUTO DE ALBAÑILERÍA RECALCULADO');">🧱 CALCULAR MATERIALES DE ALBAÑILERÍA</button>
+                    <button class="btn-primary btn-green" onclick="calcularMuros(); renderSchematic(); calcularPresupuesto();">🧱 CALCULAR MATERIALES DE ALBAÑILERÍA</button>
                     <div class="result-card" id="res_muros"></div>
                 </div>
 
@@ -825,16 +844,16 @@
                     <div class="form-group grid-2">
                         <div>
                             <label>Longitud del Paño L1 (m):</label>
-                            <input type="number" id="tec_largo" value="5.0" step="0.1" oninput="calcularTecnopor(); renderSchematic();">
+                            <input type="number" id="tec_largo" value="5.0" step="0.1">
                         </div>
                         <div>
                             <label>Ancho del Paño L2 (m):</label>
-                            <input type="number" id="tec_ancho" value="4.0" step="0.1" oninput="calcularTecnopor(); renderSchematic();">
+                            <input type="number" id="tec_ancho" value="4.0" step="0.1">
                         </div>
                     </div>
                     <div class="form-group">
                         <label>Dirección del Aligerado (Viguetas):</label>
-                        <select id="tec_dir" onchange="calcularTecnopor(); renderSchematic();">
+                        <select id="tec_dir">
                             <option value="h">Horizontal (Paralelo a L1 - Viguetas de L1 m)</option>
                             <option value="v">Vertical (Paralelo a L2 - Viguetas de L2 m)</option>
                         </select>
@@ -842,7 +861,7 @@
                     <div class="form-group grid-2">
                         <div>
                             <label>Peralte de Losa (Altura Total):</label>
-                            <select id="tec_peralte" onchange="calcularTecnopor(); renderSchematic();">
+                            <select id="tec_peralte">
                                 <option value="17">17 cm (Tecnopor 12cm + Capa 5cm)</option>
                                 <option value="20" selected>20 cm (Tecnopor 15cm + Capa 5cm)</option>
                                 <option value="25">25 cm (Tecnopor 20cm + Capa 5cm)</option>
@@ -851,10 +870,10 @@
                         </div>
                         <div>
                             <label>Largo Bloque Tecnopor (m):</label>
-                            <input type="number" id="tec_bloque_l" value="1.20" step="0.1" oninput="calcularTecnopor(); renderSchematic();">
+                            <input type="number" id="tec_bloque_l" value="1.20" step="0.1">
                         </div>
                     </div>
-                    <button class="btn-primary btn-green" onclick="calcularTecnopor(); renderSchematic(); showToast('✅ CÓMPUTO DE LOSA TECNOPOR RECALCULADO');">🧇 CALCULAR LOSA TECNOPOR</button>
+                    <button class="btn-primary btn-green" onclick="calcularTecnopor(); renderSchematic(); calcularPresupuesto();">🧇 CALCULAR LOSA TECNOPOR</button>
                     <div id="res_tecnopor" class="result-card"></div>
                 </div>
 
@@ -863,76 +882,76 @@
                     <div class="form-group grid-2">
                         <div>
                             <label>Configuración de Escalera:</label>
-                            <select id="esc_tipo" onchange="toggleEscaleraDescanso(); renderSchematic();">
+                            <select id="esc_tipo" onchange="toggleEscaleraDescanso();">
                                 <option value="recta">Tramo Recto Simple</option>
                                 <option value="descanso" selected>Con Descanso Intermedio (en U)</option>
                             </select>
                         </div>
                         <div>
                             <label>Ancho Útil Tramo B (m):</label>
-                            <input type="number" id="esc_ancho" value="1.00" step="0.05" oninput="calcularEscalera(); renderSchematic();">
+                            <input type="number" id="esc_ancho" value="1.00" step="0.05">
                         </div>
                     </div>
 
                     <div class="form-group grid-3">
                         <div>
                             <label>N° Contrapasos:</label>
-                            <input type="number" id="esc_num_cp" value="16" step="1" min="2" max="30" oninput="updateEscaleraLargoPaso('paso'); calcularEscalera(); renderSchematic();">
+                            <input type="number" id="esc_num_cp" value="16" step="1" min="2" max="30" oninput="autoCalcLargoEscalera();">
                         </div>
                         <div>
                             <label>Contrapaso h (cm):</label>
-                            <input type="number" id="esc_h" value="17.5" step="0.1" oninput="calcularEscalera(); renderSchematic();">
+                            <input type="number" id="esc_h" value="17.5" step="0.1" oninput="autoCalcLargoEscalera();">
                         </div>
                         <div>
                             <label>Paso p (cm):</label>
-                            <input type="number" id="esc_p" value="25.0" step="0.5" oninput="updateEscaleraLargoPaso('paso'); calcularEscalera(); renderSchematic();">
+                            <input type="number" id="esc_p" value="25.0" step="0.5" oninput="autoCalcLargoEscalera();">
                         </div>
                     </div>
 
                     <div class="form-group grid-3">
                         <div>
-                            <label>Largo Total (m):</label>
-                            <input type="number" id="esc_largo" value="2.75" step="0.1" oninput="updateEscaleraLargoPaso('largo'); calcularEscalera(); renderSchematic();">
+                            <label style="color:var(--primary-cyan);">Largo Auto (m):</label>
+                            <input type="text" id="esc_largo" value="2.75" readonly style="font-weight:900; color:var(--primary-cyan); background:rgba(0,229,255,0.08); border-color:rgba(0,229,255,0.35);">
                         </div>
                         <div>
                             <label>Garganta (cm):</label>
-                            <input type="number" id="esc_garganta" value="15" step="1" oninput="calcularEscalera(); renderSchematic();">
+                            <input type="number" id="esc_garganta" value="15" step="1">
                         </div>
                         <div id="box_esc_desc_esp">
                             <label>Esp. Descanso (cm):</label>
-                            <input type="number" id="esc_desc_esp" value="15" step="1" oninput="calcularEscalera(); renderSchematic();">
+                            <input type="number" id="esc_desc_esp" value="15" step="1">
                         </div>
                     </div>
 
                     <div class="form-group grid-2" id="box_esc_desc_largo">
                         <div>
                             <label>Largo Descanso (m):</label>
-                            <input type="number" id="esc_desc_largo" value="1.00" step="0.05" oninput="updateEscaleraLargoPaso('paso'); calcularEscalera(); renderSchematic();">
+                            <input type="number" id="esc_desc_largo" value="1.00" step="0.05" oninput="autoCalcLargoEscalera();">
                         </div>
                         <div>
                             <label>Ancho Descanso (m):</label>
-                            <input type="number" id="esc_desc_ancho" value="2.10" step="0.05" oninput="calcularEscalera(); renderSchematic();">
+                            <input type="number" id="esc_desc_ancho" value="2.10" step="0.05">
                         </div>
                     </div>
 
                     <div class="form-group grid-2">
                         <div>
                             <label>Viga Arranque:</label>
-                            <select id="esc_viga_arr" onchange="calcularEscalera(); renderSchematic();">
+                            <select id="esc_viga_arr">
                                 <option value="no">Sin Viga de Arranque</option>
                                 <option value="si" selected>Sí (0.25m × 0.40m)</option>
                             </select>
                         </div>
                         <div>
                             <label>Viga Llegada:</label>
-                            <select id="esc_viga_lleg" onchange="calcularEscalera(); renderSchematic();">
+                            <select id="esc_viga_lleg">
                                 <option value="no">Sin Viga de Llegada</option>
                                 <option value="si" selected>Sí (0.25m × 0.40m)</option>
                             </select>
                         </div>
                     </div>
 
-                    <button class="btn-primary btn-green" onclick="calcularEscalera(); renderSchematic(); showToast('✅ CÓMPUTO DE ESCALERA RECALCULADO');">🪜 CALCULAR ESCALERA DINÁMICA</button>
+                    <button class="btn-primary btn-green" onclick="autoCalcLargoEscalera(); calcularEscalera(); renderSchematic(); calcularPresupuesto();">🪜 CALCULAR ESCALERA DINÁMICA</button>
                     <div id="res_escalera" class="result-card"></div>
                 </div>
 
@@ -941,7 +960,7 @@
                     <div class="form-group grid-2">
                         <div>
                             <label>Superficie a Tarrajear:</label>
-                            <select id="tar_tipo" onchange="calcularTarrajeo(); renderSchematic();">
+                            <select id="tar_tipo">
                                 <option value="muro_int">Muro Interior (Espesor 1.5 cm) [1:4]</option>
                                 <option value="muro_ext">Muro Exterior / Fachada (Espesor 1.5 cm) [1:3]</option>
                                 <option value="cielorraso">Cielorraso / Techo (Espesor 1.0 cm) [1:3]</option>
@@ -949,58 +968,21 @@
                         </div>
                         <div>
                             <label>Área Útil a Tarrajear (m²):</label>
-                            <input type="number" id="tar_area" value="25.0" step="1.0" oninput="calcularTarrajeo(); renderSchematic();">
+                            <input type="number" id="tar_area" value="25.0" step="1.0">
                         </div>
                     </div>
                     <div class="form-group grid-2">
                         <div>
                             <label>Baldes Arena Fina / Bolsa Cemento:</label>
-                            <input type="number" id="tar_baldes_arena" value="4.0" step="0.5" oninput="calcularTarrajeo(); renderSchematic();">
+                            <input type="number" id="tar_baldes_arena" value="4.0" step="0.5">
                         </div>
                         <div>
                             <label>Desperdicio de Mortero (%):</label>
-                            <input type="number" id="tar_merma" value="10" step="1" oninput="calcularTarrajeo(); renderSchematic();">
+                            <input type="number" id="tar_merma" value="10" step="1">
                         </div>
                     </div>
-                    <button class="btn-primary btn-green" onclick="calcularTarrajeo(); renderSchematic(); showToast('✅ CÓMPUTO DE TARRAJEO RECALCULADO');">🖌️ CALCULAR TARRAJEO Y ACABADOS</button>
+                    <button class="btn-primary btn-green" onclick="calcularTarrajeo(); renderSchematic(); calcularPresupuesto();">🖌️ CALCULAR TARRAJEO Y ACABADOS</button>
                     <div id="res_tarrajeo" class="result-card"></div>
-                </div>
-
-                <!-- SUB-CALC 6: LOGÍSTICA Y CONVERSOR DE ACERO (VARILLAS 9M) -->
-                <div id="calc_acero" class="calc-subpane" style="display:none;">
-                    <div style="background:rgba(0,229,255,0.06); border:1px solid rgba(0,229,255,0.3); border-radius:10px; padding:10px; margin-bottom:12px; font-size:11px; color:var(--primary-cyan); font-weight:800;">
-                        ⛓️ CONVERSOR LOGÍSTICO DE ACERO CORRUGADO GRADO 60 (VARILLAS DE 9.00 m):
-                    </div>
-                    <div class="form-group grid-2">
-                        <div>
-                            <label>Kg Acero Ø 3/8" (0.56 kg/m):</label>
-                            <input type="number" id="ac_kg_38" value="120" step="5" oninput="calcularLogisticaAcero(); renderSchematic();">
-                        </div>
-                        <div>
-                            <label>Kg Acero Ø 1/2" (0.994 kg/m):</label>
-                            <input type="number" id="ac_kg_12" value="250" step="10" oninput="calcularLogisticaAcero(); renderSchematic();">
-                        </div>
-                    </div>
-                    <div class="form-group grid-2">
-                        <div>
-                            <label>Kg Acero Ø 5/8" (1.552 kg/m):</label>
-                            <input type="number" id="ac_kg_58" value="380" step="10" oninput="calcularLogisticaAcero(); renderSchematic();">
-                        </div>
-                        <div>
-                            <label>Kg Acero Ø 3/4" (2.235 kg/m):</label>
-                            <input type="number" id="ac_kg_34" value="180" step="10" oninput="calcularLogisticaAcero(); renderSchematic();">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>♻️ % Desperdicio por Cortes y Traslapes:</label>
-                        <select id="ac_merma_pct" onchange="calcularLogisticaAcero(); renderSchematic();">
-                            <option value="1.05" selected>5% (Controlado en obra)</option>
-                            <option value="1.08">8% (Estándar comercial CAPECO)</option>
-                            <option value="1.10">10% (Estructuras complejas)</option>
-                        </select>
-                    </div>
-                    <button class="btn-primary btn-green" onclick="calcularLogisticaAcero(); renderSchematic(); showToast('✅ LOGÍSTICA DE ACERO CALCULADA');">⛓️ CONVERTIR KILOS A VARILLAS DE 9M</button>
-                    <div id="res_acero_log" class="result-card"></div>
                 </div>
 
             </div> <!-- end tab1 -->
@@ -1008,12 +990,13 @@
             <!-- TAB 2: MODO OBRA & ASISTENTE AUDITABLE -->
             <div id="tab2" class="tab-pane">
                 <div class="giant-box">
-                    <span class="badge badge-orange">📢 VISIBILIDAD DE CANCHA Y MODO OBRA</span>
+                    <span class="badge badge-green" id="modo_obra_link_badge">🔗 VINCULADO AL ÚLTIMO CÁLCULO</span>
                     <div class="giant-number" id="giant_cemento">0 BOLSAS CEMENTO</div>
-                    <div style="font-weight:800; color:var(--text-muted); margin-bottom:6px;" id="giant_volumen">0.00 m³ Concreto Estructural</div>
+                    <div style="font-weight:800; color:var(--text-main); margin-bottom:4px; font-size:13px;" id="giant_volumen">0.00 m³ Concreto Estructural</div>
+                    <div style="font-size:11px; color:var(--primary-cyan); font-weight:800; margin-bottom:8px;" id="giant_carretillas">Equiv. Total: 0 Baldes (18L) | 0.0 Carretillas</div>
                     <div id="trompo_receta_banner" style="background:rgba(0,229,255,0.08); border:1px solid rgba(0,229,255,0.3); border-radius:8px; padding:8px 10px; margin-top:8px; font-size:12px; text-align:left;">
                         <div style="font-weight:800; color:var(--primary-cyan); margin-bottom:4px;">📋 RECETA POR TROMPO (1 BOLSA DE CEMENTO):</div>
-                        <div id="trompo_receta_text" style="color:#ffffff; font-weight:700;">1 Bolsa Cemento + 3.5 Baldes Arena + 3.5 Baldes Piedra + 22L Agua</div>
+                        <div id="trompo_receta_text" style="color:#ffffff; font-weight:700;">1 Bolsa Cemento + 3.0 Baldes Arena (1.0 Carret.) + 3.0 Baldes Piedra (1.0 Carret.) + 19L Agua</div>
                     </div>
                 </div>
 
@@ -1054,38 +1037,19 @@
                 </div>
             </div>
 
-            <!-- TAB 3: PRECIOS, APU CAPECO & CURVA S -->
+            <!-- TAB 3: PRECIOS, CUADRILLA DE MANO DE OBRA AUTOMÁTICA & APU CAPECO -->
             <div id="tab3" class="tab-pane">
-                <div class="result-card">
-                    <div class="result-header">
-                        <span>📈 CURVA S: AVANCE FÍSICO VS FINANCIERO</span>
-                        <span class="badge badge-green" id="scurve_status_badge">EN RANGO</span>
-                    </div>
-                    <div class="form-group grid-2" style="margin-bottom:8px;">
-                        <div>
-                            <label>🟢 % Avance Físico Real:</label>
-                            <input type="number" id="pct_fisico" value="50" min="0" max="100" oninput="drawSCurve()">
-                        </div>
-                        <div>
-                            <label>🟠 % Presupuesto Gastado:</label>
-                            <input type="number" id="pct_financiero" value="48" min="0" max="100" oninput="drawSCurve()">
-                        </div>
-                    </div>
-                    <div style="font-size:10px; font-weight:800; color:var(--primary-green); margin-bottom:3px;">AVANCE FÍSICO EJECUTADO EN OBRA:</div>
-                    <div style="background:#0b0e14; height:12px; border-radius:6px; margin-bottom:8px; overflow:hidden; border:1px solid #232d3f;">
-                        <div id="bar_fisico" style="height:100%; width:50%; background:linear-gradient(90deg,#30d158,#16a34a); transition:width 0.3s;"></div>
-                    </div>
-                    <div style="font-size:10px; font-weight:800; color:var(--primary-orange); margin-bottom:3px;">AVANCE FINANCIERO (DINERO GASTADO):</div>
-                    <div style="background:#0b0e14; height:12px; border-radius:6px; overflow:hidden; border:1px solid #232d3f;">
-                        <div id="bar_financiero" style="height:100%; width:48%; background:linear-gradient(90deg,#ff9f0a,#ff453a); transition:width 0.3s;"></div>
-                    </div>
-                    <div id="overcost_alert" style="display:none; margin-top:10px; padding:8px; background:rgba(255,69,58,0.15); border:1px solid var(--primary-red); border-radius:8px; color:var(--primary-red); font-size:11px; font-weight:800;"></div>
+                <!-- BANNER DE VINCULACIÓN AUTOMÁTICA DEL ÚLTIMO CÁLCULO -->
+                <div style="background:rgba(48,209,88,0.1); border:1px solid var(--primary-green); border-radius:10px; padding:10px 12px; margin-bottom:14px;">
+                    <div style="font-size:10px; font-weight:900; color:var(--primary-green); text-transform:uppercase;">🔗 PARTIDA ACTIVA VINCULADA AUTOMÁTICAMENTE DESDE CÁLCULO:</div>
+                    <div id="apu_linked_title" style="font-size:13px; font-weight:900; color:var(--text-main); margin-top:2px;">Losa / Zapata (5.0m × 4.0m × 15cm)</div>
                 </div>
 
+                <!-- 1. PRECIOS UNITARIOS DE MATERIALES -->
                 <div class="result-card">
                     <div class="result-header">
-                        <span>💵 INSUMOS Y PARÁMETROS APU CAPECO</span>
-                        <span class="badge badge-orange">COSTO DIRECTO</span>
+                        <span>💵 1. PRECIOS DE MATERIALES EN FERRETERÍA</span>
+                        <span class="badge badge-orange">INSUMOS</span>
                     </div>
                     <div class="form-group grid-3">
                         <div>
@@ -1102,23 +1066,90 @@
                         </div>
                     </div>
 
-                    <div class="form-group grid-3" style="margin-bottom:0;">
+                    <div class="form-group grid-2" style="margin-bottom:0;">
                         <div>
-                            <label>S/ Varilla 1/2":</label>
-                            <input type="number" id="p_acero" value="36.00" step="1" oninput="calcularPresupuesto()">
-                        </div>
-                        <div>
-                            <label>S/ Unid Ladrillo:</label>
+                            <label>S/ Unid. Ladrillo / Bloque:</label>
                             <input type="number" id="p_ladrillo" value="1.20" step="0.1" oninput="calcularPresupuesto()">
                         </div>
                         <div>
-                            <label>% Mano Obra:</label>
-                            <input type="number" id="p_pct_mo" value="38" step="1" oninput="calcularPresupuesto()">
+                            <label>S/ Unid. Tecnopor EPS:</label>
+                            <input type="number" id="p_tecnopor" value="14.50" step="0.5" oninput="calcularPresupuesto()">
                         </div>
                     </div>
                 </div>
 
-                <button class="btn-primary btn-green" onclick="calcularPresupuesto(); showToast('✅ PRESUPUESTO APU Y GRÁFICO RECALCULADOS');">💵 CALCULAR APU & GRÁFICO DE GASTOS</button>
+                <!-- 2. CUADRILLA DE PERSONAL Y CÁLCULO AUTOMÁTICO DEL % DE MANO DE OBRA -->
+                <div class="result-card">
+                    <div class="result-header">
+                        <span>👷‍♂️ 2. PERSONAL DE OBRA (CUADRILLA Y JORNALES)</span>
+                        <span class="badge badge-green" id="apu_mo_pct_badge">MO: 0.0%</span>
+                    </div>
+                    <p style="font-size:11px; color:var(--text-muted); margin-bottom:10px;">Incrementa el personal y coloca su pago diario para calcular automáticamente el costo y % de Mano de Obra:</p>
+
+                    <!-- Operarios -->
+                    <div class="grid-2" style="margin-bottom:8px; align-items:end;">
+                        <div>
+                            <label>👷 Operarios (Cant.):</label>
+                            <div class="stepper-control">
+                                <button class="btn-step" onclick="stepCrew('apu_cant_op', -1)">-</button>
+                                <input type="number" id="apu_cant_op" value="1" min="0" style="text-align:center;" oninput="calcularPresupuesto()">
+                                <button class="btn-step" onclick="stepCrew('apu_cant_op', 1)">+</button>
+                            </div>
+                        </div>
+                        <div>
+                            <label>Pago Diario Operario (S/):</label>
+                            <input type="number" id="apu_jor_op" value="110.00" step="5" oninput="calcularPresupuesto()">
+                        </div>
+                    </div>
+
+                    <!-- Oficiales -->
+                    <div class="grid-2" style="margin-bottom:8px; align-items:end;">
+                        <div>
+                            <label>🛠️ Oficiales (Cant.):</label>
+                            <div class="stepper-control">
+                                <button class="btn-step" onclick="stepCrew('apu_cant_of', -1)">-</button>
+                                <input type="number" id="apu_cant_of" value="1" min="0" style="text-align:center;" oninput="calcularPresupuesto()">
+                                <button class="btn-step" onclick="stepCrew('apu_cant_of', 1)">+</button>
+                            </div>
+                        </div>
+                        <div>
+                            <label>Pago Diario Oficial (S/):</label>
+                            <input type="number" id="apu_jor_of" value="85.00" step="5" oninput="calcularPresupuesto()">
+                        </div>
+                    </div>
+
+                    <!-- Peones -->
+                    <div class="grid-2" style="margin-bottom:10px; align-items:end;">
+                        <div>
+                            <label>🧱 Peones (Cant.):</label>
+                            <div class="stepper-control">
+                                <button class="btn-step" onclick="stepCrew('apu_cant_pe', -1)">-</button>
+                                <input type="number" id="apu_cant_pe" value="3" min="0" style="text-align:center;" oninput="calcularPresupuesto()">
+                                <button class="btn-step" onclick="stepCrew('apu_cant_pe', 1)">+</button>
+                            </div>
+                        </div>
+                        <div>
+                            <label>Pago Diario Peón (S/):</label>
+                            <input type="number" id="apu_jor_pe" value="70.00" step="5" oninput="calcularPresupuesto()">
+                        </div>
+                    </div>
+
+                    <!-- Días de Ejecución y % Automático -->
+                    <div class="grid-2" style="padding-top:8px; border-top:1px dashed rgba(255,255,255,0.1); align-items:end;">
+                        <div>
+                            <label>📅 Días de Trabajo:</label>
+                            <div class="stepper-control">
+                                <button class="btn-step" onclick="stepCrew('apu_dias_mo', -0.5)">-</button>
+                                <input type="number" id="apu_dias_mo" value="1.0" min="0.5" step="0.5" style="text-align:center;" oninput="calcularPresupuesto()">
+                                <button class="btn-step" onclick="stepCrew('apu_dias_mo', 0.5)">+</button>
+                            </div>
+                        </div>
+                        <div>
+                            <label style="color:var(--primary-cyan);">% Mano Obra (Auto):</label>
+                            <input type="text" id="p_pct_mo_auto" value="35.0%" readonly style="font-weight:900; color:var(--primary-cyan); text-align:center; background:rgba(0,229,255,0.08); border-color:rgba(0,229,255,0.35);">
+                        </div>
+                    </div>
+                </div>
 
                 <div class="chart-box">
                     <div style="color:var(--primary-cyan); font-weight:800; font-size:11px; margin-bottom:8px;">📊 DISTRIBUCIÓN PORCENTUAL DEL COSTO DIRECTO (APU)</div>
@@ -1302,7 +1333,7 @@
                         <div class="grid-2" style="gap:6px;">
                             <button class="btn-secondary" style="font-size:10.5px; padding:7px; font-weight:800;" onclick="autoLogHito('vaciado')">🏗️ Registrar Vaciado</button>
                             <button class="btn-secondary" style="font-size:10.5px; padding:7px; font-weight:800;" onclick="autoLogHito('asistencia')">👷 Registrar Planilla</button>
-                            <button class="btn-secondary" style="font-size:10.5px; padding:7px; font-weight:800;" onclick="autoLogHito('avance')">🧱 Registrar Avance</button>
+                            <button class="btn-secondary" style="font-size:10.5px; padding:7px; font-weight:800;" onclick="autoLogHito('presupuesto')">💰 Registrar APU</button>
                             <button class="btn-secondary" style="font-size:10.5px; padding:7px; font-weight:800;" onclick="autoLogHito('seguridad')">⚠️ Charla Seguridad</button>
                         </div>
                     </div>
@@ -1456,26 +1487,7 @@
             }, 2500);
         }
 
-        // ==================== TOAST Y MODAL ====================
-        var _toastTimer = null;
-        function showToast(msg) {
-            var toast = document.getElementById('app_toast');
-            var msgEl = document.getElementById('toast_msg');
-            if (!toast || !msgEl) return;
-            msgEl.innerText = msg;
-            toast.style.display = 'block';
-            toast.style.opacity = '1';
-            if (_toastTimer) clearTimeout(_toastTimer);
-            _toastTimer = setTimeout(hideToast, 3000);
-        }
-        function hideToast() {
-            var toast = document.getElementById('app_toast');
-            if (toast) {
-                toast.style.opacity = '0';
-                setTimeout(function() { toast.style.display = 'none'; }, 300);
-            }
-        }
-
+        // ==================== MODAL DE CONFIRMACIÓN ====================
         var _confirmCallback = null;
         function showConfirmModal(title, msg, callback) {
             var modal = document.getElementById('app_confirm_modal');
@@ -1522,7 +1534,8 @@
             if (btn) btn.classList.add('active');
 
             if (tabId === 'tab1') renderSchematic();
-            else if (tabId === 'tab3') { calcularPresupuesto(); drawSCurve(); }
+            else if (tabId === 'tab2') updateModoObra();
+            else if (tabId === 'tab3') calcularPresupuesto();
             else if (tabId === 'tab4') renderToolInventory();
         }
 
@@ -1533,15 +1546,6 @@
             var target = document.getElementById(calcId);
             if (target) target.style.display = 'block';
             if (btn) btn.classList.add('active');
-
-            if (calcId === 'calc_concreto') calcularConcreto();
-            else if (calcId === 'calc_muros') calcularMuros();
-            else if (calcId === 'calc_tecnopor') calcularTecnopor();
-            else if (calcId === 'calc_escalera') calcularEscalera();
-            else if (calcId === 'calc_tarrajeo') calcularTarrajeo();
-            else if (calcId === 'calc_acero') calcularLogisticaAcero();
-
-            calcularPresupuesto();
             renderSchematic();
         }
 
@@ -1631,7 +1635,6 @@
             }
         }
 
-        // COTAS 3D LIMPIAS SIN RECTÁNGULO (ESTILO C.PRO ESTRUC CON SOMBRA)
         function drawDimensionLine3D(ctx, p1, p2, labelColor, textStr) {
             if (!p1 || !p2) return;
             ctx.save();
@@ -1663,10 +1666,9 @@
             ctx.restore();
         }
 
-        function setPills(tl, tr, bl) {
+        function setPills(tl, tr) {
             if (document.getElementById('pill_tl')) document.getElementById('pill_tl').innerText = tl;
             if (document.getElementById('pill_tr')) document.getElementById('pill_tr').innerText = tr;
-            if (document.getElementById('pill_bl')) document.getElementById('pill_bl').innerText = bl;
         }
 
         function renderSchematic() {
@@ -1675,10 +1677,8 @@
             else if (currentElement === 'calc_tecnopor') render3DCanvasTecnopor();
             else if (currentElement === 'calc_escalera') render3DCanvasEscalera();
             else if (currentElement === 'calc_tarrajeo') render3DCanvasTarrajeo();
-            else if (currentElement === 'calc_acero') render3DCanvasAcero();
         }
 
-        // 1. MODELO 3D DE CONCRETO CON MEDIDAS NUMÉRICAS REALES
         function render3DCanvasConcrete() {
             var canvas = document.getElementById('canvas_3d_viewport'); if (!canvas) return;
             var ctx = canvas.getContext('2d'); clear3DCanvas(ctx, canvas);
@@ -1692,7 +1692,7 @@
                 var colA = parseFloat(document.getElementById('col_ancho').value) || 30;
                 var colN = parseInt(document.getElementById('col_cantidad').value) || 1;
                 vol = colN * colH * (colL / 100.0) * (colA / 100.0) * 1.05;
-                setPills('🏛️ COLUMNA 3D 360°', '📦 ' + vol.toFixed(2) + ' m³', '📏 H=' + colH.toFixed(2) + 'm • ' + colL + '×' + colA + 'cm');
+                setPills('🏛️ COLUMNA 3D 360°', '📦 ' + vol.toFixed(2) + ' m³');
                 sx = Math.min(0.48, Math.max(0.22, (colA / 100.0) * 0.9));
                 sy = Math.min(0.85, Math.max(0.45, colH * 0.22));
                 sz = Math.min(0.48, Math.max(0.22, (colL / 100.0) * 0.9));
@@ -1704,7 +1704,7 @@
                 var a = parseFloat(document.getElementById('ancho').value) || 4.0;
                 var e = parseFloat(document.getElementById('espesor').value) || 15;
                 vol = l * a * (e / 100.0) * 1.05;
-                setPills('🏗️ CONCRETO 3D 360°', '📦 ' + vol.toFixed(2) + ' m³', '📏 ' + l.toFixed(1) + 'm × ' + a.toFixed(1) + 'm × ' + e + 'cm');
+                setPills('🏗️ CONCRETO 3D 360°', '📦 ' + vol.toFixed(2) + ' m³');
                 sx = Math.min(0.95, Math.max(0.42, a * 0.16));
                 sy = Math.min(0.42, Math.max(0.14, (e / 100.0) * 1.25));
                 sz = Math.min(0.95, Math.max(0.42, l * 0.16));
@@ -1770,7 +1770,6 @@
             return { op: op, name: name, L_cm: L_cm, A_cm: A_cm, H_cm: H_cm, juntaCm: juntaCm, j: j, Lv: Lv, Hv: Hv, Esp: Esp, undM2Neto: undM2Neto, volMorteroM2Neto: volMorteroM2Neto, texType: texType };
         }
 
-        // 2. MODELO 3D DE MUROS CON TEXTURA CAMBIANTE SEGÚN LADRILLO/BLOQUE SELECCIONADO
         function render3DCanvasWall() {
             var canvas = document.getElementById('canvas_3d_viewport'); if (!canvas) return;
             var ctx = canvas.getContext('2d'); clear3DCanvas(ctx, canvas);
@@ -1781,7 +1780,7 @@
             var area = l * h;
             var totalLadrillos = Math.ceil(area * specs.undM2Neto * mermaPct);
 
-            setPills('🧱 ' + specs.name, '🧱 ' + totalLadrillos + ' Unid.', '📏 ' + l.toFixed(1) + 'm × ' + h.toFixed(1) + 'm (' + specs.undM2Neto.toFixed(1) + ' u/m²)');
+            setPills('🧱 ' + specs.name, '🧱 ' + totalLadrillos + ' Unid.');
 
             var cx = canvas.width / 2, cy = canvas.height / 2 + 10;
             drawGridFloor3D(ctx, cx, cy);
@@ -1790,20 +1789,16 @@
             var wallH = Math.min(0.72, Math.max(0.35, h * 0.22));
             var wallD = (specs.Esp >= 0.20) ? 0.28 : 0.14;
 
-            // Paleta de textura y geometría según tipo seleccionado
             var pal = { front: '#c0392b', back: '#7b241c', top: '#d9534f', side: '#922b21', stroke: '#f1948a', hole: '#2c0b09' };
             var numCourses = 6, numCols = 5;
 
             if (specs.texType === 'concreto') {
-                // Bloque de Concreto Vibrado: 100% Gris Concreto en TODAS las caras
                 pal = { front: '#64748b', back: '#334155', top: '#94a3b8', side: '#475569', stroke: '#cbd5e1', hole: '#1e293b' };
                 numCourses = 5; numCols = 4;
             } else if (specs.texType === 'blocker') {
-                // Ladrillo Blocker: Arcilla naranja mecanizada y formato más alto
                 pal = { front: '#d35400', back: '#873600', top: '#e67e22', side: '#a04000', stroke: '#f5b041', hole: '#4a1d00' };
                 numCourses = 4; numCols = 4;
             } else if (specs.texType === 'pandereta') {
-                // Ladrillo Pandereta: Terracota claro rayado
                 pal = { front: '#e74c3c', back: '#922b21', top: '#ec7063', side: '#b03a2e', stroke: '#fadbd8', hole: '#4a120e' };
                 numCourses = 6; numCols = 5;
             } else if (specs.op === 'kk_cabeza') {
@@ -1825,7 +1820,7 @@
                     var projB = rawB.map(function(v) { return project3D(v[0], v[1], v[2], cx, cy); });
                     var bFaces = [
                         { idx: [0,1,2,3], fill: pal.back, stroke: pal.stroke },
-                        { idx: [4,5,6,7], fill: pal.front, stroke: pal.stroke, isFront: true, xL: xL, xR: xR, yB: yBot, yT: yTop },
+                        { idx: [4,5,6,7], fill: pal.front, stroke: pal.stroke },
                         { idx: [0,3,7,4], fill: pal.side, stroke: pal.stroke },
                         { idx: [1,2,6,5], fill: pal.side, stroke: pal.stroke },
                         { idx: [3,2,6,7], fill: pal.top, stroke: pal.stroke, isTopCourse: (r === numCourses - 1), xL: xL, xR: xR, yT: yTop }
@@ -1843,7 +1838,6 @@
                 var pts = f.idx.map(function(i) { return f.proj[i]; });
                 drawPolygon3D(ctx, pts, f.fill, f.stroke, 1.0);
 
-                // Dibujar alvéolos / huecos reales en la cara superior de la última hilada
                 if (f.isTopCourse) {
                     var nHoles = (specs.texType === 'concreto') ? 2 : 3;
                     for (var hIdx = 0; hIdx < nHoles; hIdx++) {
@@ -1866,7 +1860,6 @@
             drawDimensionLine3D(ctx, project3D(wallW + 0.06, -wallH, wallD, cx, cy), project3D(wallW + 0.06, -wallH, -wallD, cx, cy), '#30d158', 'e=' + (specs.Esp * 100).toFixed(0) + 'cm');
         }
 
-        // 3. LOSA DE TECNOPOR BLANCO + VIGUETAS DE CONCRETO CON 2 ACEROS INTERNOS
         function render3DCanvasTecnopor() {
             var canvas = document.getElementById('canvas_3d_viewport'); if (!canvas) return;
             var ctx = canvas.getContext('2d'); clear3DCanvas(ctx, canvas);
@@ -1876,7 +1869,7 @@
             var peralte = parseInt(document.getElementById('tec_peralte').value) || 20;
             var area = l1 * l2;
 
-            setPills('🧇 LOSA TECNOPOR EPS 3D', '📐 ' + area.toFixed(2) + ' m²', '📏 L1=' + l1.toFixed(1) + 'm × L2=' + l2.toFixed(1) + 'm (H=' + peralte + 'cm)');
+            setPills('🧇 LOSA TECNOPOR EPS 3D', '📐 ' + area.toFixed(2) + ' m²');
 
             var sx = Math.min(0.95, Math.max(0.50, l2 * 0.16));
             var sy = 0.24;
@@ -1885,7 +1878,7 @@
             drawGridFloor3D(ctx, cx, cy);
 
             var yRibMin = -sy * 0.85, yRibMax = sy * 0.55;
-            var numBands = 7; // 4 Bloques EPS blancos + 3 Viguetas de Concreto con 2 aceros c/u
+            var numBands = 7;
             var allRibs = [];
 
             for (var b = 0; b < numBands; b++) {
@@ -1893,12 +1886,11 @@
                 var tB = ((b + 1) / numBands) * 2 - 1;
                 var isEPS = (b % 2 === 0);
 
-                // Colores contrastantes: Blanco puro brillante para Tecnopor vs Gris Concreto para Viguetas
                 var fTop = isEPS ? '#ffffff' : '#94a3b8';
                 var fFront = isEPS ? '#f8fafc' : '#64748b';
                 var fSide = isEPS ? '#e2e8f0' : '#475569';
                 var fBack = isEPS ? '#cbd5e1' : '#334155';
-                var stCol = isEPS ? '#cbd5e1' : '#cbd5e1';
+                var stCol = '#cbd5e1';
 
                 var rawBox;
                 if (dir === 'h') {
@@ -1935,7 +1927,6 @@
             allRibs.forEach(function(f) {
                 drawPolygon3D(ctx, f.pts, f.fill, f.stroke, 1.1);
 
-                // Si es Vigueta de Concreto: dibujar las 2 varillas de acero internas (superior e inferior) recorriendo y saliendo de la vigueta
                 if (f.isTop && !f.isEps) {
                     var yBarInf = yRibMin + (yRibMax - yRibMin) * 0.25;
                     var yBarSup = yRibMin + (yRibMax - yRibMin) * 0.78;
@@ -1951,25 +1942,21 @@
                         rB1 = project3D(f.midT * sx, yBarSup, -sz - 0.08, cx, cy);
                         rB2 = project3D(f.midT * sx, yBarSup, sz + 0.08, cx, cy);
                     }
-                    // Acero inferior positivo (Azul/Acero)
                     ctx.strokeStyle = '#1e293b'; ctx.lineWidth = 3.6;
                     ctx.beginPath(); ctx.moveTo(rA1.x, rA1.y); ctx.lineTo(rA2.x, rA2.y); ctx.stroke();
                     ctx.strokeStyle = '#ff9f0a'; ctx.lineWidth = 2.0;
                     ctx.beginPath(); ctx.moveTo(rA1.x, rA1.y); ctx.lineTo(rA2.x, rA2.y); ctx.stroke();
 
-                    // Acero superior negativo (Rojo/Acero)
                     ctx.strokeStyle = '#1e293b'; ctx.lineWidth = 3.6;
                     ctx.beginPath(); ctx.moveTo(rB1.x, rB1.y); ctx.lineTo(rB2.x, rB2.y); ctx.stroke();
                     ctx.strokeStyle = '#ff3b30'; ctx.lineWidth = 2.0;
                     ctx.beginPath(); ctx.moveTo(rB1.x, rB1.y); ctx.lineTo(rB2.x, rB2.y); ctx.stroke();
 
-                    // Puntas de las 2 varillas de acero en el frente de la vigueta
                     ctx.fillStyle = '#ff9f0a'; ctx.beginPath(); ctx.arc(rA2.x, rA2.y, 3.2, 0, Math.PI*2); ctx.fill();
                     ctx.fillStyle = '#ff3b30'; ctx.beginPath(); ctx.arc(rB2.x, rB2.y, 3.2, 0, Math.PI*2); ctx.fill();
                 }
             });
 
-            // Losa superior de compresión (5cm) translúcida para dejar ver el tecnopor blanco y las viguetas
             var yTopMin = yRibMax, yTopMax = sy;
             var rawCap = [[-sx,yTopMin,-sz],[sx,yTopMin,-sz],[sx,yTopMax,-sz],[-sx,yTopMax,-sz],[-sx,yTopMin,sz],[sx,yTopMin,sz],[sx,yTopMax,sz],[-sx,yTopMax,sz]];
             var pCap = rawCap.map(function(v) { return project3D(v[0], v[1], v[2], cx, cy); });
@@ -1980,7 +1967,6 @@
             drawDimensionLine3D(ctx, project3D(sx + 0.06, -sy, sz, cx, cy), project3D(sx + 0.06, -sy, -sz, cx, cy), '#30d158', 'L1=' + l1.toFixed(2) + 'm');
         }
 
-        // 4. ESCALERA 3D CON DOS MODELOS INTERACTIVOS COMPLETOS (EN U CON DESCANSO Y TRAMO RECTO)
         function render3DCanvasEscalera() {
             var canvas = document.getElementById('canvas_3d_viewport'); if (!canvas) return;
             var ctx = canvas.getContext('2d'); clear3DCanvas(ctx, canvas);
@@ -1990,10 +1976,10 @@
             var numCP = parseInt(document.getElementById('esc_num_cp').value) || 16;
             var h = parseFloat(document.getElementById('esc_h').value) || 17.5;
             var pVal = parseFloat(document.getElementById('esc_p').value) || 25.0;
-            var lDescanso = parseFloat(document.getElementById('esc_desc_largo').value) || 1.00;
             var wDescanso = parseFloat(document.getElementById('esc_desc_ancho').value) || 2.10;
+            var largoAuto = parseFloat(document.getElementById('esc_largo').value) || 2.75;
 
-            setPills('🪜 ESCALERA 3D (' + (tipo === 'descanso' ? 'EN U' : 'RECTA') + ')', '📐 ' + numCP + ' CP (' + h + '×' + pVal + 'cm)', '📏 Ancho B=' + B.toFixed(2) + 'm');
+            setPills('🪜 ESCALERA 3D (' + (tipo === 'descanso' ? 'EN U' : 'RECTA') + ')', '📐 ' + numCP + ' CP (L=' + largoAuto.toFixed(2) + 'm)');
 
             var cx = canvas.width / 2, cy = canvas.height / 2 + 10;
             drawGridFloor3D(ctx, cx, cy);
@@ -2016,14 +2002,12 @@
             }
 
             if (tipo === 'descanso') {
-                // MODELO 1: ESCALERA EN FORMA DE U CON 2 TRAMOS Y DESCANSO INTERMEDIO
                 var n1 = Math.min(8, Math.max(4, Math.floor(numCP / 2)));
                 var n2 = n1;
                 var stepW = 0.42, stepD = 0.14, stepH = 0.08, throatT = 0.08;
                 var landW = stepW * 2 + 0.10, landD = 0.36;
                 var initX = -landW / 2, initY = -0.52, initZ = -((n1 * stepD) + landD) / 2;
 
-                // Garganta sólida inclinada Tramo 1
                 var g1 = [
                     [initX, initY - throatT, initZ], [initX + stepW, initY - throatT, initZ], [initX + stepW, initY, initZ], [initX, initY, initZ],
                     [initX, initY + n1*stepH - throatT, initZ + n1*stepD], [initX + stepW, initY + n1*stepH - throatT, initZ + n1*stepD], [initX + stepW, initY + n1*stepH, initZ + n1*stepD], [initX, initY + n1*stepH, initZ + n1*stepD]
@@ -2037,11 +2021,9 @@
                     y1 += stepH; z1 += stepD;
                 }
 
-                // Descanso Intermedio en U
                 var rawLand = [[initX,y1-throatT,z1],[initX+landW,y1-throatT,z1],[initX+landW,y1+stepH,z1],[initX,y1+stepH,z1],[initX,y1-throatT,z1+landD],[initX+landW,y1-throatT,z1+landD],[initX+landW,y1+stepH,z1+landD],[initX,y1+stepH,z1+landD]];
                 addBoxFaces(rawLand, '#b45309', '#d97706', '#f59e0b', '#b45309', '#fde68a');
 
-                // Garganta sólida inclinada Tramo 2 (regreso en U)
                 var x2 = initX + landW - stepW, y2 = y1 + stepH, z2 = z1;
                 var g2 = [
                     [x2, y2 - throatT, z2], [x2 + stepW, y2 - throatT, z2], [x2 + stepW, y2, z2], [x2, y2, z2],
@@ -2061,14 +2043,12 @@
 
                 drawDimensionLine3D(ctx, project3D(initX, initY - 0.10, initZ, cx, cy), project3D(initX + stepW, initY - 0.10, initZ, cx, cy), '#00e5ff', 'B=' + B.toFixed(2) + 'm');
                 drawDimensionLine3D(ctx, project3D(initX, y1 + stepH + 0.06, z1 + landD, cx, cy), project3D(initX + landW, y1 + stepH + 0.06, z1 + landD, cx, cy), '#ffd700', 'Desc=' + wDescanso.toFixed(2) + 'm');
-                drawDimensionLine3D(ctx, project3D(initX - 0.08, initY, initZ, cx, cy), project3D(initX - 0.08, y1, z1, cx, cy), '#ff9f0a', 'h=' + h + 'cm');
+                drawDimensionLine3D(ctx, project3D(initX - 0.08, initY, initZ, cx, cy), project3D(initX - 0.08, y1, z1, cx, cy), '#ff9f0a', 'L=' + largoAuto.toFixed(2) + 'm');
             } else {
-                // MODELO 2: ESCALERA DE TRAMO RECTO SIMPLE CON GARGANTA SÓLIDA Y VIGAS
                 var numSteps = 8;
                 var stepW = 0.62, stepD = 0.16, stepH = 0.095, throatT = 0.11;
                 var initX = -stepW / 2, initY = -0.50, initZ = -(numSteps * stepD) / 2;
 
-                // Garganta sólida inclinada debajo de los pasos
                 var rawGarg = [
                     [initX, initY - throatT, initZ], [initX + stepW, initY - throatT, initZ], [initX + stepW, initY, initZ], [initX, initY, initZ],
                     [initX, initY + numSteps*stepH - throatT, initZ + numSteps*stepD], [initX + stepW, initY + numSteps*stepH - throatT, initZ + numSteps*stepD], [initX + stepW, initY + numSteps*stepH, initZ + numSteps*stepD], [initX, initY + numSteps*stepH, initZ + numSteps*stepD]
@@ -2089,11 +2069,10 @@
                 allStairFaces.forEach(function(f) { drawPolygon3D(ctx, f.idx.map(function(i) { return f.proj[i]; }), f.fill, f.stroke, 1.1); });
 
                 drawDimensionLine3D(ctx, project3D(initX, initY - 0.12, initZ, cx, cy), project3D(initX + stepW, initY - 0.12, initZ, cx, cy), '#00e5ff', 'B=' + B.toFixed(2) + 'm');
-                drawDimensionLine3D(ctx, project3D(initX + stepW + 0.08, initY, initZ, cx, cy), project3D(initX + stepW + 0.08, currY, currZ, cx, cy), '#30d158', 'h=' + h + 'cm | p=' + pVal + 'cm');
+                drawDimensionLine3D(ctx, project3D(initX + stepW + 0.08, initY, initZ, cx, cy), project3D(initX + stepW + 0.08, currY, currZ, cx, cy), '#30d158', 'L=' + largoAuto.toFixed(2) + 'm | h=' + h + 'cm');
             }
         }
 
-        // 5. TARRAJEO 3D COMO CAPA DE MORTERO APLICADA SOBRE MURO DE LADRILLO
         function render3DCanvasTarrajeo() {
             var canvas = document.getElementById('canvas_3d_viewport'); if (!canvas) return;
             var ctx = canvas.getContext('2d'); clear3DCanvas(ctx, canvas);
@@ -2102,7 +2081,7 @@
             var espCm = (tipo === 'cielorraso') ? 1.0 : 1.5;
             var ladoL = Math.sqrt(area * 1.4), ladoH = area / ladoL;
 
-            setPills('🖌️ CAPA TARRAJEO SOBRE MURO 3D', '📐 ' + area.toFixed(1) + ' m²', '📏 Mortero e = ' + espCm.toFixed(1) + ' cm');
+            setPills('🖌️ CAPA TARRAJEO SOBRE MURO 3D', '📐 ' + area.toFixed(1) + ' m²');
 
             var cx = canvas.width / 2, cy = canvas.height / 2 + 10;
             drawGridFloor3D(ctx, cx, cy);
@@ -2112,7 +2091,6 @@
             var bH = (wallH * 2) / numR, bW = (wallW * 2) / numC, gap = 0.012;
             var allFaces = [];
 
-            // 1. Muro base de ladrillo de arcilla en 3D
             for (var r = 0; r < numR; r++) {
                 var yB = -wallH + r * bH + gap, yT = yB + bH - gap;
                 var stag = (r % 2 === 1);
@@ -2132,9 +2110,8 @@
                 }
             }
 
-            // 2. Capa de Mortero de Tarrajeo (gris cemento frotachado) aplicada sobre el frente del muro (dejando esquina superior derecha descubierta para ver el ladrillo base)
             var zTar0 = wallD + 0.005, zTar1 = wallD + 0.055;
-            var xTarR = wallW * 0.52; // Corte escalonado que deja ver el ladrillo debajo
+            var xTarR = wallW * 0.52;
             var rawMortar = [
                 [-wallW, -wallH, zTar0], [xTarR, -wallH, zTar0], [xTarR, wallH * 0.72, zTar0], [-wallW, wallH * 0.72, zTar0],
                 [-wallW, -wallH, zTar1], [xTarR, -wallH, zTar1], [xTarR, wallH * 0.72, zTar1], [-wallW, wallH * 0.72, zTar1]
@@ -2156,108 +2133,29 @@
             drawDimensionLine3D(ctx, project3D(xTarR, -wallH + 0.2, zTar1, cx, cy), project3D(wallW, -wallH + 0.2, wallD, cx, cy), '#30d158', 'e=' + espCm.toFixed(1) + 'cm');
         }
 
-        // 6. BARRAS DE ACERO CORRUGADO 3D REALISTAS (CILINDROS METÁLICOS CON NERVADURAS ASTM A615)
-        function render3DCanvasAcero() {
-            var canvas = document.getElementById('canvas_3d_viewport'); if (!canvas) return;
-            var ctx = canvas.getContext('2d'); clear3DCanvas(ctx, canvas);
-
-            var kg38 = parseFloat(document.getElementById('ac_kg_38').value) || 0;
-            var kg12 = parseFloat(document.getElementById('ac_kg_12').value) || 0;
-            var kg58 = parseFloat(document.getElementById('ac_kg_58').value) || 0;
-            var kg34 = parseFloat(document.getElementById('ac_kg_34').value) || 0;
-            var merma = parseFloat(document.getElementById('ac_merma_pct').value) || 1.05;
-
-            var v38 = Math.ceil((kg38 * merma) / (0.560 * 9.0));
-            var v12 = Math.ceil((kg12 * merma) / (0.994 * 9.0));
-            var v58 = Math.ceil((kg58 * merma) / (1.552 * 9.0));
-            var v34 = Math.ceil((kg34 * merma) / (2.235 * 9.0));
-            var totVar = v38 + v12 + v58 + v34;
-
-            setPills('⛓️ ACERO CORRUGADO ASTM A615', '🔩 ' + totVar + ' Varillas (9.00m)', '📏 Fy = 4200 kg/cm² (Grado 60)');
-
-            var cx = canvas.width / 2, cy = canvas.height / 2 + 10;
-            drawGridFloor3D(ctx, cx, cy);
-
-            var barsSpec = [
-                { z: -0.48, rPx: 5.0, label: 'Ø3/8" (' + v38 + 'v)', tagCol: '#00e5ff' },
-                { z: -0.16, rPx: 6.8, label: 'Ø1/2" (' + v12 + 'v)', tagCol: '#30d158' },
-                { z:  0.16, rPx: 8.5, label: 'Ø5/8" (' + v58 + 'v)', tagCol: '#ff9f0a' },
-                { z:  0.48, rPx: 10.2, label: 'Ø3/4" (' + v34 + 'v)', tagCol: '#ffd700' }
-            ];
-
-            barsSpec.forEach(function(b) {
-                var pStart = project3D(-1.05, -0.15, b.z, cx, cy);
-                var pEnd = project3D(1.05, -0.15, b.z, cx, cy);
-
-                // 1. Sombra inferior proyectada en el piso
-                var s1 = project3D(-1.05, -0.58, b.z, cx, cy), s2 = project3D(1.05, -0.58, b.z, cx, cy);
-                ctx.strokeStyle = 'rgba(0,0,0,0.45)'; ctx.lineWidth = b.rPx * 1.4; ctx.lineCap = 'round';
-                ctx.beginPath(); ctx.moveTo(s1.x, s1.y); ctx.lineTo(s2.x, s2.y); ctx.stroke();
-
-                // 2. Cuerpo base acero oscuro (Gunmetal / Gris Acero Laminado)
-                ctx.strokeStyle = '#334155'; ctx.lineWidth = b.rPx * 2.1; ctx.lineCap = 'butt';
-                ctx.beginPath(); ctx.moveTo(pStart.x, pStart.y); ctx.lineTo(pEnd.x, pEnd.y); ctx.stroke();
-
-                // 3. Núcleo metálico intermedio
-                ctx.strokeStyle = '#64748b'; ctx.lineWidth = b.rPx * 1.4;
-                ctx.beginPath(); ctx.moveTo(pStart.x, pStart.y); ctx.lineTo(pEnd.x, pEnd.y); ctx.stroke();
-
-                // 4. Brillo especular metálico longitudinal
-                ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth = b.rPx * 0.45;
-                ctx.beginPath(); ctx.moveTo(pStart.x, pStart.y - b.rPx * 0.3); ctx.lineTo(pEnd.x, pEnd.y - b.rPx * 0.3); ctx.stroke();
-
-                // 5. Corrugaciones / Nervaduras Transversales Reales (Fierro Corrugado)
-                var numRibs = 22;
-                var dx = pEnd.x - pStart.x, dy = pEnd.y - pStart.y;
-                var len = Math.hypot(dx, dy) || 1;
-                var nx = -dy / len, ny = dx / len;
-
-                ctx.strokeStyle = '#1e293b'; ctx.lineWidth = 2.0;
-                for (var k = 1; k < numRibs; k++) {
-                    var t = k / numRibs;
-                    var rx = pStart.x + dx * t, ry = pStart.y + dy * t;
-                    ctx.beginPath();
-                    ctx.moveTo(rx - nx * b.rPx * 0.95, ry - ny * b.rPx * 0.95);
-                    ctx.lineTo(rx + nx * b.rPx * 0.95 + 2, ry + ny * b.rPx * 0.95);
-                    ctx.stroke();
-
-                    // Relieve brillante junto a cada nervadura
-                    ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 1.0;
-                    ctx.beginPath();
-                    ctx.moveTo(rx - nx * b.rPx * 0.8 + 1.5, ry - ny * b.rPx * 0.8);
-                    ctx.lineTo(rx + nx * b.rPx * 0.8 + 3, ry + ny * b.rPx * 0.8);
-                    ctx.stroke();
-                    ctx.strokeStyle = '#1e293b'; ctx.lineWidth = 2.0;
-                }
-
-                // 6. Sección circular de corte en la punta de la barra
-                ctx.fillStyle = '#94a3b8'; ctx.strokeStyle = b.tagCol; ctx.lineWidth = 1.8;
-                ctx.beginPath(); ctx.arc(pEnd.x, pEnd.y, b.rPx * 0.95, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
-
-                // Etiqueta limpia sin caja de cada diámetro
-                ctx.save();
-                ctx.font = 'bold 10.5px sans-serif';
-                ctx.fillStyle = b.tagCol;
-                ctx.shadowColor = '#000'; ctx.shadowBlur = 4;
-                ctx.fillText(b.label, pEnd.x + 12, pEnd.y + 4);
-                ctx.restore();
-            });
-
-            drawDimensionLine3D(ctx, project3D(-1.05, -0.45, 0.65, cx, cy), project3D(1.05, -0.45, 0.65, cx, cy), '#00e5ff', 'Longitud Comercial L = 9.00 m');
+        // ==================== MOTOR DE CÁLCULOS DE OBRA (CON CARRETILLAS Y VINCULACIÓN DIRECTA) ====================
+        // 1 Carretilla estándar de construcción = 3 Baldes de 18L (54 Litros / ~2 pies³)
+        function formatBaldesCarretillas(numBaldes) {
+            var b = Math.round(numBaldes);
+            var carr = (numBaldes / 3.0).toFixed(1);
+            return b + ' Baldes | ' + carr + ' Carret.';
         }
 
-        // ==================== MOTOR DE CÁLCULOS DE OBRA ====================
         var currentCalcData = {
             elemId: 'calc_concreto',
-            elemName: 'Concreto Estructural (f\'c 210)',
-            volM3: 2.52,
-            volP3: 89.0,
-            sacosCemento: 25,
-            bArenaPerBag: 3.5,
-            bPiedraPerBag: 3.5,
-            aguaLPerBag: 22.0,
-            costoMateriales: 1200,
-            recipeStr: '1 Bolsa Cemento + 3.5 Baldes Arena + 3.5 Baldes Piedra + 22L Agua'
+            elemName: 'Losa / Zapata (5.0m × 4.0m × 15cm)',
+            volM3: 3.15,
+            sacosCemento: 31,
+            m3Arena: 1.64,
+            m3Piedra: 1.67,
+            baldesArenaTotal: 91,
+            baldesPiedraTotal: 93,
+            unidadesLadrillo: 0,
+            unidadesTecnopor: 0,
+            bArenaPerBag: 3.0,
+            bPiedraPerBag: 3.0,
+            aguaLPerBag: 19.0,
+            recipeStr: '1 Bolsa Cemento + 3.0 Baldes Arena (1.0 Carret.) + 3.0 Baldes Piedra (1.0 Carret.) + 19L Agua'
         };
 
         function updateRendimientoConcreto() {
@@ -2275,14 +2173,12 @@
             var man = document.getElementById('manual_inputs');
             if (man) man.style.display = (val === 'manual') ? 'block' : 'none';
             updateRendimientoConcreto();
-            renderSchematic();
         }
 
         function toggleFormaConcreto() {
             var forma = document.getElementById('forma_concreto').value;
             document.getElementById('box_forma_losa').style.display = (forma === 'columna') ? 'none' : 'block';
             document.getElementById('box_forma_columna').style.display = (forma === 'columna') ? 'block' : 'none';
-            calcularConcreto();
             renderSchematic();
         }
 
@@ -2290,7 +2186,6 @@
             var op = document.getElementById('tipo_ladrillo').value;
             var boxCustom = document.getElementById('box_ladrillo_custom');
             if (boxCustom) boxCustom.style.display = (op === 'custom') ? 'block' : 'none';
-            calcularMuros();
             renderSchematic();
         }
 
@@ -2298,25 +2193,20 @@
             var tipo = document.getElementById('esc_tipo').value;
             document.getElementById('box_esc_desc_esp').style.display = (tipo === 'descanso') ? 'block' : 'none';
             document.getElementById('box_esc_desc_largo').style.display = (tipo === 'descanso') ? 'grid' : 'none';
-            calcularEscalera();
+            autoCalcLargoEscalera();
             renderSchematic();
         }
 
-        function updateEscaleraLargoPaso(source) {
+        function autoCalcLargoEscalera() {
             var tipo = document.getElementById('esc_tipo').value;
             var numCP = parseInt(document.getElementById('esc_num_cp').value) || 16;
+            var pMeters = (parseFloat(document.getElementById('esc_p').value) || 25.0) / 100.0;
             var lDescanso = (tipo === 'descanso') ? (parseFloat(document.getElementById('esc_desc_largo').value) || 1.00) : 0;
-            var cp1 = (tipo === 'descanso') ? Math.floor(numCP / 2) : numCP;
-            var totalPasosTramo = Math.max(1, cp1 - 1);
+            var cpTramo = (tipo === 'descanso') ? Math.floor(numCP / 2) : numCP;
+            var pasosTramo = Math.max(1, cpTramo - 1);
+            var largoTotal = (pasosTramo * pMeters) + lDescanso;
             var inputLargo = document.getElementById('esc_largo');
-            var inputPaso = document.getElementById('esc_p');
-            if (source === 'largo') {
-                var largoTotal = parseFloat(inputLargo.value) || 2.75;
-                inputPaso.value = ((Math.max(0.2, largoTotal - lDescanso) / totalPasosTramo) * 100.0).toFixed(1);
-            } else {
-                var pVal = (parseFloat(inputPaso.value) || 25.0) / 100.0;
-                inputLargo.value = ((totalPasosTramo * pVal) + lDescanso).toFixed(2);
-            }
+            if (inputLargo) inputLargo.value = largoTotal.toFixed(2);
         }
 
         function calcularConcreto() {
@@ -2340,39 +2230,59 @@
                 descEstructura = 'Losa / Zapata (' + l + 'm × ' + a + 'm × ' + e + 'cm)';
             }
 
-            var vol = volNeto * 1.05;
+            var vol = volNeto * 1.05; // +5% desperdicio RNE
             var opcion = document.getElementById('tipo_vaciado').value;
-            var sacosM3 = 9.73, bArena = 3.1, bPiedra = 3.1, bAgua = 1.1, propStr = "1 : 2 : 2 (f'c 210)";
+            // Valores exactos CAPECO por m³ de concreto
+            var sacosM3 = 9.73, m3ArenaPorM3 = 0.52, m3PiedraPorM3 = 0.53, aguaLPorM3 = 186, propStr = "f'c 210 kg/cm² (1 : 2 : 2)";
 
-            if (opcion === '175_p' || opcion === '175_h') { sacosM3 = 8.43; bArena = 3.9; bPiedra = 3.9; bAgua = 1.2; propStr = "1 : 2.5 : 2.5 (f'c 175)"; }
-            else if (opcion === '140') { sacosM3 = 7.0; bArena = 4.5; bPiedra = 4.5; bAgua = 1.3; propStr = "1 : 6 (f'c 140)"; }
-            else if (opcion === 'ciclopeo') { sacosM3 = 3.70; bArena = 15.7; bPiedra = 0.0; bAgua = 1.4; propStr = "1 : 10 + 30% P.G."; }
-            else if (opcion === 'manual') {
-                bArena = parseFloat(document.getElementById('m_arena_baldes').value) || 4.0;
-                bPiedra = parseFloat(document.getElementById('m_piedra_baldes').value) || 3.0;
-                bAgua = parseFloat(document.getElementById('m_agua_baldes').value) || 1.2;
-                var vComp = (0.018 * (1.0 + bArena + bPiedra)) * 0.67;
-                sacosM3 = 1.0 / vComp;
-                propStr = "Personalizada (1 Bolsa + " + bArena + "b Arena + " + bPiedra + "b Piedra)";
+            if (opcion === '175_p') {
+                sacosM3 = 8.43; m3ArenaPorM3 = 0.54; m3PiedraPorM3 = 0.55; aguaLPorM3 = 185; propStr = "f'c 175 kg/cm² (1 : 2.5 : 2.5)";
+            } else if (opcion === '175_h') {
+                sacosM3 = 7.50; m3ArenaPorM3 = 0.90; m3PiedraPorM3 = 0.0; aguaLPorM3 = 180; propStr = "f'c 175 Cimiento Hormigón (1 : 5)";
+            } else if (opcion === '140') {
+                sacosM3 = 7.01; m3ArenaPorM3 = 0.51; m3PiedraPorM3 = 0.64; aguaLPorM3 = 184; propStr = "f'c 140 Solado/Falsopiso (1 : 6)";
+            } else if (opcion === 'ciclopeo') {
+                sacosM3 = 3.70; m3ArenaPorM3 = 0.83; m3PiedraPorM3 = 0.42; aguaLPorM3 = 130; propStr = "Ciclópeo 1:10 + 30% P.G.";
+            } else if (opcion === 'manual') {
+                var bA = parseFloat(document.getElementById('m_arena_baldes').value) || 4.0;
+                var bP = parseFloat(document.getElementById('m_piedra_baldes').value) || 3.0;
+                var bW = parseFloat(document.getElementById('m_agua_baldes').value) || 1.2;
+                var rendBolsa = ((0.0283 / 3.15) + (bA * 0.018 * 0.60) + (bP * 0.018 * 0.55) + (bW * 0.018)) * 1.02;
+                sacosM3 = 1.0 / rendBolsa;
+                m3ArenaPorM3 = sacosM3 * bA * 0.018;
+                m3PiedraPorM3 = sacosM3 * bP * 0.018;
+                aguaLPorM3 = sacosM3 * bW * 18.0;
+                propStr = "Manual (1 Bls + " + bA + "b Arena + " + bP + "b Piedra)";
             }
 
             var sacosExact = vol * sacosM3;
-            var baldesArena = Math.round(sacosExact * bArena);
-            var baldesPiedra = Math.round(sacosExact * bPiedra);
-            var m3Arena = (baldesArena * 0.018).toFixed(2);
-            var m3Piedra = (baldesPiedra * 0.018).toFixed(2);
-            var litrosAgua = Math.round(sacosExact * (bAgua * 18));
+            var sacosCompra = Math.ceil(sacosExact);
+            var m3Arena = vol * m3ArenaPorM3;
+            var m3Piedra = vol * m3PiedraPorM3;
+            var baldesArena = Math.round(m3Arena / 0.018);
+            var baldesPiedra = Math.round(m3Piedra / 0.018);
+            var litrosAgua = Math.round(vol * aguaLPorM3);
+            var baldesAgua = Math.round(litrosAgua / 18.0);
+
+            var bArenaXBolsa = sacosExact > 0 ? (baldesArena / sacosExact) : 3.0;
+            var bPiedraXBolsa = sacosExact > 0 ? (baldesPiedra / sacosExact) : 3.0;
+            var aguaLXBolsa = sacosExact > 0 ? (litrosAgua / sacosExact) : 19.0;
 
             currentCalcData = {
                 elemId: 'calc_concreto',
                 elemName: descEstructura,
                 volM3: vol,
-                volP3: vol * 35.315,
-                sacosCemento: Math.ceil(sacosExact),
-                bArenaPerBag: bArena,
-                bPiedraPerBag: bPiedra,
-                aguaLPerBag: bAgua * 18,
-                recipeStr: '1 Bolsa Cemento + ' + bArena.toFixed(1) + ' Baldes Arena + ' + bPiedra.toFixed(1) + ' Baldes Piedra + ' + Math.round(bAgua * 18) + 'L Agua'
+                sacosCemento: sacosCompra,
+                m3Arena: m3Arena,
+                m3Piedra: m3Piedra,
+                baldesArenaTotal: baldesArena,
+                baldesPiedraTotal: baldesPiedra,
+                unidadesLadrillo: 0,
+                unidadesTecnopor: 0,
+                bArenaPerBag: bArenaXBolsa,
+                bPiedraPerBag: bPiedraXBolsa,
+                aguaLPerBag: aguaLXBolsa,
+                recipeStr: '1 Bolsa Cemento + ' + bArenaXBolsa.toFixed(1) + ' Baldes Arena (' + (bArenaXBolsa/3).toFixed(1) + ' Carret.) + ' + bPiedraXBolsa.toFixed(1) + ' Baldes Piedra (' + (bPiedraXBolsa/3).toFixed(1) + ' Carret.) + ' + Math.round(aguaLXBolsa) + 'L Agua'
             };
             updateModoObra();
 
@@ -2380,16 +2290,16 @@
             if (res) {
                 res.innerHTML = '<div class="result-header"><span>📊 DOSIFICACIÓN Y CÓMPUTO DE CONCRETO</span><span class="badge badge-green">RNE E.060</span></div>' +
                     '<div style="font-size:11px; color:#e2e8f0; margin-bottom:8px;"><b>Estructura:</b> ' + descEstructura + ' • <b>Mezcla:</b> ' + propStr + '</div>' +
-                    '<table class="res-table">' +
-                        '<thead><tr><th style="text-align:left;">MATERIAL</th><th style="text-align:right;">CANTIDAD</th><th style="text-align:right;">EQUIV. CAMPO</th></tr></thead>' +
+                    '<div class="res-table-wrapper"><table class="res-table">' +
+                        '<thead><tr><th style="text-align:left;">MATERIAL</th><th style="text-align:right;">CANT. (M³ / BLS)</th><th style="text-align:right;">EQUIV. CAMPO (BALDES / CARRET.)</th></tr></thead>' +
                         '<tbody>' +
-                            '<tr><td>📦 Cemento Portland I</td><td style="text-align:right; font-weight:900; color:#00e5ff;">' + sacosExact.toFixed(1) + ' Bolsas</td><td style="text-align:right;">' + Math.ceil(sacosExact) + ' bls compra</td></tr>' +
-                            '<tr><td>🏖️ Arena Gruesa</td><td style="text-align:right; font-weight:800;">' + m3Arena + ' m³</td><td style="text-align:right; color:var(--primary-cyan);">' + baldesArena + ' Baldes 18L</td></tr>' +
-                            '<tr><td>🪨 Piedra Chancada 1/2"</td><td style="text-align:right; font-weight:800;">' + m3Piedra + ' m³</td><td style="text-align:right; color:var(--primary-cyan);">' + baldesPiedra + ' Baldes 18L</td></tr>' +
-                            '<tr><td>💧 Agua Potable</td><td style="text-align:right; font-weight:800;">' + litrosAgua + ' L</td><td style="text-align:right;">~' + Math.round(litrosAgua/18) + ' Baldes</td></tr>' +
+                            '<tr><td>📦 Cemento Portland I</td><td style="text-align:right; font-weight:900; color:#00e5ff;">' + sacosExact.toFixed(1) + ' Bls</td><td style="text-align:right; font-weight:800;">' + sacosCompra + ' Bolsas compra</td></tr>' +
+                            '<tr><td>🏖️ Arena Gruesa</td><td style="text-align:right; font-weight:800;">' + m3Arena.toFixed(2) + ' m³</td><td style="text-align:right; color:var(--primary-cyan); font-weight:800;">' + formatBaldesCarretillas(baldesArena) + '</td></tr>' +
+                            '<tr><td>🪨 Piedra Chancada</td><td style="text-align:right; font-weight:800;">' + m3Piedra.toFixed(2) + ' m³</td><td style="text-align:right; color:var(--primary-cyan); font-weight:800;">' + formatBaldesCarretillas(baldesPiedra) + '</td></tr>' +
+                            '<tr><td>💧 Agua Potable</td><td style="text-align:right; font-weight:800;">' + (litrosAgua / 1000).toFixed(2) + ' m³ (' + litrosAgua + ' L)</td><td style="text-align:right;">' + baldesAgua + ' Baldes 18L</td></tr>' +
                             '<tr><td>📐 Volumen Concreto (+5%)</td><td style="text-align:right; font-weight:800; color:var(--primary-green);">' + vol.toFixed(2) + ' m³</td><td style="text-align:right;">Encofrado: ' + areaEncofrado.toFixed(1) + ' m²</td></tr>' +
                         '</tbody>' +
-                    '</table>';
+                    '</table></div>';
             }
         }
 
@@ -2402,20 +2312,28 @@
             var specs = getBrickSpecs();
             var area = l * h;
             var totalLadrillos = Math.ceil(area * specs.undM2Neto * mermaPct);
-            var totalMorteroM3 = area * specs.volMorteroM2Neto * 1.10;
-            var sacosExact = totalMorteroM3 * 7.5;
+            var totalMorteroM3 = area * specs.volMorteroM2Neto * 1.10; // +10% desperdicio mortero RNE
+            var sacosExact = totalMorteroM3 * 8.9; // Mortero 1:4 CAPECO
+            var sacosCompra = Math.ceil(sacosExact);
             var baldesArena = Math.round(sacosExact * baldesArenaXBolsa);
+            var m3Arena = baldesArena * 0.018;
+            var litrosAgua = Math.round(totalMorteroM3 * 260);
 
             currentCalcData = {
                 elemId: 'calc_muros',
-                elemName: 'Muro (' + specs.name + ')',
+                elemName: 'Muro ' + specs.name + ' (' + area.toFixed(1) + ' m²)',
                 volM3: totalMorteroM3,
-                volP3: totalMorteroM3 * 35.315,
-                sacosCemento: Math.ceil(sacosExact),
+                sacosCemento: sacosCompra,
+                m3Arena: m3Arena,
+                m3Piedra: 0,
+                baldesArenaTotal: baldesArena,
+                baldesPiedraTotal: 0,
+                unidadesLadrillo: totalLadrillos,
+                unidadesTecnopor: 0,
                 bArenaPerBag: baldesArenaXBolsa,
                 bPiedraPerBag: 0,
                 aguaLPerBag: 22.0,
-                recipeStr: '1 Bolsa Cemento + ' + baldesArenaXBolsa.toFixed(1) + ' Baldes Arena Gruesa + 22L Agua (Mortero)'
+                recipeStr: '1 Bolsa Cemento + ' + baldesArenaXBolsa.toFixed(1) + ' Baldes Arena (' + (baldesArenaXBolsa/3).toFixed(1) + ' Carret.) + 22L Agua (Mortero)'
             };
             updateModoObra();
 
@@ -2423,97 +2341,134 @@
             if (res) {
                 res.innerHTML = '<div class="result-header"><span>🧱 MATERIALES DE ALBAÑILERÍA</span><span class="badge badge-green">RNE E.070</span></div>' +
                     '<div style="font-size:11px; color:#e2e8f0; margin-bottom:8px;"><b>Unidad:</b> ' + specs.name + ' • <b>Área Muro:</b> ' + area.toFixed(2) + ' m²</div>' +
-                    '<table class="res-table">' +
-                        '<thead><tr><th style="text-align:left;">MATERIAL</th><th style="text-align:right;">CANTIDAD</th><th style="text-align:right;">RENDIMIENTO</th></tr></thead>' +
+                    '<div class="res-table-wrapper"><table class="res-table">' +
+                        '<thead><tr><th style="text-align:left;">MATERIAL</th><th style="text-align:right;">CANT. (M³ / UNID)</th><th style="text-align:right;">EQUIV. CAMPO (BALDES / CARRET.)</th></tr></thead>' +
                         '<tbody>' +
-                            '<tr><td>🧱 Unidades Ladrillo/Bloque</td><td style="text-align:right; font-weight:900; color:#00e5ff;">' + totalLadrillos + ' Unid.</td><td style="text-align:right;">' + specs.undM2Neto.toFixed(1) + ' u/m² neto</td></tr>' +
-                            '<tr><td>📦 Cemento Mortero (1:4)</td><td style="text-align:right; font-weight:800;">' + sacosExact.toFixed(1) + ' Bolsas</td><td style="text-align:right;">' + Math.ceil(sacosExact) + ' bls compra</td></tr>' +
-                            '<tr><td>🏖️ Arena Gruesa</td><td style="text-align:right; font-weight:800;">' + (baldesArena * 0.018).toFixed(2) + ' m³</td><td style="text-align:right; color:var(--primary-cyan);">' + baldesArena + ' Baldes 18L</td></tr>' +
+                            '<tr><td>🧱 Ladrillos / Bloques</td><td style="text-align:right; font-weight:900; color:#00e5ff;">' + totalLadrillos + ' Unid.</td><td style="text-align:right;">' + specs.undM2Neto.toFixed(1) + ' u/m² neto</td></tr>' +
+                            '<tr><td>📦 Cemento Mortero (1:4)</td><td style="text-align:right; font-weight:800;">' + sacosExact.toFixed(1) + ' Bls</td><td style="text-align:right; font-weight:800;">' + sacosCompra + ' Bolsas compra</td></tr>' +
+                            '<tr><td>🏖️ Arena Gruesa</td><td style="text-align:right; font-weight:800;">' + m3Arena.toFixed(2) + ' m³</td><td style="text-align:right; color:var(--primary-cyan); font-weight:800;">' + formatBaldesCarretillas(baldesArena) + '</td></tr>' +
+                            '<tr><td>💧 Agua Mezcla</td><td style="text-align:right; font-weight:800;">' + litrosAgua + ' L</td><td style="text-align:right;">' + Math.round(litrosAgua / 18) + ' Baldes 18L</td></tr>' +
                         '</tbody>' +
-                    '</table>';
+                    '</table></div>';
             }
         }
 
         function calcularTecnopor() {
             var l1 = parseFloat(document.getElementById('tec_largo').value) || 0;
             var l2 = parseFloat(document.getElementById('tec_ancho').value) || 0;
-            var dir = document.getElementById('tec_dir').value;
             var peralte = parseInt(document.getElementById('tec_peralte').value) || 20;
             var bloqueL = parseFloat(document.getElementById('tec_bloque_l').value) || 1.20;
 
             var hTecnopor = (peralte - 5) / 100.0;
             var area = l1 * l2;
-            var numViguetas = (dir === 'h') ? (Math.ceil(l2 / 0.40) + 1) : (Math.ceil(l1 / 0.40) + 1);
-            var largoVigueta = (dir === 'h') ? l1 : l2;
             var totalBloques = Math.ceil((area / (0.40 * bloqueL)) * 1.05);
-            var volConcretoTotal = ((area * 0.05) + (numViguetas * largoVigueta * 0.10 * hTecnopor)) * 1.05;
-            var sacosCemento = Math.ceil(volConcretoTotal * 9.73);
-            var baldesArena = Math.round(sacosCemento * 3.1);
+            // Volumen exacto CAPECO por m²: Losa superior 5cm (0.05 m³/m²) + Viguetas de 10cm cada 40cm ((0.10 * hTecnopor) / 0.40)
+            var volUnitM2 = 0.05 + ((0.10 * hTecnopor) / 0.40);
+            var volConcretoTotal = area * volUnitM2 * 1.05; // +5% desperdicio
+
+            var sacosExact = volConcretoTotal * 9.73;
+            var sacosCemento = Math.ceil(sacosExact);
+            var m3Arena = volConcretoTotal * 0.52;
+            var m3Piedra = volConcretoTotal * 0.53;
+            var baldesArena = Math.round(m3Arena / 0.018);
+            var baldesPiedra = Math.round(m3Piedra / 0.018);
+            var litrosAgua = Math.round(volConcretoTotal * 186);
 
             currentCalcData = {
                 elemId: 'calc_tecnopor',
-                elemName: 'Losa Aligerada Tecnopor EPS (' + area.toFixed(1) + ' m²)',
+                elemName: 'Losa Aligerada Tecnopor EPS (' + area.toFixed(1) + ' m² • H=' + peralte + 'cm)',
                 volM3: volConcretoTotal,
-                volP3: volConcretoTotal * 35.315,
                 sacosCemento: sacosCemento,
-                bArenaPerBag: 3.1,
-                bPiedraPerBag: 3.1,
-                aguaLPerBag: 22.0,
-                recipeStr: '1 Bolsa Cemento + 3.1 Baldes Arena + 3.1 Baldes Piedra + 22L Agua'
+                m3Arena: m3Arena,
+                m3Piedra: m3Piedra,
+                baldesArenaTotal: baldesArena,
+                baldesPiedraTotal: baldesPiedra,
+                unidadesLadrillo: 0,
+                unidadesTecnopor: totalBloques,
+                bArenaPerBag: 3.0,
+                bPiedraPerBag: 3.0,
+                aguaLPerBag: 19.0,
+                recipeStr: '1 Bolsa Cemento + 3.0 Baldes Arena (1.0 Carret.) + 3.0 Baldes Piedra (1.0 Carret.) + 19L Agua'
             };
             updateModoObra();
 
             var res = document.getElementById('res_tecnopor');
             if (res) {
                 res.innerHTML = '<div class="result-header"><span>🧇 CÓMPUTO LOSA TECNOPOR EPS</span><span class="badge badge-green">PERALTE ' + peralte + 'CM</span></div>' +
-                    '<table class="res-table">' +
+                    '<div class="res-table-wrapper"><table class="res-table">' +
+                        '<thead><tr><th style="text-align:left;">MATERIAL</th><th style="text-align:right;">CANT. (M³ / UNID)</th><th style="text-align:right;">EQUIV. CAMPO (BALDES / CARRET.)</th></tr></thead>' +
                         '<tbody>' +
-                            '<tr><td>🧇 Bloques Tecnopor EPS (+5%)</td><td style="text-align:right; font-weight:900; color:#00e5ff;">' + totalBloques + ' Unid.</td><td style="text-align:right;">' + bloqueL.toFixed(2) + 'm largo</td></tr>' +
-                            '<tr><td>📦 Cemento f\'c 210</td><td style="text-align:right; font-weight:800;">' + sacosCemento + ' Bolsas</td><td style="text-align:right;">' + volConcretoTotal.toFixed(2) + ' m³ conc.</td></tr>' +
-                            '<tr><td>🏖️ Arena / Piedra (c/u)</td><td style="text-align:right; font-weight:800;">' + (baldesArena * 0.018).toFixed(2) + ' m³</td><td style="text-align:right; color:var(--primary-cyan);">' + baldesArena + ' Baldes c/u</td></tr>' +
+                            '<tr><td>🧇 Casetones Tecnopor (+5%)</td><td style="text-align:right; font-weight:900; color:#00e5ff;">' + totalBloques + ' Unid.</td><td style="text-align:right;">0.30×' + hTecnopor.toFixed(2) + '×' + bloqueL.toFixed(2) + 'm</td></tr>' +
+                            '<tr><td>📦 Cemento f\'c 210</td><td style="text-align:right; font-weight:800;">' + sacosExact.toFixed(1) + ' Bls</td><td style="text-align:right; font-weight:800;">' + sacosCemento + ' Bolsas (' + volConcretoTotal.toFixed(2) + ' m³)</td></tr>' +
+                            '<tr><td>🏖️ Arena Gruesa</td><td style="text-align:right; font-weight:800;">' + m3Arena.toFixed(2) + ' m³</td><td style="text-align:right; color:var(--primary-cyan); font-weight:800;">' + formatBaldesCarretillas(baldesArena) + '</td></tr>' +
+                            '<tr><td>🪨 Piedra Chancada 1/2"</td><td style="text-align:right; font-weight:800;">' + m3Piedra.toFixed(2) + ' m³</td><td style="text-align:right; color:var(--primary-cyan); font-weight:800;">' + formatBaldesCarretillas(baldesPiedra) + '</td></tr>' +
+                            '<tr><td>💧 Agua Potable</td><td style="text-align:right; font-weight:800;">' + litrosAgua + ' L</td><td style="text-align:right;">' + Math.round(litrosAgua / 18) + ' Baldes 18L</td></tr>' +
                         '</tbody>' +
-                    '</table>';
+                    '</table></div>';
             }
         }
 
         function calcularEscalera() {
+            autoCalcLargoEscalera();
             var tipo = document.getElementById('esc_tipo').value;
             var B = parseFloat(document.getElementById('esc_ancho').value) || 1.00;
             var numCP = parseInt(document.getElementById('esc_num_cp').value) || 16;
             var h = (parseFloat(document.getElementById('esc_h').value) || 17.5) / 100.0;
             var p = (parseFloat(document.getElementById('esc_p').value) || 25.0) / 100.0;
             var eGarganta = (parseFloat(document.getElementById('esc_garganta').value) || 15.0) / 100.0;
+            var eDescanso = (parseFloat(document.getElementById('esc_desc_esp').value) || 15.0) / 100.0;
             var lDescanso = parseFloat(document.getElementById('esc_desc_largo').value) || 1.00;
             var wDescanso = parseFloat(document.getElementById('esc_desc_ancho').value) || 2.10;
+            var vigaArr = document.getElementById('esc_viga_arr').value === 'si';
+            var vigaLleg = document.getElementById('esc_viga_lleg').value === 'si';
 
-            var totalPasos = numCP - 1;
+            var totalPasos = Math.max(1, numCP - 1);
             var L_inc = Math.sqrt(Math.pow(totalPasos * p, 2) + Math.pow(numCP * h, 2));
-            var volConcretoTotal = ((L_inc * B * eGarganta) + (totalPasos * 0.5 * p * h * B) + (tipo === 'descanso' ? lDescanso * wDescanso * eGarganta : 0)) * 1.05;
-            var sacosCemento = Math.ceil(volConcretoTotal * 9.73);
+            var volGarganta = L_inc * B * eGarganta;
+            var volPeldaños = totalPasos * (0.5 * p * h) * B;
+            var volDescanso = (tipo === 'descanso') ? (lDescanso * wDescanso * eDescanso) : 0;
+            var volVigas = ((vigaArr ? 1 : 0) + (vigaLleg ? 1 : 0)) * (0.25 * 0.40 * B);
+
+            var volConcretoTotal = (volGarganta + volPeldaños + volDescanso + volVigas) * 1.05;
+            var sacosExact = volConcretoTotal * 9.73;
+            var sacosCemento = Math.ceil(sacosExact);
+            var m3Arena = volConcretoTotal * 0.52;
+            var m3Piedra = volConcretoTotal * 0.53;
+            var baldesArena = Math.round(m3Arena / 0.018);
+            var baldesPiedra = Math.round(m3Piedra / 0.018);
+            var litrosAgua = Math.round(volConcretoTotal * 186);
 
             currentCalcData = {
                 elemId: 'calc_escalera',
-                elemName: 'Escalera de Concreto Armado (' + numCP + ' CP)',
+                elemName: 'Escalera ' + (tipo === 'descanso' ? 'en U' : 'Recta') + ' (' + numCP + ' CP • L=' + document.getElementById('esc_largo').value + 'm)',
                 volM3: volConcretoTotal,
-                volP3: volConcretoTotal * 35.315,
                 sacosCemento: sacosCemento,
-                bArenaPerBag: 3.1,
-                bPiedraPerBag: 3.1,
-                aguaLPerBag: 22.0,
-                recipeStr: '1 Bolsa Cemento + 3.1 Baldes Arena + 3.1 Baldes Piedra + 22L Agua'
+                m3Arena: m3Arena,
+                m3Piedra: m3Piedra,
+                baldesArenaTotal: baldesArena,
+                baldesPiedraTotal: baldesPiedra,
+                unidadesLadrillo: 0,
+                unidadesTecnopor: 0,
+                bArenaPerBag: 3.0,
+                bPiedraPerBag: 3.0,
+                aguaLPerBag: 19.0,
+                recipeStr: '1 Bolsa Cemento + 3.0 Baldes Arena (1.0 Carret.) + 3.0 Baldes Piedra (1.0 Carret.) + 19L Agua'
             };
             updateModoObra();
 
             var res = document.getElementById('res_escalera');
             if (res) {
-                res.innerHTML = '<div class="result-header"><span>🪜 CÓMPUTO DE ESCALERA</span><span class="badge badge-green">' + numCP + ' CONTRAPASOS</span></div>' +
-                    '<table class="res-table">' +
+                res.innerHTML = '<div class="result-header"><span>🪜 CÓMPUTO DE ESCALERA</span><span class="badge badge-green">LARGO AUTO: ' + document.getElementById('esc_largo').value + ' M</span></div>' +
+                    '<div class="res-table-wrapper"><table class="res-table">' +
+                        '<thead><tr><th style="text-align:left;">MATERIAL</th><th style="text-align:right;">CANT. (M³ / BLS)</th><th style="text-align:right;">EQUIV. CAMPO (BALDES / CARRET.)</th></tr></thead>' +
                         '<tbody>' +
-                            '<tr><td>📦 Cemento Portland f\'c 210</td><td style="text-align:right; font-weight:900; color:#00e5ff;">' + sacosCemento + ' Bolsas</td></tr>' +
-                            '<tr><td>📐 Volumen Concreto (+5%)</td><td style="text-align:right; font-weight:800;">' + volConcretoTotal.toFixed(2) + ' m³</td></tr>' +
-                            '<tr><td>🏖️ Arena / Piedra Chancada</td><td style="text-align:right; color:var(--primary-cyan);">' + Math.round(sacosCemento * 3.1) + ' Baldes c/u</td></tr>' +
+                            '<tr><td>📦 Cemento Portland f\'c 210</td><td style="text-align:right; font-weight:900; color:#00e5ff;">' + sacosExact.toFixed(1) + ' Bls</td><td style="text-align:right; font-weight:800;">' + sacosCemento + ' Bolsas compra</td></tr>' +
+                            '<tr><td>🏖️ Arena Gruesa</td><td style="text-align:right; font-weight:800;">' + m3Arena.toFixed(2) + ' m³</td><td style="text-align:right; color:var(--primary-cyan); font-weight:800;">' + formatBaldesCarretillas(baldesArena) + '</td></tr>' +
+                            '<tr><td>🪨 Piedra Chancada 1/2"</td><td style="text-align:right; font-weight:800;">' + m3Piedra.toFixed(2) + ' m³</td><td style="text-align:right; color:var(--primary-cyan); font-weight:800;">' + formatBaldesCarretillas(baldesPiedra) + '</td></tr>' +
+                            '<tr><td>💧 Agua Potable</td><td style="text-align:right; font-weight:800;">' + litrosAgua + ' L</td><td style="text-align:right;">' + Math.round(litrosAgua / 18) + ' Baldes 18L</td></tr>' +
+                            '<tr><td>📐 Volumen Concreto (+5%)</td><td style="text-align:right; font-weight:800; color:var(--primary-green);">' + volConcretoTotal.toFixed(2) + ' m³</td><td style="text-align:right;">' + numCP + ' Contrapasos</td></tr>' +
                         '</tbody>' +
-                    '</table>';
+                    '</table></div>';
             }
         }
 
@@ -2523,68 +2478,48 @@
             var baldesArenaXBolsa = parseFloat(document.getElementById('tar_baldes_arena').value) || 4.0;
             var mermaPct = (parseFloat(document.getElementById('tar_merma').value) || 10.0) / 100.0;
             var eMalla = (tipo === 'cielorraso') ? 0.010 : 0.015;
-            var sacosM3 = (tipo === 'muro_int') ? 8.5 : 10.2;
+            var sacosM3 = (tipo === 'muro_int') ? 8.9 : 10.5;
 
             var volMortero = area * eMalla * (1.0 + mermaPct);
-            var sacosCemento = Math.ceil(volMortero * sacosM3);
-            var baldesArenaFina = Math.round(sacosCemento * baldesArenaXBolsa);
+            var sacosExact = volMortero * sacosM3;
+            var sacosCemento = Math.ceil(sacosExact);
+            var baldesArenaFina = Math.round(sacosExact * baldesArenaXBolsa);
+            var m3ArenaFina = baldesArenaFina * 0.018;
+            var litrosAgua = Math.round(volMortero * 270);
 
             currentCalcData = {
                 elemId: 'calc_tarrajeo',
-                elemName: 'Tarrajeo (' + area.toFixed(1) + ' m²)',
+                elemName: 'Tarrajeo (' + area.toFixed(1) + ' m² • e=' + (eMalla*100).toFixed(1) + 'cm)',
                 volM3: volMortero,
-                volP3: volMortero * 35.315,
                 sacosCemento: sacosCemento,
+                m3Arena: m3ArenaFina,
+                m3Piedra: 0,
+                baldesArenaTotal: baldesArenaFina,
+                baldesPiedraTotal: 0,
+                unidadesLadrillo: 0,
+                unidadesTecnopor: 0,
                 bArenaPerBag: baldesArenaXBolsa,
                 bPiedraPerBag: 0,
                 aguaLPerBag: 22.0,
-                recipeStr: '1 Bolsa Cemento + ' + baldesArenaXBolsa.toFixed(1) + ' Baldes Arena Fina Cernida + 22L Agua'
+                recipeStr: '1 Bolsa Cemento + ' + baldesArenaXBolsa.toFixed(1) + ' Baldes Arena Fina (' + (baldesArenaXBolsa/3).toFixed(1) + ' Carret.) + 22L Agua'
             };
             updateModoObra();
 
             var res = document.getElementById('res_tarrajeo');
             if (res) {
                 res.innerHTML = '<div class="result-header"><span>🖌️ CÓMPUTO DE TARRAJEO</span><span class="badge badge-green">' + area.toFixed(1) + ' M²</span></div>' +
-                    '<table class="res-table">' +
+                    '<div class="res-table-wrapper"><table class="res-table">' +
+                        '<thead><tr><th style="text-align:left;">MATERIAL</th><th style="text-align:right;">CANT. (M³ / BLS)</th><th style="text-align:right;">EQUIV. CAMPO (BALDES / CARRET.)</th></tr></thead>' +
                         '<tbody>' +
-                            '<tr><td>📦 Cemento Portland I</td><td style="text-align:right; font-weight:900; color:#00e5ff;">' + sacosCemento + ' Bolsas</td></tr>' +
-                            '<tr><td>🏖️ Arena Fina Cernida</td><td style="text-align:right; font-weight:800;">' + (baldesArenaFina * 0.018).toFixed(2) + ' m³ (' + baldesArenaFina + ' Baldes)</td></tr>' +
+                            '<tr><td>📦 Cemento Portland I</td><td style="text-align:right; font-weight:900; color:#00e5ff;">' + sacosExact.toFixed(1) + ' Bls</td><td style="text-align:right; font-weight:800;">' + sacosCemento + ' Bolsas compra</td></tr>' +
+                            '<tr><td>🏖️ Arena Fina Cernida</td><td style="text-align:right; font-weight:800;">' + m3ArenaFina.toFixed(2) + ' m³</td><td style="text-align:right; color:var(--primary-cyan); font-weight:800;">' + formatBaldesCarretillas(baldesArenaFina) + '</td></tr>' +
+                            '<tr><td>💧 Agua Mezcla</td><td style="text-align:right; font-weight:800;">' + litrosAgua + ' L</td><td style="text-align:right;">' + Math.round(litrosAgua / 18) + ' Baldes 18L</td></tr>' +
                         '</tbody>' +
-                    '</table>';
+                    '</table></div>';
             }
         }
 
-        function calcularLogisticaAcero() {
-            var kg38 = parseFloat(document.getElementById('ac_kg_38').value) || 0;
-            var kg12 = parseFloat(document.getElementById('ac_kg_12').value) || 0;
-            var kg58 = parseFloat(document.getElementById('ac_kg_58').value) || 0;
-            var kg34 = parseFloat(document.getElementById('ac_kg_34').value) || 0;
-            var merma = parseFloat(document.getElementById('ac_merma_pct').value) || 1.05;
-
-            var v38 = Math.ceil((kg38 * merma) / (0.560 * 9.0));
-            var v12 = Math.ceil((kg12 * merma) / (0.994 * 9.0));
-            var v58 = Math.ceil((kg58 * merma) / (1.552 * 9.0));
-            var v34 = Math.ceil((kg34 * merma) / (2.235 * 9.0));
-            var pesoTotal = (kg38 + kg12 + kg58 + kg34) * merma;
-            var alambre16 = Math.max(1.5, pesoTotal * 0.04);
-
-            var res = document.getElementById('res_acero_log');
-            if (res) {
-                res.innerHTML = '<div class="result-header"><span>⛓️ PEDIDO DE VARILLAS DE 9.00 METROS</span><span class="badge badge-green">GRADO 60</span></div>' +
-                    '<table class="res-table">' +
-                        '<thead><tr><th style="text-align:left;">DIÁMETRO</th><th style="text-align:right;">PESO (+MERMA)</th><th style="text-align:right;">VARILLAS 9M</th></tr></thead>' +
-                        '<tbody>' +
-                            '<tr><td>🔩 Varilla Ø 3/8"</td><td style="text-align:right;">' + (kg38*merma).toFixed(1) + ' kg</td><td style="text-align:right; font-weight:900; color:#00e5ff;">' + v38 + ' varillas</td></tr>' +
-                            '<tr><td>🔩 Varilla Ø 1/2"</td><td style="text-align:right;">' + (kg12*merma).toFixed(1) + ' kg</td><td style="text-align:right; font-weight:900; color:#30d158;">' + v12 + ' varillas</td></tr>' +
-                            '<tr><td>🔩 Varilla Ø 5/8"</td><td style="text-align:right;">' + (kg58*merma).toFixed(1) + ' kg</td><td style="text-align:right; font-weight:900; color:#ff9f0a;">' + v58 + ' varillas</td></tr>' +
-                            '<tr><td>🔩 Varilla Ø 3/4"</td><td style="text-align:right;">' + (kg34*merma).toFixed(1) + ' kg</td><td style="text-align:right; font-weight:900; color:#ffd700;">' + v34 + ' varillas</td></tr>' +
-                            '<tr><td>➰ Alambre Negro N°16</td><td style="text-align:right;">Amarre (4%)</td><td style="text-align:right; font-weight:900; color:var(--primary-orange);">' + alambre16.toFixed(1) + ' kg</td></tr>' +
-                        '</tbody>' +
-                    '</table>';
-            }
-        }
-
-        // ==================== MODO OBRA & TROMPO ====================
+        // ==================== MODO OBRA & TROMPO (VINCULADO AL ÚLTIMO CÁLCULO) ====================
         var trompoCounts = { cemento: 0, arena: 0, piedra: 0, agua: 0 };
         var auditableEnabled = true;
         var auditLogs = [];
@@ -2592,10 +2527,18 @@
         function updateModoObra() {
             var giantCem = document.getElementById('giant_cemento');
             var giantVol = document.getElementById('giant_volumen');
+            var giantCarr = document.getElementById('giant_carretillas');
             var recipeText = document.getElementById('trompo_receta_text');
+            var apuTitle = document.getElementById('apu_linked_title');
+
             if (giantCem) giantCem.innerText = currentCalcData.sacosCemento + ' BOLSAS CEMENTO';
             if (giantVol) giantVol.innerText = currentCalcData.volM3.toFixed(2) + ' m³ • ' + currentCalcData.elemName;
+            if (giantCarr) {
+                var totBaldes = (currentCalcData.baldesArenaTotal || 0) + (currentCalcData.baldesPiedraTotal || 0);
+                giantCarr.innerText = 'Agregados Totales: ' + formatBaldesCarretillas(totBaldes);
+            }
             if (recipeText) recipeText.innerText = currentCalcData.recipeStr;
+            if (apuTitle) apuTitle.innerText = currentCalcData.elemName + ' (' + currentCalcData.sacosCemento + ' bls cemento)';
         }
 
         function toggleAuditableMode() {
@@ -2621,13 +2564,12 @@
                 tanda: auditLogs.length + 1,
                 hora: timeStr,
                 cemento: 1,
-                arena: trompoCounts.arena || currentCalcData.bArenaPerBag,
-                piedra: trompoCounts.piedra || currentCalcData.bPiedraPerBag
+                arena: trompoCounts.arena || Math.round(currentCalcData.bArenaPerBag),
+                piedra: trompoCounts.piedra || Math.round(currentCalcData.bPiedraPerBag)
             });
             safeStorage.setItem('construye_audit_logs', JSON.stringify(auditLogs));
             renderAuditLog();
             resetTrompo();
-            showToast('✅ TANDA #' + auditLogs.length + ' REGISTRADA EN BITÁCORA');
         }
 
         function renderAuditLog() {
@@ -2662,28 +2604,15 @@
             });
         }
 
-        // ==================== PRESUPUESTO APU CAPECO & CURVA S ====================
-        function drawSCurve() {
-            var fis = parseFloat(document.getElementById('pct_fisico').value) || 0;
-            var fin = parseFloat(document.getElementById('pct_financiero').value) || 0;
-            var barFis = document.getElementById('bar_fisico');
-            var barFin = document.getElementById('bar_financiero');
-            var badge = document.getElementById('scurve_status_badge');
-            var alertBox = document.getElementById('overcost_alert');
-
-            if (barFis) barFis.style.width = Math.min(100, fis) + '%';
-            if (barFin) barFin.style.width = Math.min(100, fin) + '%';
-
-            if (fin > fis + 5) {
-                if (badge) { badge.innerText = '🔴 SOBRECOSTO'; badge.className = 'badge badge-red'; }
-                if (alertBox) {
-                    alertBox.style.display = 'block';
-                    alertBox.innerText = '⚠️ ALERTA DE SOBRECOSTO: Has gastado el ' + fin + '% del presupuesto pero el avance físico es solo ' + fis + '% (Desfase: -' + (fin - fis).toFixed(1) + '%).';
-                }
-            } else {
-                if (badge) { badge.innerText = '🟢 RENTABLE OK'; badge.className = 'badge badge-green'; }
-                if (alertBox) alertBox.style.display = 'none';
-            }
+        // ==================== PRESUPUESTO APU CAPECO CON CUADRILLA AUTOMÁTICA ====================
+        function stepCrew(inputId, delta) {
+            var el = document.getElementById(inputId);
+            if (!el) return;
+            var minVal = (inputId === 'apu_dias_mo') ? 0.5 : 0;
+            var curr = parseFloat(el.value) || 0;
+            var next = Math.max(minVal, curr + delta);
+            el.value = (inputId === 'apu_dias_mo') ? next.toFixed(1) : Math.round(next);
+            calcularPresupuesto();
         }
 
         var lastAPUTotal = 0;
@@ -2692,32 +2621,46 @@
             var pAre = parseFloat(document.getElementById('p_arena').value) || 55.00;
             var pPie = parseFloat(document.getElementById('p_piedra').value) || 65.00;
             var pLad = parseFloat(document.getElementById('p_ladrillo').value) || 1.20;
-            var pctMO = (parseFloat(document.getElementById('p_pct_mo').value) || 38.0) / 100.0;
+            var pTec = parseFloat(document.getElementById('p_tecnopor').value) || 14.50;
 
-            var costMat = 0;
-            if (currentElement === 'calc_muros') {
-                var lM = parseFloat(document.getElementById('muro_largo').value) || 6;
-                var hM = parseFloat(document.getElementById('muro_alto').value) || 2.6;
-                var specs = getBrickSpecs();
-                var numLad = Math.ceil(lM * hM * specs.undM2Neto * 1.05);
-                costMat = (numLad * pLad) + (currentCalcData.sacosCemento * pCem) + (currentCalcData.volM3 * pAre);
-            } else {
-                var cBolsas = currentCalcData.sacosCemento || 10;
-                var m3Are = cBolsas * 3.1 * 0.018;
-                var m3Pie = cBolsas * 3.1 * 0.018;
-                costMat = (cBolsas * pCem) + (m3Are * pAre) + (m3Pie * pPie);
-            }
+            // 1. Costo de Materiales según el último cálculo vinculado
+            var cBolsas = currentCalcData.sacosCemento || 0;
+            var m3Are = currentCalcData.m3Arena || 0;
+            var m3Pie = currentCalcData.m3Piedra || 0;
+            var nLad = currentCalcData.unidadesLadrillo || 0;
+            var nTec = currentCalcData.unidadesTecnopor || 0;
 
-            var costMO = costMat * pctMO;
-            var costEq = costMO * 0.05;
-            var totalDirecto = costMat + costMO + costEq;
+            var costMat = (cBolsas * pCem) + (m3Are * pAre) + (m3Pie * pPie) + (nLad * pLad) + (nTec * pTec);
+
+            // 2. Costo de Mano de Obra calculado desde la Cuadrilla registrada
+            var cantOp = parseFloat(document.getElementById('apu_cant_op').value) || 0;
+            var jorOp = parseFloat(document.getElementById('apu_jor_op').value) || 0;
+            var cantOf = parseFloat(document.getElementById('apu_cant_of').value) || 0;
+            var jorOf = parseFloat(document.getElementById('apu_jor_of').value) || 0;
+            var cantPe = parseFloat(document.getElementById('apu_cant_pe').value) || 0;
+            var jorPe = parseFloat(document.getElementById('apu_jor_pe').value) || 0;
+            var diasMO = parseFloat(document.getElementById('apu_dias_mo').value) || 1.0;
+
+            var costoDiarioCuadrilla = (cantOp * jorOp) + (cantOf * jorOf) + (cantPe * jorPe);
+            var costMO = costoDiarioCuadrilla * diasMO;
+            var costEq = costMO * 0.05; // 5% Herramientas Manuales CAPECO
+            var totalDirecto = Math.max(1, costMat + costMO + costEq);
             lastAPUTotal = totalDirecto;
+
+            // % de Mano de Obra calculado automáticamente
+            var pctMOSobreTotal = (costMO / totalDirecto) * 100.0;
+            var pctMOSobreMat = costMat > 0 ? ((costMO / costMat) * 100.0) : 0;
+
+            var autoInput = document.getElementById('p_pct_mo_auto');
+            if (autoInput) autoInput.value = pctMOSobreTotal.toFixed(1) + '% del Total';
+            var badgeMO = document.getElementById('apu_mo_pct_badge');
+            if (badgeMO) badgeMO.innerText = 'MO: ' + pctMOSobreTotal.toFixed(1) + '% (S/ ' + costMO.toFixed(0) + ')';
 
             var res = document.getElementById('res_presupuesto');
             if (res) {
                 res.innerHTML = '<div class="result-header"><span>💰 ESTRUCTURA APU: ' + currentCalcData.elemName.toUpperCase() + '</span></div>' +
                     '<div class="result-row"><span>1. Costo de Materiales:</span><span class="val-bold">S/ ' + costMat.toFixed(2) + '</span></div>' +
-                    '<div class="result-row"><span>2. Mano de Obra Cuadrilla (' + Math.round(pctMO*100) + '%):</span><span class="val-bold" style="color:var(--primary-cyan);">S/ ' + costMO.toFixed(2) + '</span></div>' +
+                    '<div class="result-row"><span>2. Mano de Obra (' + cantOp + ' Op, ' + cantOf + ' Of, ' + cantPe + ' Pe × ' + diasMO + 'd):</span><span class="val-bold" style="color:var(--primary-cyan);">S/ ' + costMO.toFixed(2) + ' (' + pctMOSobreTotal.toFixed(1) + '%)</span></div>' +
                     '<div class="result-row"><span>3. Equipos y Herramientas (5% MO):</span><span class="val-bold" style="color:var(--primary-orange);">S/ ' + costEq.toFixed(2) + '</span></div>' +
                     '<div class="result-row" style="margin-top:8px; padding-top:8px; border-top:2px solid var(--primary-green); font-size:15px;">' +
                         '<span style="font-weight:900;">COSTO DIRECTO TOTAL:</span>' +
@@ -2809,12 +2752,11 @@
             var jornalEl = document.getElementById('new_worker_jornal');
             var nameVal = nameEl ? nameEl.value.trim() : '';
             var jornalVal = jornalEl ? (parseFloat(jornalEl.value) || 85.0) : 85.0;
-            if (!nameVal) { showToast('⚠️ Ingresa el nombre del trabajador.'); return; }
+            if (!nameVal) return;
             workersList.push({ id: Date.now(), name: nameVal, jornal: jornalVal, bono: 0, att: [1, 1, 1, 1, 1, 0.5] });
             saveWorkersList();
             nameEl.value = '';
             renderAttendanceTable();
-            showToast('✅ TRABAJADOR AGREGADO A PLANILLA');
         }
 
         function deleteWorkerFromStaff(wIdx) {
@@ -2918,12 +2860,11 @@
             var toolId = parseInt(document.getElementById('loan_tool_select').value);
             var workerName = document.getElementById('loan_worker_select').value;
             var tool = inventoryTools.find(function(t) { return t.id === toolId; });
-            if (!tool || tool.totalQty <= tool.inUseCount) { showToast('⚠️ Sin stock disponible.'); return; }
+            if (!tool || tool.totalQty <= tool.inUseCount) return;
             tool.inUseCount++;
             tool.workers.push(workerName);
             saveInventory();
             renderToolInventory();
-            showToast('✅ PRÉSTAMO REGISTRADO: ' + tool.name + ' → ' + workerName);
         }
 
         function devolverHerramienta(id) {
@@ -2933,7 +2874,6 @@
                 tool.workers.pop();
                 saveInventory();
                 renderToolInventory();
-                showToast('📥 HERRAMIENTA DEVUELTA AL ALMACÉN');
             }
         }
 
@@ -2942,12 +2882,11 @@
             var cat = document.getElementById('add_stock_cat').value;
             var qty = parseInt(document.getElementById('add_stock_qty').value) || 1;
             var state = document.getElementById('add_stock_state').value.trim() || 'Operativa';
-            if (!name) { showToast('⚠️ Ingresa el nombre del equipo.'); return; }
+            if (!name) return;
             inventoryTools.push({ id: Date.now(), name: name, cat: cat, totalQty: qty, inUseCount: 0, workers: [], state: state });
             document.getElementById('add_stock_name').value = '';
             saveInventory();
             renderToolInventory();
-            showToast('✅ EQUIPO AGREGADO AL ALMACÉN');
         }
 
         function checkChecklistState() {
@@ -2998,7 +2937,7 @@
             var text = document.getElementById('note_text').value.trim();
             var cat = document.getElementById('note_category').value;
             var author = document.getElementById('note_author').value.trim() || 'Residente';
-            if (!text && !currentCompressedPhotoBase64) { showToast('⚠️ Escribe una nota o adjunta foto.'); return; }
+            if (!text && !currentCompressedPhotoBase64) return;
             var now = new Date();
             bitacoraNotes.unshift({
                 id: Date.now(),
@@ -3013,7 +2952,6 @@
             document.getElementById('note_text').value = '';
             clearSelectedNotePhoto();
             renderBitacora();
-            showToast('✅ NOTA GUARDADA EN BITÁCORA');
         }
 
         function autoLogHito(tipo) {
@@ -3021,7 +2959,7 @@
             var text = '';
             if (tipo === 'vaciado') text = 'VACIADO: ' + currentCalcData.elemName + ' (' + currentCalcData.volM3.toFixed(2) + ' m³ • ' + currentCalcData.sacosCemento + ' bls cemento).';
             else if (tipo === 'asistencia') text = 'PLANILLA: Cierre de asistencia semanal por ' + document.getElementById('total_planilla').innerText + '.';
-            else if (tipo === 'avance') text = 'AVANCE: Avance físico al ' + document.getElementById('pct_fisico').value + '% vs financiero ' + document.getElementById('pct_financiero').value + '%.';
+            else if (tipo === 'presupuesto') text = 'PRESUPUESTO APU: ' + currentCalcData.elemName + ' por S/ ' + lastAPUTotal.toFixed(2) + '.';
             else text = 'SEGURIDAD G.050: Charla de 5 minutos y revisión de EPPs conforme.';
 
             bitacoraNotes.unshift({
@@ -3035,7 +2973,6 @@
             });
             safeStorage.setItem('construye_bitacora_notes_v1', JSON.stringify(bitacoraNotes));
             renderBitacora();
-            showToast('⚡ HITO REGISTRADO EN BITÁCORA');
         }
 
         function renderBitacora() {
@@ -3065,20 +3002,21 @@
         function closePhotoModal() { document.getElementById('modal_bitacora_photo').style.display = 'none'; }
 
         function exportarWhatsApp() {
-            var fis = document.getElementById('pct_fisico').value;
-            var fin = document.getElementById('pct_financiero').value;
             var totPlan = document.getElementById('total_planilla').innerText;
+            var pctMO = document.getElementById('p_pct_mo_auto').value;
             var ultNota = bitacoraNotes.length > 0 ? bitacoraNotes[0].text : 'Control normal de obra.';
 
             var text = "📋 *PARTE DIARIO Y PROFORMA - C.PRO OBRA [SELLO Y]*\n" +
                 "------------------------------------\n" +
-                "🏗️ *Partida Activa:* " + currentCalcData.elemName + "\n" +
+                "🏗️ *Partida Vinculada:* " + currentCalcData.elemName + "\n" +
                 "📐 *Volumen/Metrado:* " + currentCalcData.volM3.toFixed(2) + " m³\n" +
                 "📦 *Cemento Requerido:* " + currentCalcData.sacosCemento + " Bolsas\n" +
+                "🏖️ *Arena:* " + formatBaldesCarretillas(currentCalcData.baldesArenaTotal) + "\n" +
+                "🪨 *Piedra:* " + formatBaldesCarretillas(currentCalcData.baldesPiedraTotal) + "\n" +
                 "🔊 *Tandas Vaciadas Hoy:* " + auditLogs.length + " Bolsas\n" +
                 "------------------------------------\n" +
                 "💰 *Costo Directo APU:* S/ " + lastAPUTotal.toFixed(2) + "\n" +
-                "📈 *Curva S:* Físico " + fis + "% vs Financiero " + fin + "%\n" +
+                "👷 *Incidencia Mano Obra:* " + pctMO + "\n" +
                 "👥 *Planilla Semanal:* " + totPlan + "\n" +
                 "📝 *Última Nota:* " + ultNota + "\n" +
                 "------------------------------------\n" +
@@ -3099,12 +3037,11 @@
 
             initBitacora();
             updateRendimientoConcreto();
+            autoCalcLargoEscalera();
             calcularConcreto();
-            calcularLogisticaAcero();
             renderAttendanceTable();
             renderAuditLog();
             calcularPresupuesto();
-            drawSCurve();
             init3DOrbitalControls();
             renderSchematic();
             renderToolInventory();
